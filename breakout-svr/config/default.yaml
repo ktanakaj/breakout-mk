@@ -1,0 +1,105 @@
+---
+  appKey: "breakout-svr"
+  appName:
+    ja: "ブロックくずしメーカー"
+  webappbase: "/"
+  defaultLang: ja
+  session:
+    secret: "hiaihia348ghysrl8greiulahi"
+    resave: false
+    saveUninitialized: false
+    cookie:
+  redis:
+    host: "127.0.0.1"
+    port: 6379
+  database:
+    dialect: "mysql"
+    host: "localhost"
+    port: 3306
+    username: "breakout_usr"
+    password: "breakout001"
+    name: "breakout_db"
+  password:
+    algorithm: "sha256"
+  superAccount:
+    mailAddress: 'admin'
+    password: 'admin01'
+    role: 'super'
+  log4js:
+    appenders:
+      - type: "datefile"
+        category: "access" # アクセスログ
+        filename: "/var/log/local/breakout-svr/access.log"
+        pattern: "-yyyy-MM-dd"
+        backups: 10
+      - type: "datefile"
+        category: "error" # エラーログ
+        filename: "/var/log/local/breakout-svr/error.log"
+        pattern: "-yyyy-MM-dd"
+        maxLogSize: 107374182400 # 100MB
+      - type: "file"
+        category: "debug" # デバッグログ
+        filename: "/var/log/local/breakout-svr/debug.log"
+        backups: 10
+        maxLogSize: 10737418240 # 10MB
+      - type: "console" # コンソール
+    levels:
+      access: "INFO"
+      error: "INFO"
+      debug: "DEBUG"
+    replaceConsole: true
+  noaccesslog:
+    - \.css
+    - \.js
+    - \.png
+    - \.jpg
+    - \.gif
+    - \.ico
+  swagger:
+    swagger: "2.0"
+    info:
+      title: "ブロックくずしメーカー"
+      version: 0.4.0
+      description: "ブロックくずしメーカーAPI。"
+    basePath: "/api"
+    consumes:
+      - "application/json"
+    produces:
+      - "application/json"
+      - "text/plain"
+    parameters:
+      offset:
+        in: query
+        name: offset
+        description: 開始位置
+        type: integer
+        format: int32
+      limit:
+        in: query
+        name: limit
+        description: 取得件数
+        type: integer
+        format: int32
+    responses:
+      BadRequest:
+        description: バリデーションNG
+        schema:
+          type: string
+      Unauthorized:
+        description: 認証NG
+        schema:
+          type: string
+      Forbidden:
+        description: 権限NG
+        schema:
+          type: string
+      NotFound:
+        description: 該当データ無し
+        schema:
+          type: string
+    securityDefinitions:
+      SessionId:
+        type: apiKey
+        in: header
+        name: Cookie
+        description: セッションID
