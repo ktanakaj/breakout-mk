@@ -52,10 +52,10 @@ import * as express from 'express';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
-import { User } from '../../models/user';
-import { Stage } from '../../models/stage';
-import { StageFavorite } from '../../models/stage-favorite';
-import { Playlog } from '../../models/playlog';
+import User from '../../models/user';
+import Stage from '../../models/stage';
+import StageFavorite from '../../models/stage-favorite';
+import Playlog from '../../models/playlog';
 const router = express.Router();
 
 /**

@@ -9,9 +9,9 @@ import * as Bluebird from 'bluebird';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
-import { User } from './user';
-import { StageHeader } from './stage-header';
-import { Stage } from './stage';
+import User from './user';
+import StageHeader from './stage-header';
+import Stage from './stage';
 
 /**
  * プレイログモデル。
@@ -19,7 +19,7 @@ import { Stage } from './stage';
 @Scopes({
 	playing: {
 		where: {
-			score: null,
+			// score: null,
 		},
 	},
 	user: (userId) => {
@@ -103,9 +103,10 @@ import { Stage } from './stage';
 		},
 	},
 })
-export class Playlog extends Model<Playlog> {
+export default class Playlog extends Model<Playlog> {
 	/** ステージID */
 	@AllowNull(false)
+	@ForeignKey(() => Stage)
 	@Column({
 		comment: 'ステージID',
 		type: DataType.INTEGER,

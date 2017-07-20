@@ -5,8 +5,8 @@
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';
-import { User } from '../user';
-import { Playlog } from '../playlog';
+import User from '../user';
+import Playlog from '../playlog';
 
 const BASE_NAME = "userPlayRankings";
 

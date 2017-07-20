@@ -13,7 +13,7 @@ import * as express from 'express';
 import * as passport from 'passport';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
-import { User } from '../../models/user';
+import User from '../../models/user';
 const router = express.Router();
 
 /**

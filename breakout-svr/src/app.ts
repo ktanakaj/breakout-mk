@@ -14,6 +14,14 @@ import 'source-map-support/register';
 import { Sequelize } from 'sequelize-typescript';
 import fileUtils from './core/utils/file-utils';
 
+// Sequelizeの初期化
+const sequelize = new Sequelize(Object.assign({
+	modelPaths: [__dirname + '/models'],
+	logging: (log) => log4js.getLogger('debug').debug(log),
+}, config['database']));
+sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
+
+// Expressの初期化
 const app = express();
 const RedisStore = connectRedis(session);
 
@@ -75,12 +83,5 @@ import errorHandlers from './core/error-handlers';
 for (let handler in errorHandlers) {
 	app.use(errorHandlers[handler]);
 }
-
-// Sequelizeの初期化
-const sequelize = new Sequelize(Object.assign({
-	modelPaths: [__dirname + '/models'],
-	logging: (log) => log4js.getLogger('debug').debug(log),
-}, config['database']));
-sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
 
 module.exports = app;

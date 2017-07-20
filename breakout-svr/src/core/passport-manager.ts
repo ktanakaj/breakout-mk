@@ -8,7 +8,7 @@ import * as express from 'express';
 import * as config from 'config';
 import * as log4js from 'log4js';
 import { HttpError } from './http-error';
-import { User } from '../models/user';
+import User from '../models/user';
 const logger = log4js.getLogger('debug');
 
 /**

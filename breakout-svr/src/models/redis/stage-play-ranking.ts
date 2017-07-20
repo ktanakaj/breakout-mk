@@ -5,8 +5,8 @@
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';
-import { Stage } from '../stage';
-import { Playlog } from '../playlog';
+import Stage from '../stage';
+import Playlog from '../playlog';
 
 const BASE_NAME = "stagePlayRankings";
 

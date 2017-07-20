@@ -19,11 +19,12 @@ import objectUtils from '../core/utils/object-utils';
 @Table({
 	tableName: 'blocks',
 	comment: 'ブロック',
+	timestamps: true,
 	indexes: [{
 		fields: [{ attribute: 'status', order: 'DESC', length: null, collate: null }, "key"]
 	}],
 })
-export class Block extends Model<Block> {
+export default class Block extends Model<Block> {
 	/** ブロックキー */
 	@AllowNull(false)
 	@Column({

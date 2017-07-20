@@ -10,11 +10,11 @@ import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
 import objectUtils from '../core/utils/object-utils';
-import { Playlog } from './playlog';
-import { StageHeader } from './stage-header';
-import { StageRating } from './stage-rating';
-import { StageFavorite } from './stage-favorite';
-import { StageComment } from './stage-comment';
+import Playlog from './playlog';
+import StageHeader from './stage-header';
+import StageRating from './stage-rating';
+import StageFavorite from './stage-favorite';
+import StageComment from './stage-comment';
 const random = new Random();
 
 /**
@@ -47,6 +47,7 @@ const random = new Random();
 @Table({
 	tableName: 'users',
 	comment: 'ユーザー',
+	timestamps: true,
 	indexes: [{
 		fields: ['name']
 	}],
@@ -55,7 +56,7 @@ const random = new Random();
 		beforeUpdate: beforeSave,
 	},
 })
-export class User extends Model<User> {
+export default class User extends Model<User> {
 	/** ユーザー名 */
 	@AllowNull(false)
 	@Column({

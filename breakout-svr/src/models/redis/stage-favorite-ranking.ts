@@ -5,7 +5,7 @@
 import * as Bluebird from 'bluebird';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet } from '../../core/redis/sorted-set';
-import { Stage } from '../stage';
+import Stage from '../stage';
 
 const BASE_NAME = "stageFavoriteRankings";
 

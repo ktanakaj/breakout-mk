@@ -7,11 +7,11 @@
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
-import { User } from './user';
-import { Stage } from './stage';
-import { StageRating } from './stage-rating';
-import { StageFavorite } from './stage-favorite';
-import { StageComment } from './stage-comment';
+import User from './user';
+import Stage from './stage';
+import StageRating from './stage-rating';
+import StageFavorite from './stage-favorite';
+import StageComment from './stage-comment';
 
 /**
  * ステージ情報モデルクラス。
@@ -25,6 +25,7 @@ import { StageComment } from './stage-comment';
 @Table({
 	tableName: 'stageHeaders',
 	comment: 'ステージヘッダー',
+	timestamps: true,
 	paranoid: true,
 	indexes: [{
 		fields: ['userId', 'status']
@@ -94,7 +95,7 @@ import { StageComment } from './stage-comment';
 		},
 	},
 })
-export class StageHeader extends Model<StageHeader> {
+export default class StageHeader extends Model<StageHeader> {
 	/** ユーザーID */
 	@AllowNull(false)
 	@ForeignKey(() => User)

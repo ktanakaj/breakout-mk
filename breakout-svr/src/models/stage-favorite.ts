@@ -7,11 +7,11 @@
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
-import { User } from './user';
-import { StageHeader } from './stage-header';
-import { Stage } from './stage';
-import { StageComment } from './stage-comment';
-import { Playlog } from './playlog';
+import User from './user';
+import StageHeader from './stage-header';
+import Stage from './stage';
+import StageComment from './stage-comment';
+import Playlog from './playlog';
 
 /**
  * ステージお気に入りモデルクラス。
@@ -45,6 +45,7 @@ import { Playlog } from './playlog';
 @Table({
 	tableName: 'stageFavorites',
 	comment: 'ステージお気に入り',
+	createdAt: true,
 	updatedAt: false,
 	indexes: [{
 		fields: ["userId", "headerId"],
@@ -79,7 +80,7 @@ import { Playlog } from './playlog';
 		},
 	},
 })
-export class StageFavorite extends Model<StageFavorite> {
+export default class StageFavorite extends Model<StageFavorite> {
 	/** ステージヘッダーID */
 	@AllowNull(false)
 	@ForeignKey(() => StageHeader)

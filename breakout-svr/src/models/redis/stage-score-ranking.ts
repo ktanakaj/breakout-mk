@@ -4,7 +4,7 @@
  */
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet } from '../../core/redis/sorted-set';
-import { User } from '../user';
+import User from '../user';
 
 const BASE_NAME = "stageScoreRankings";
 

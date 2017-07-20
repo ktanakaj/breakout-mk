@@ -6,9 +6,9 @@ import * as Bluebird from 'bluebird';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';
-import { User } from '../user';
-import { StageHeader } from '../stage-header';
-import { StageRating } from '../stage-rating';
+import User from '../user';
+import StageHeader from '../stage-header';
+import StageRating from '../stage-rating';
 
 const BASE_NAME = "userRatingRankings";
 

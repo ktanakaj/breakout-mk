@@ -74,7 +74,7 @@ import * as passport from 'passport';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
-import { Block } from '../../models/block';
+import Block from '../../models/block';
 const router = express.Router();
 
 /**

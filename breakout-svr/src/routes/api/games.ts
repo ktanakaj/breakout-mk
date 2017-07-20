@@ -16,8 +16,8 @@ import * as log4js from 'log4js';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
-import { Stage } from '../../models/stage';
-import { Playlog } from '../../models/playlog';
+import Stage from '../../models/stage';
+import Playlog from '../../models/playlog';
 const logger = log4js.getLogger('debug');
 const router = express.Router();
 
