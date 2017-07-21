@@ -112,8 +112,7 @@ import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
 import Stage from '../../models/stage';
 import StageComment from '../../models/stage-comment';
-import * as redis from '../../models/redis';
-const StageScoreRanking = redis['StageScoreRanking'];
+import StageScoreRanking from '../../models/rankings/stage-score-ranking';
 const router = express.Router();
 
 /**
@@ -125,7 +124,7 @@ const router = express.Router();
  *     summary: アクセス可能なステージ一覧
  *     description: 自分がアクセス可能なステージの一覧を取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -149,7 +148,7 @@ router.get('/', function (req, res, next) {
  *     summary: ステージ新規作成
  *     description: ステージを新規作成する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - in: body
  *         name: body
@@ -206,7 +205,7 @@ router.post('/', passportManager.authorize(), function (req, res, next) {
  *     summary: 最新ステージ一覧
  *     description: 最新ステージ一覧を取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -247,7 +246,7 @@ router.get('/latest', function (req, res, next) {
  *     summary: ステージ取得
  *     description: 指定されたステージを取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - in: query
@@ -320,7 +319,7 @@ router.get('/:id', function (req, res, next) {
  *     summary: ステージ更新
  *     description: ステージを更新する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - in: body
@@ -387,7 +386,7 @@ router.put('/:id', passportManager.authorize(), function (req, res, next) {
  *     summary: ステージ削除
  *     description: ステージを削除する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *     responses:
@@ -485,7 +484,7 @@ router.get(/\/([0-9]+)\/rankings\/score\/([0-9]*)\/?([0-9]*)/, function (req, re
  *     summary: コメント投稿
  *     description: ステージにコメントを投稿する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - in: body
@@ -539,7 +538,7 @@ router.post('/:id/comments/', function (req, res, next) {
  *     summary: コメント更新
  *     description: ステージのコメントを更新する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - $ref: '#/parameters/stageCommentIdPathParam'
@@ -593,7 +592,7 @@ router.put('/:stageId/comments/:commentId', passportManager.authorize(), functio
  *     summary: コメント削除
  *     description: ステージのコメントを削除する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - $ref: '#/parameters/stageCommentIdPathParam'
@@ -632,7 +631,7 @@ router.delete('/:stageId/comments/:commentId', passportManager.authorize(), func
  *     summary: お気に入り設定
  *     description: ステージをお気に入りに設定する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *     responses:
@@ -663,7 +662,7 @@ router.post('/:id/favorite', passportManager.authorize(), function (req, res, ne
  *     summary: お気に入り解除
  *     description: ステージをお気に入りから解除する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *     responses:
@@ -693,7 +692,7 @@ router.delete('/:id/favorite', passportManager.authorize(), function (req, res, 
  *     summary: レーティング指定
  *     description: ステージのレーティングを指定する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/stageIdPathParam'
  *       - in: body

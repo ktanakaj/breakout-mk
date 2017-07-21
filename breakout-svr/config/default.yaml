@@ -1,17 +1,14 @@
 ---
   appKey: "breakout-svr"
   appName:
+    en: "Breakout Maker"
     ja: "ブロックくずしメーカー"
   webappbase: "/"
-  defaultLang: ja
   session:
     secret: "hiaihia348ghysrl8greiulahi"
     resave: false
     saveUninitialized: false
     cookie:
-  redis:
-    host: "127.0.0.1"
-    port: 6379
   database:
     dialect: "mysql"
     host: "localhost"
@@ -19,12 +16,25 @@
     username: "breakout_usr"
     password: "breakout001"
     name: "breakout_db"
+  redis:
+    ranking:
+      host: "127.0.0.1"
+      port: 6379
+      db: 1
+    session:
+      host: "127.0.0.1"
+      port: 6379
+      db: 2
   password:
     algorithm: "sha256"
   superAccount:
-    mailAddress: 'admin'
+    name: 'admin'
     password: 'admin01'
-    role: 'super'
+    status: 'admin'
+  game:
+    validation:
+      algorithm: "sha1"
+      secret: "yt7u9rtv095wo6w9;hit6yw9"
   log4js:
     appenders:
       - type: "datefile"
@@ -55,29 +65,169 @@
     - \.jpg
     - \.gif
     - \.ico
+    - \.jsgz
+    - \.datagz
+    - \.memgz
   swagger:
     swagger: "2.0"
     info:
       title: "ブロックくずしメーカー"
       version: 0.4.0
-      description: "ブロックくずしメーカーAPI。"
+      description: "ブロックくずしWebアプリのサーバーサイドAPI。"
     basePath: "/api"
     consumes:
       - "application/json"
     produces:
       - "application/json"
       - "text/plain"
+    definitions:
+      User:
+        type: object
+        description: ユーザー情報
+        required:
+          - id
+          - name
+          - status
+        properties:
+          id:
+            type: integer
+            format: int32
+            description: ユーザーID
+          name:
+            type: string
+            description: ユーザー名
+          status:
+            type: string
+            description: ステータス (user/admin/disable)
+          comment:
+            type: string
+            description: ユーザーコメント
+          createdAt:
+            type: string
+            format: date-time
+            description: 登録日時
+          updatedAt:
+            type: string
+            format: date-time
+            description: 更新日時
+      StageHeader:
+        type: object
+        required:
+          - id
+          - userId
+          - status
+        properties:
+          id:
+            type: integer
+            format: int32
+            description: ステージヘッダーID
+          userId:
+            type: integer
+            format: int32
+            description: ユーザーID
+          status:
+            type: string
+            description: ステータス (private/public)
+          createdAt:
+            type: string
+            format: date-time
+            description: 登録日時
+          updatedAt:
+            type: string
+            format: date-time
+            description: 更新日時
+          deletedAt:
+            type: string
+            format: date-time
+            description: 削除日時
+          user:
+            $ref: '#/definitions/User'
+      Stage:
+        type: object
+        required:
+          - id
+          - headerId
+          - name
+          - status
+          - map
+          - header
+        properties:
+          id:
+            type: integer
+            format: int32
+            description: ステージID
+          headerId:
+            type: integer
+            format: int32
+            description: ステージヘッダーID
+          name:
+            type: string
+            description: ステージ名
+          status:
+            type: string
+            description: ステータス (latest/updated)
+          map:
+            type: string
+            description: ステージデータ
+          comment:
+            type: string
+            description: ステージコメント
+          createdAt:
+            type: string
+            format: date-time
+            description: 登録日時
+          updatedAt:
+            type: string
+            format: date-time
+            description: 更新日時
+          header:
+            $ref: '#/definitions/StageHeader'
+      Playlog:
+        type: object
+        required:
+          - id
+          - stageId
+          - userId
+          - cleared
+        properties:
+          id:
+            type: integer
+            description: プレイログID
+            format: int64
+          stageId:
+            type: integer
+            description: ステージID
+            format: int32
+          userId:
+            type: integer
+            description: ユーザーID
+            format: int32
+          score:
+            type: integer
+            description: 獲得スコア
+            format: int32
+          cleared:
+            type: boolean
+            description: クリアしたか？
+          createdAt:
+            type: string
+            format: date-time
+            description: 登録日時
+          updatedAt:
+            type: string
+            format: date-time
+            description: 更新日時
     parameters:
-      offset:
-        in: query
-        name: offset
-        description: 開始位置
+      yearPathParam:
+        in: path
+        name: year
+        description: 年
         type: integer
         format: int32
-      limit:
-        in: query
-        name: limit
-        description: 取得件数
+      monthPathParam:
+        in: path
+        name: month
+        description: 月
         type: integer
         format: int32
     responses:
@@ -97,6 +247,14 @@
         description: 該当データ無し
         schema:
           type: string
+      RankingKeys:
+        description: 取得成功
+        schema:
+          type: array
+          items:
+            - type: array
+              items:
+                - type: string
     securityDefinitions:
       SessionId:
         type: apiKey

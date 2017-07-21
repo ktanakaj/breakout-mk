@@ -1,6 +1,6 @@
 /**
  * HTTPエラーの例外クラスのNode.jsモジュール。
- * @module ./libs/http-error
+ * @module ./core/http-error
  */
 import * as http from 'http';
 
@@ -8,7 +8,7 @@ import * as http from 'http';
  * HTTPレスポンスとして結果をクライアントに返すエラーの例外クラス。
  * @extends Error
  */
-class HttpError extends Error {
+export class HttpError extends Error {
 	status: number;
 	contentType: string;
 
@@ -38,5 +38,3 @@ class HttpError extends Error {
 		return "Internal Server Error";
 	}
 }
-
-export { HttpError };

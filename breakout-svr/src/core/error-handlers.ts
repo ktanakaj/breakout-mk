@@ -1,6 +1,6 @@
 /**
  * エラーハンドラーのNode.jsモジュール。
- * @module ./libs/error-handlers
+ * @module ./core/error-handlers
  */
 import * as express from 'express';
 import { HttpError } from './http-error';

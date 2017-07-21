@@ -67,7 +67,7 @@ const router = express.Router();
  *     summary: ユーザー一覧
  *     description: ユーザーの一覧を取得する（管理者限定）。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -150,7 +150,7 @@ router.post('/', function (req, res, next) {
  *     summary: 自分の情報取得
  *     description: ログインユーザー自身の情報を取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -172,7 +172,7 @@ router.get('/me', passportManager.authorize(), function (req, res) {
  *     summary: 自分が登録したステージの一覧
  *     description: 自分が登録したステージの一覧を取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -198,7 +198,7 @@ router.get('/me/stages', passportManager.authorize(), function (req, res, next) 
  *     summary: 自分がお気に入りしたステージの一覧
  *     description: 自分がお気に入りしたステージの一覧を取得する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: 取得成功
@@ -299,7 +299,7 @@ router.get('/:id', function (req, res, next) {
  *     summary: ユーザー情報更新
  *     description: 指定されたユーザーの情報を更新する（自分または管理者のみ可）。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/userIdPathParam'
  *       - in: body
@@ -362,7 +362,7 @@ router.put('/:id', passportManager.authorize(), function (req, res, next) {
  *     summary: ユーザーが登録したステージの一覧
  *     description: 指定されたユーザーが登録したステージの一覧を取得する（ログイン中の自分の場合、privateも含めて全件）。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/userIdPathParam'
  *     responses:

@@ -35,11 +35,10 @@ import StageComment from './stage-comment';
 	hooks: {
 		/**
 		 * 関連ランキングの掲載可否更新。
-		 * @function afterUpdate
-		 * @param {StageHeader} header 更新されたヘッダー。
-		 * @param {Object} options 更新処理のオプション。
+		 * @param header 更新されたヘッダー。
+		 * @param options 更新処理のオプション。
 		 */
-		afterUpdate: function (header: StageHeader, options: Object): void {
+		afterUpdate: function (header: StageHeader, options: {}): void {
 			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
 			const redis = require('./redis');
 			// 公開/非公開が変わった場合、評価ランキングに登録/削除
@@ -59,11 +58,10 @@ import StageComment from './stage-comment';
 		},
 		/**
 		 * 関連ランキングの削除。
-		 * @function afterDestroy
-		 * @param {StageHeader} header 削除されたヘッダー。
-		 * @param {Object} options 削除処理のオプション。
+		 * @param header 削除されたヘッダー。
+		 * @param options 削除処理のオプション。
 		 */
-		afterDestroy: function (header: StageHeader, options: Object): void {
+		afterDestroy: function (header: StageHeader, options: {}): void {
 			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
 			const redis = require('./redis');
 			const multi = require('../libs/redis-helper').client.multi();
@@ -137,8 +135,7 @@ export default class StageHeader extends Model<StageHeader> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @function merge
-	 * @param {Object} params 更新用のパラメータ。
+	 * @param params 更新用のパラメータ。
 	 */
 	merge(params: Object): void {
 		// userIdとか上書きされると困るので必要な値だけコピー
@@ -147,10 +144,9 @@ export default class StageHeader extends Model<StageHeader> {
 
 	/**
 	 * 評価を設定する。
-	 * @function setRating
-	 * @param {number} userId ユーザーID。
-	 * @param {number} rating レーティング。
-	 * @returns {Promise.<StageRating>} 更新結果。
+	 * @param userId ユーザーID。
+	 * @param rating レーティング。
+	 * @returns 更新結果。
 	 */
 	setRating(userId: number, rating: number): Bluebird<StageRating> {
 		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
@@ -177,49 +173,44 @@ export default class StageHeader extends Model<StageHeader> {
 
 	/**
 	 * 評価を取得する。
-	 * @function getRating
-	 * @param {number} userId ユーザーID。
-	 * @returns {Promise.<number>} 取得結果。
+	 * @param userId ユーザーID。
+	 * @returns 取得結果。
 	 */
-	getRating(userId: number): Bluebird<number> {
-		return StageRating.scope({ method: ['one', userId, this.id] }).findOne<StageRating>()
-			.then((stageRating) => stageRating ? stageRating.rating : 0);
+	async getRating(userId: number): Promise<number> {
+		const stageRating = await StageRating.scope({ method: ['one', userId, this.id] }).findOne<StageRating>();
+		return stageRating ? stageRating.rating : 0;
 	}
 
 	/**
 	 * お気に入りを登録する。
-	 * @function addFavoriteByUserId
-	 * @param {number} userId ユーザーID。
-	 * @returns {Promise.<StageFavorite>} 更新結果。
+	 * @param userId ユーザーID。
+	 * @returns 更新結果。
 	 */
-	addFavoriteByUserId(userId: number): Bluebird<any> {
-		return StageFavorite.scope({ method: ['one', userId, this.id] })
+	async addFavoriteByUserId(userId: number): Promise<StageFavorite> {
+		const result = await StageFavorite.scope({ method: ['one', userId, this.id] })
 			.findOrCreate<StageFavorite>(<any>{ where: {}, defaults: { userId: userId, headerId: this.id } });
+		return result[0];
 	}
 
 	/**
 	 * お気に入りを削除する。
-	 * @function removeFavoriteByUserId
-	 * @param {number} userId ユーザーID。
-	 * @returns {Promise} 削除結果。
+	 * @param userId ユーザーID。
+	 * @returns 削除結果。
 	 */
-	removeFavoriteByUserId(userId: number): Bluebird<void> {
+	async removeFavoriteByUserId(userId: number): Promise<void> {
 		// afterDestroyの処理があるので、オブジェクトを取って消す
-		return StageFavorite.scope({ method: ['one', userId, this.id] }).findOne<StageFavorite>()
-			.then((favorite) => {
-				if (favorite) {
-					return favorite.destroy();
-				}
-			});
+		const favorite = await StageFavorite.scope({ method: ['one', userId, this.id] }).findOne<StageFavorite>();
+		if (favorite) {
+			return await favorite.destroy();
+		}
 	}
 
 	/**
 	 * 指定されたユーザー用にコメントを取得する。
-	 * @function getCommentsByUserId
-	 * @param {number} userId ユーザーID。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userId ユーザーID。
+	 * @returns 検索結果。
 	 */
-	getCommentsByUserId(userId: number): Bluebird<StageComment[]> {
+	async getCommentsByUserId(userId: number): Promise<StageComment[]> {
 		// ステージ作者は全て、それ以外はpublicか、自分の投稿のみ
 		let where = {};
 		if (this.userId != userId) {
@@ -228,22 +219,21 @@ export default class StageHeader extends Model<StageHeader> {
 				where = { $or: [where, { userId: userId }] };
 			}
 		}
-		return <Bluebird<StageComment[]>>this.$get('comments', { where: where, scope: ["withuser"] });
+		return <StageComment[]>await this.$get('comments', { where: where, scope: ["withuser"] });
 	}
 
 	/**
 	 * ユーザーの作成ステージ数を取得する。
-	 * @function countByUserIds
-	 * @param {number|Array} userIds 参照するユーザーID。配列で複数指定可。未指定時は全て。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userIds 参照するユーザーID。配列で複数指定可。未指定時は全て。
+	 * @returns 検索結果。
 	 */
-	static countByUserIds(userIds: number | number[] = null): Bluebird<Object[]> {
+	static async countByUserIds(userIds: number | number[] = null): Promise<{ userId: number, created: number }[]> {
 		let where = {};
 		// ユーザーIDが指定された場合、そのユーザーのみを対象にする
 		if (userIds) {
 			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
 		}
-		return StageHeader.findAll<StageHeader>({
+		return await StageHeader.findAll<any>({
 			attributes: [
 				'userId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'created'],
 			],

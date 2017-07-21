@@ -5,7 +5,6 @@
  * @module ./models/playlog
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, ForeignKey, BelongsTo, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
@@ -52,6 +51,7 @@ import Stage from './stage';
 @Table({
 	tableName: 'playlogs',
 	comment: 'プレイログ',
+	timestamps: true,
 	indexes: [{
 		fields: ['stageId', { attribute: 'createdAt', order: 'DESC', length: null, collate: null }]
 	}, {
@@ -62,11 +62,10 @@ import Stage from './stage';
 	hooks: {
 		/**
 		 * 型を合わせる。
-		 * @function beforeValidate
-		 * @param {Playlog} playlog バリデーションされるプレイログ。
-		 * @param {Object} options バリデーション処理のオプション。
+		 * @param playlog バリデーションされるプレイログ。
+		 * @param options バリデーション処理のオプション。
 		 */
-		beforeValidate: function (playlog, options) {
+		beforeValidate: function (playlog: Playlog, options: {}): void {
 			// clearedに文字列が入ってきた場合booleanに変換
 			// （sequelizeがそのまま渡してしまい、MySQLが暗黙の型変換で失敗するため）
 			if (playlog.cleared !== undefined && playlog.cleared !== null) {
@@ -75,11 +74,10 @@ import Stage from './stage';
 		},
 		/**
 		 * ランキングへの登録。
-		 * @function afterCreate
-		 * @param {Playlog} playlog 登録されたプレイログ。
-		 * @param {Object} options 登録処理のオプション。
+		 * @param playlog 登録されたプレイログ。
+		 * @param options 登録処理のオプション。
 		 */
-		afterCreate: function (playlog, options) {
+		afterCreate: function (playlog: Playlog, options: {}): void {
 			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
 			const redis = require('./redis');
 			redis.StagePlayRanking.addByLog(playlog)
@@ -88,11 +86,10 @@ import Stage from './stage';
 		},
 		/**
 		 * スコアランキングの更新。
-		 * @function afterUpdate
-		 * @param {Playlog} playlog 更新されたプレイログ。
-		 * @param {Object} options 更新処理のオプション。
+		 * @param playlog 更新されたプレイログ。
+		 * @param options 更新処理のオプション。
 		 */
-		afterUpdate: function (playlog, options) {
+		afterUpdate: function (playlog: Playlog, options: {}): void {
 			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
 			const redis = require('./redis');
 			// スコアが設定された場合、ランキングを更新
@@ -150,8 +147,7 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @function merge
-	 * @param {Object} params 更新用のパラメータ。
+	 * @param params 更新用のパラメータ。
 	 */
 	merge(params: Object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
@@ -160,8 +156,7 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * クリアしたか？
-	 * @function isClear
-	 * @returns {boolean} クリアした場合true。
+	 * @returns クリアした場合true。
 	 */
 	isClear(): boolean {
 		// 文字列が入ってくることがあるので、その場合もうまく判定
@@ -175,8 +170,7 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * 各値から整合性チェック用のハッシュを計算する。
-	 * @function hash
-	 * @returns {string} 計算したハッシュ値。
+	 * @returns 計算したハッシュ値。
 	 */
 	hash(): string {
 		const hashGenerator = crypto.createHash(config['game']['validation']['algorithm']);
@@ -194,12 +188,11 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * ステージの統計情報を取得する。
-	 * @function reportByStageIds
-	 * @param {number|Array} stageIds 参照するステージのID。配列で複数指定可。未指定時は全て。
-	 * @param {string|Array} date 取得する期間。"年" または "年/月" の形式か、年,月の配列。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param stageIds 参照するステージのID。配列で複数指定可。未指定時は全て。
+	 * @param date 取得する期間。"年" または "年/月" の形式か、年,月の配列。
+	 * @returns 検索結果。
 	 */
-	static reportByStageIds(stageIds: number | number[] = null, date: string | string[] = null): Bluebird<Object[]> {
+	static async reportByStageIds(stageIds: number | number[] = null, date: string | string[] = null): Promise<{ stageId: number, tried: number, score: number, cleared: number }[]> {
 		let where = {};
 		// ステージIDが指定された場合、そのステージのみを対象にする
 		if (stageIds) {
@@ -210,7 +203,7 @@ export default class Playlog extends Model<Playlog> {
 		if (between.length == 2) {
 			where['createdAt'] = { $between: between };
 		}
-		return Playlog.findAll<Playlog>({
+		return await Playlog.findAll<any>({
 			attributes: [
 				'stageId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -224,12 +217,11 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * ユーザーの統計情報を取得する。
-	 * @function reportByUserIds
-	 * @param {number|Array} userIds 参照するユーザーのID。配列で複数指定可。未指定時は全て。
-	 * @param {string|Array} date 取得する期間。"年" または "年/月" の形式か、年,月の配列。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userIds 参照するユーザーのID。配列で複数指定可。未指定時は全て。
+	 * @param date 取得する期間。"年" または "年/月" の形式か、年,月の配列。
+	 * @returns 検索結果。
 	 */
-	static reportByUserIds(userIds: number | number[] = null, date: string | string[] = null): Bluebird<Object[]> {
+	static async reportByUserIds(userIds: number | number[] = null, date: string | string[] = null): Promise<{ userId: number, tried: number, score: number, cleared: number }[]> {
 		let where = {};
 		// ユーザーIDが指定された場合、そのステージのみを対象にする
 		if (userIds) {
@@ -240,7 +232,7 @@ export default class Playlog extends Model<Playlog> {
 		if (between.length == 2) {
 			where['createdAt'] = { $between: between };
 		}
-		return Playlog.findAll<Playlog>({
+		return await Playlog.findAll<any>({
 			attributes: [
 				'userId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -254,17 +246,16 @@ export default class Playlog extends Model<Playlog> {
 
 	/**
 	 * ユーザーのステージに関する統計情報を取得する。
-	 * @function reportForUser
-	 * @param {number} userId ユーザーID。
-	 * @param {number|Array} stageIds 参照するステージのID。配列で複数指定可。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userId ユーザーID。
+	 * @param stageIds 参照するステージのID。配列で複数指定可。
+	 * @returns 検索結果。
 	 */
-	static reportForUser(userId: number, stageIds: number | number[]): Bluebird<Object[]> {
+	static async reportForUser(userId: number, stageIds: number | number[]): Promise<{ stageId: number, tried: number, score: number, cleared: number }[]> {
 		let where = { stageId: stageIds, userId: userId };
 		if (Array.isArray(stageIds)) {
 			where['stageId'] = <any>{ $in: stageIds };
 		}
-		return Playlog.findAll<Playlog>({
+		return await Playlog.findAll<any>({
 			attributes: [
 				'stageId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -279,8 +270,8 @@ export default class Playlog extends Model<Playlog> {
 
 /**
  * 期間を示す文字列から、期間の開始・終了の日時を生成する。
- * @param {string|Array} date 期間。"年" または "年/月" の形式か、年,月の配列。
- * @returns {Array} [開始, 終了] の配列。条件なしの場合空。
+ * @param date 期間。"年" または "年/月" の形式か、年,月の配列。
+ * @returns [開始, 終了] の配列。条件なしの場合空。
  */
 function makeStartAndEndDate(date: string | string[]): Date[] {
 	if (!date) {

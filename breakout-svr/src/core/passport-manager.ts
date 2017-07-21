@@ -1,6 +1,6 @@
 /**
  * Passport認証を管理する共通処理モジュール。
- * @module ./libs/passport-manager
+ * @module ./core/passport-manager
  */
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';

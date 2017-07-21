@@ -2,14 +2,14 @@
  * ユーザーモデルクラスモジュール。
  *
  * ブロックくずしのユーザー一人一人に対応する。
- * @module ./models/block
+ * @module ./models/user
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, Scopes, HasMany } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
 import objectUtils from '../core/utils/object-utils';
+import UserRatingRanking from './rankings/user-rating-ranking'
 import Playlog from './playlog';
 import StageHeader from './stage-header';
 import StageRating from './stage-rating';
@@ -111,9 +111,9 @@ export default class User extends Model<User> {
 
 	/**
 	 * 渡されたパスワードをハッシュ化された値と比較する。
-	 * @param {string} password 比較するパスワード。
-	 * @returns {boolean} 一致する場合true。
-	 * @throws {Error} パスワード未読み込み。
+	 * @param password 比較するパスワード。
+	 * @returns 一致する場合true。
+	 * @throws パスワード未読み込み。
 	 */
 	comparePassword(password: string): boolean {
 		if (this.password == null) {
@@ -125,7 +125,7 @@ export default class User extends Model<User> {
 
 	/**
 	 * パスワードプロパティをハッシュ化する。
-	 * @throws {Error} パスワード未設定。
+	 * @throws パスワード未設定。
 	 */
 	hashPassword(): void {
 		if (this.password == null) {
@@ -136,8 +136,8 @@ export default class User extends Model<User> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @param {Object} params 更新用のパラメータ。
-	 * @param {boolean} all パラメータを制限しない場合true。
+	 * @param params 更新用のパラメータ。
+	 * @param all パラメータを制限しない場合true。
 	 */
 	merge(params: Object, all: boolean = false): void {
 		// statusとか自由に上書きされると困るので、渡された値のうち許可された値だけコピー
@@ -150,10 +150,9 @@ export default class User extends Model<User> {
 
 	/**
 	 * 渡されたパスワードをハッシュ値に変換する。
-	 * @function passwordToHash
-	 * @param {string} password 変換するパスワード。
-	 * @param {string} salt 変換に用いるsalt。未指定時は内部で乱数から生成。
-	 * @returns {string} saltとハッシュ値を結合した文字列。
+	 * @param password 変換するパスワード。
+	 * @param salt 変換に用いるsalt。未指定時は内部で乱数から生成。
+	 * @returns saltとハッシュ値を結合した文字列。
 	 */
 	static passwordToHash(password: string, salt: string = undefined): string {
 		if (salt == undefined) {
@@ -167,52 +166,44 @@ export default class User extends Model<User> {
 
 	/**
 	 * ユーザーとその関連情報をすべてまとめて取得する。
-	 * @function findByIdWithAllInfo
-	 * @param {number} userId 参照するユーザーのID。
-	 * @returns {Promise.<Object>} 検索結果。
+	 * @param userId 参照するユーザーのID。
+	 * @returns 検索結果。
 	 */
-	static findByIdWithAllInfo(userId: number): Bluebird<User> {
-		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-		const redis = require('./redis');
+	//TODO: 戻り値の型修正
+	static async findByIdWithAllInfo(userId: number): Promise<User> {
+		const user = await User.findById<User>(userId);
+		if (!user) return user;
 
-		return User.findById<User>(userId)
-			.then((user) => {
-				if (!user) return user;
+		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
+		// 普通のオブジェクトに詰め替えて返す
+		const result = user.toJSON();
+		result.info = { tried: 0, score: 0, cleared: 0, created: 0 };
 
-				// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
-				// 普通のオブジェクトに詰め替えて返す
-				const result = user.toJSON();
-				result.info = { tried: 0, score: 0, cleared: 0, created: 0 };
+		// ステージの統計情報
+		const reports = await Playlog.reportByUserIds(userId);
+		for (let r of reports) {
+			result.info.tried = r.tried;
+			result.info.score = r.score;
+			result.info.cleared = r.cleared;
+		}
 
-				// ステージの統計情報
-				return Playlog.reportByUserIds(userId)
-					.then((reports) => {
-						for (let r of reports) {
-							result.info.tried = r['tried'];
-							result.info.score = r['score'];
-							result.info.cleared = r['cleared'];
-						}
-					})
-					// 登録ステージ数
-					.then(() => StageHeader.countByUserIds(userId))
-					.then((reports) => {
-						for (let r of reports) {
-							result.info.created = r['created'];
-						}
-					})
-					// レーティング（平均）
-					.then(() => new redis.UserRatingRanking().getAsync(userId))
-					.then((score) => result.info.rating = score)
-					.then(() => result);
-			});
+		// 登録ステージ数
+		const reports2 = await StageHeader.countByUserIds(userId);
+		for (let r of reports2) {
+			result.info.created = r.created;
+		}
+
+		// レーティング（平均）
+		const score = await (new UserRatingRanking()).getAsync(String(userId));
+		result.info.rating = score;
+		return result;
 	}
 }
 
 /**
  * パスワードをハッシュ化する。
- * @function beforeSave
- * @param {User} user 更新されるユーザー。
- * @param {Object} options 更新処理のオプション。
+ * @param user 更新されるユーザー。
+ * @param options 更新処理のオプション。
  */
 function beforeSave(user: User, options: Object): void {
 	// 新しいパスワードが設定されている場合、自動でハッシュ化する

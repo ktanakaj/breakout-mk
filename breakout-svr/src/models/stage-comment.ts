@@ -5,7 +5,6 @@
  * @module ./models/stage-comment
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -89,8 +88,7 @@ export default class StageComment extends Model<StageComment> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @function merge
-	 * @param {Object} params 更新用のパラメータ。
+	 * @param params 更新用のパラメータ。
 	 */
 	merge(params: Object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
@@ -99,17 +97,16 @@ export default class StageComment extends Model<StageComment> {
 
 	/**
 	 * ステージのコメント数を取得する。
-	 * @function countByHeaderIds
-	 * @param {number|Array} headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
+	 * @returns 検索結果。
 	 */
-	static countByHeaderIds(headerIds: number | number[] = null): Bluebird<StageComment[]> {
+	static async countByHeaderIds(headerIds: number | number[] = null): Promise<{ headerId: number, cnt: number }[]> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
 			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
 		}
-		return StageComment.findAll<StageComment>({
+		return await StageComment.findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'cnt'],
 			],

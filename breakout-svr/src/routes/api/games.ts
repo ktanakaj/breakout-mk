@@ -30,7 +30,7 @@ const router = express.Router();
  *     summary: ゲーム開始
  *     description: ゲームを開始する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - in: body
  *         name: body
@@ -74,7 +74,7 @@ router.post('/start', passportManager.authorize(), function (req, res, next) {
  *     summary: ゲーム終了
  *     description: ゲームを終了する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - in: body
  *         name: body

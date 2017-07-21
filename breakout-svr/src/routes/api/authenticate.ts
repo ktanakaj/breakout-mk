@@ -46,11 +46,7 @@ const router = express.Router();
  *       200:
  *         description: 認証OK
  *         schema:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *               description: 認証トークン
+ *           $ref: '#/definitions/User'
  *       400:
  *         description: 認証NG
  *         schema:
@@ -71,7 +67,7 @@ router.post('/', passport.authenticate('local'), function (req: express.Request,
  *     summary: ログアウト
  *     description: ログアウトする。
  *     security:
- *       - AdminSessionId: []
+ *       - SessionId: []
  *     responses:
  *       200:
  *         description: ログアウト成功

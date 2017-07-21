@@ -70,12 +70,12 @@
  *             description: 更新日時
  */
 import * as express from 'express';
-import * as passport from 'passport';
+import * as expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
 import Block from '../../models/block';
-const router = express.Router();
+const router = expressPromiseRouter();
 
 /**
  * @swagger
@@ -93,10 +93,9 @@ const router = express.Router();
  *           items:
  *             $ref: '#/definitions/Block'
  */
-router.get('/', function (req, res, next) {
-	Block.findAll()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/', async function (req: express.Request, res: express.Response): Promise<void> {
+	const blocks = await Block.findAll<Block>();
+	res.json(blocks);
 });
 
 /**
@@ -108,7 +107,7 @@ router.get('/', function (req, res, next) {
  *     summary: ブロック新規作成
  *     description: ブロックを新規作成する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - in: body
  *         name: body
@@ -126,12 +125,9 @@ router.get('/', function (req, res, next) {
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.post('/', passport.authenticate('jwt', { session: false }), passportManager.authorize('admin'), function (req, res, next) {
-	Block.create(req.body)
-		.then((block) => {
-			res.json(block);
-		})
-		.catch(next);
+router.post('/', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+	const block = await Block.create<Block>(req.body)
+	res.json(block);
 });
 
 /**
@@ -152,11 +148,10 @@ router.post('/', passport.authenticate('jwt', { session: false }), passportManag
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.get('/:key', function (req, res, next) {
-	Block.findById(req.params.key)
-		.then(validationUtils.notFound)
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/:key', async function (req: express.Request, res: express.Response): Promise<void> {
+	const block = await Block.findById<Block>(req.params.key)
+	validationUtils.notFound(block);
+	res.json(block);
 });
 
 /**
@@ -168,7 +163,7 @@ router.get('/:key', function (req, res, next) {
  *     summary: ブロック更新
  *     description: ブロックを更新する。
  *     security:
- *       - AuthToken: []
+ *       - SessionId: []
  *     parameters:
  *       - $ref: '#/parameters/blockKeyPathParam'
  *       - in: body
@@ -189,17 +184,12 @@ router.get('/:key', function (req, res, next) {
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:key', passport.authenticate('jwt', { session: false }), passportManager.authorize('admin'), function (req, res, next) {
-	Block.findById<Block>(req.params.key)
-		.then(validationUtils.notFound)
-		.then((block) => {
-			block.merge(req.body);
-			return block.save();
-		})
-		.then((block) => {
-			res.json(block);
-		})
-		.catch(next);
+router.put('/:key', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+	let block = await Block.findById<Block>(req.params.key);
+	validationUtils.notFound(block);
+	block.merge(req.body);
+	block = await block.save();
+	res.json(block);
 });
 
 module.exports = router;

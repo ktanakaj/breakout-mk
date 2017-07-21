@@ -98,8 +98,7 @@ export default class Block extends Model<Block> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @function merge
-	 * @param {Object} params 更新用のパラメータ。
+	 * @param params 更新用のパラメータ。
 	 */
 	merge(params: Object): void {
 		// keyとか上書きされると困るので必要な値だけコピー

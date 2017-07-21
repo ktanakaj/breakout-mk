@@ -34,8 +34,8 @@ app.use(log4js.connectLogger(log4js.getLogger('access'), {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session(Object.assign({ store: new RedisStore(config['redis']) }, config['session'])));
-app.set('views', __dirname + '/../views');
+app.use(session(Object.assign({ store: new RedisStore(config['redis']['session']) }, config['session'])));
+app.set('views', __dirname + '/../ejs');
 app.set('view engine', 'ejs');
 
 // リバースプロキシのX-Forwarded-Protoを信じる

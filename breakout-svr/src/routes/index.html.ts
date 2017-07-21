@@ -11,7 +11,7 @@ import * as langParser from 'accept-language-parser';
 const router = express.Router();
 
 // TOPページ
-router.get('/', function (req, res) {
+router.get('/', function (req: express.Request, res: express.Response): void {
 	// ※ 言語やパスなど一部動的に埋め込みたいのでnode.js側で生成
 	// 言語はパラメータlang→ヘッダー→デフォルトenの順に判定
 	const langs = langParser.parse(req.headers['accept-language']);

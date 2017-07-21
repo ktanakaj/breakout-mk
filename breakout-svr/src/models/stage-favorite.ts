@@ -7,6 +7,7 @@
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
+import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';
 import StageHeader from './stage-header';
 import Stage from './stage';
@@ -56,26 +57,20 @@ import Playlog from './playlog';
 	hooks: {
 		/**
 		 * ランキングのお気に入り数加算。
-		 * @function afterCreate
-		 * @param {StageFavorite} favorite 登録されたお気に入り。
-		 * @param {Object} options 更新処理のオプション。
+		 * @param favorite 登録されたお気に入り。
+		 * @param options 更新処理のオプション。
 		 */
-		afterCreate: function (favorite, options) {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
-			new redis.StageFavoriteRanking().incrementAsync(favorite.headerId)
+		afterCreate: function (favorite: StageFavorite, options: {}): void {
+			new StageFavoriteRanking().incrementAsync(String(favorite.headerId))
 				.catch(console.error);
 		},
 		/**
 		 * ランキングのお気に入り数削減。
-		 * @function afterDestroy
-		 * @param {StageFavorite} favorite 削除されたお気に入り。
-		 * @param {Object} options 削除処理のオプション。
+		 * @param favorite 削除されたお気に入り。
+		 * @param options 削除処理のオプション。
 		 */
-		afterDestroy: function (favorite, options) {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
-			new redis.StageFavoriteRanking().incrementAsync(favorite.headerId, -1)
+		afterDestroy: function (favorite: StageFavorite, options: {}): void {
+			new StageFavoriteRanking().incrementAsync(String(favorite.headerId), -1)
 				.catch(console.error);
 		},
 	},
@@ -109,17 +104,16 @@ export default class StageFavorite extends Model<StageFavorite> {
 
 	/**
 	 * ステージのお気に入り数を取得する。
-	 * @function countByHeaderIds
-	 * @param {number|Array} headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
+	 * @returns 検索結果。
 	 */
-	static countByHeaderIds(headerIds: number | number[] = null): Bluebird<StageFavorite[]> {
+	static async countByHeaderIds(headerIds: number | number[] = null): Promise<{ headerId: number, cnt: number }[]> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
 			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
 		}
-		return StageFavorite.scope("withheader").findAll<StageFavorite>({
+		return await StageFavorite.scope("withheader").findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('COUNT', Sequelize.col('stageFavorite.id')), 'cnt'],
 			],
@@ -131,11 +125,11 @@ export default class StageFavorite extends Model<StageFavorite> {
 
 	/**
 	 * ユーザーのお気に入りステージ一覧とその関連情報を取得する。
-	 * @function findStagesWithAccessibleAllInfo
-	 * @param {number} userId アクセス中のユーザーのID。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userId アクセス中のユーザーのID。
+	 * @returns 検索結果。
 	 */
-	static findStagesWithAccessibleAllInfo(userId: number, options: Object = {}): Bluebird<Object[]> {
+	// TODO: 戻り値の型修正
+	static findStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Bluebird<Object[]> {
 		let results = [];
 
 		return StageFavorite.scope({ method: ['user', userId] }).findAll<StageFavorite>(options)

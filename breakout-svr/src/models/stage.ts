@@ -2,11 +2,12 @@
  * ステージモデルクラスモジュール。
  *
  * ブロックくずしの一つの面に対応する。
- * @module ./models/block
+ * @module ./models/stage
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, HasMany, ForeignKey, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
+import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';
 import StageHeader from './stage-header';
 import StageComment from './stage-comment';
@@ -154,9 +155,8 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * ステージ&ヘッダーをmerge()する。
-	 * @function mergeAll
-	 * @param {Object} params 更新用のパラメータ。
-	 * @returns {Promise} 実行結果。
+	 * @param params 更新用のパラメータ。
+	 * @returns 実行結果。
 	 */
 	mergeAll(params: Object): void {
 		if (!this.header) {
@@ -170,9 +170,8 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * ステージ&ヘッダーをsave()する。
-	 * @function saveAll
-	 * @param {Object} options saveオプション。
-	 * @returns {Promise.<Stage>} 実行結果。
+	 * @param options saveオプション。
+	 * @returns 実行結果。
 	 */
 	saveAll(options: {} = {}): Bluebird<Stage> {
 		/**
@@ -217,9 +216,8 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * ステージ&ヘッダーをbuild()する。
-	 * @function buildAll
-	 * @param {Object} params 設定するパラメータ。
-	 * @returns {Stage} ステージインスタンス。
+	 * @param params 設定するパラメータ。
+	 * @returns ステージインスタンス。
 	 */
 	static buildAll(params: Object): Stage {
 		const stage = Stage.build<Stage>(params);
@@ -229,14 +227,11 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * ステージとその関連情報をすべてまとめて取得する。
-	 * @function findByIdWithAccessibleAllInfo
-	 * @param {number} stageId 参照するステージのID。
-	 * @param {number} userId アクセス中のユーザーのID。
-	 * @returns {Promise.<Object>} 検索結果。
+	 * @param stageId 参照するステージのID。
+	 * @param userId アクセス中のユーザーのID。
+	 * @returns 検索結果。
 	 */
 	static findByIdWithAccessibleAllInfo(stageId: number, userId: number): Bluebird<Stage> {
-		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-		const redis = require('./redis');
 		return Stage.scope({ method: ['accessible', userId] }).findById<Stage>(stageId)
 			.then((stage) => {
 				if (!stage) return stage;
@@ -250,15 +245,15 @@ export default class Stage extends Model<Stage> {
 				return stage.header.getCommentsByUserId(userId)
 					.then((comments) => result.header.comments = comments)
 					// レーティング（平均）
-					.then(() => new redis.StageRatingRanking().getAsync(stage.headerId))
+					.then(() => new StageRatingRanking().getAsync(String(stage.headerId)))
 					.then((score) => result.info.rating = score)
 					// ステージの統計情報
 					.then(() => Playlog.reportByStageIds(stageId))
 					.then((reports) => {
 						for (let r of reports) {
-							result.info.tried = r['tried'];
-							result.info.score = r['score'];
-							result.info.cleared = r['cleared'];
+							result.info.tried = r.tried;
+							result.info.score = r.score;
+							result.info.cleared = r.cleared;
 						}
 					})
 					.then(() => {
@@ -287,15 +282,12 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * 最新ステージ一覧とその関連情報を取得する。
-	 * @function findLatestStagesWithAccessibleAllInfo
-	 * @param {number} userId アクセス中のユーザーのID。未ログインは0。
-	 * @param {Object} options findAllオプション。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userId アクセス中のユーザーのID。未ログインは0。
+	 * @param options findAllオプション。
+	 * @returns 検索結果。
 	 */
 	static findLatestStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Bluebird<Stage[]> {
-		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-		const redis = require('./redis');
-		const ranking = new redis.StageRatingRanking();
+		const ranking = new StageRatingRanking();
 		let results = [];
 
 		return Stage.scope("latest").scope({ method: ['accessible', userId] }).findAll<Stage>(options)
@@ -330,16 +322,14 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * ユーザーが登録したステージ一覧とその関連情報を取得する。
-	 * @function findUserStagesWithAccessibleAllInfo
-	 * @param {number} userId 検索するユーザーのID。
-	 * @param {boolean} all publicのみに制限しない場合true。
-	 * @param {Object} options findAllオプション。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userId 検索するユーザーのID。
+	 * @param all publicのみに制限しない場合true。
+	 * @param options findAllオプション。
+	 * @returns 検索結果。
 	 */
+	//TODO: 戻り値の型修正
 	static findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options: {} = undefined): Bluebird<Object[]> {
-		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-		const redis = require('./redis');
-		const ranking = new redis.StageRatingRanking();
+		const ranking = new StageRatingRanking();
 		let results = [];
 
 		return Stage.scope("latest").scope({ method: ['user', userId, all ? null : "public"] }).findAll<Stage>(options)

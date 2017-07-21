@@ -2,23 +2,26 @@
  * ステージお気に入り数ランキングモデルクラスのNode.jsモジュール。
  * @module ./models/redis/stage-favorite-ranking
  */
-import * as Bluebird from 'bluebird';
 import redisHelper from '../../core/redis/redis-helper';
-import { SortedSet } from '../../core/redis/sorted-set';
+import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import Stage from '../stage';
+import redis from './redis';
 
 const BASE_NAME = "stageFavoriteRankings";
+
+export interface RankingEntry extends Entry {
+	stage: Stage[];
+}
 
 /**
  * ステージお気に入り数ランキングコレクションクラス。
  */
-class StageFavoriteRanking extends SortedSet {
-
+export default class StageFavoriteRanking extends SortedSet {
 	/**
 	 * コレクションインスタンスを生成する。
 	 */
 	constructor() {
-		super(BASE_NAME);
+		super(BASE_NAME, redis.getClient());
 	}
 
 	/**
@@ -27,10 +30,8 @@ class StageFavoriteRanking extends SortedSet {
 	 * @param {number} end 取得終了位置。デフォルトは末尾。
 	 * @returns {Promise.<Array>} 検索結果。スコアの降順。
 	 */
-	findRankingAsync(start: number, end: number): Bluebird<StageFavoriteRanking[]> {
-		return this.entriesAsync(start, end, true)
-			.then((rankings) => redisHelper.bulkLoadDbModels(rankings, Stage.scope(["latest", "withuser"]), "stage", "headerId"));
+	async findRankingAsync(start: number = undefined, end: number = undefined): Promise<RankingEntry[]> {
+		const rankings = await this.entriesAsync(start, end, true);
+		return <RankingEntry[]>await redisHelper.bulkLoadDbModels(rankings, Stage.scope(["latest", "withuser"]), "stage", "headerId");
 	}
 }
-
-module.exports = StageFavoriteRanking;

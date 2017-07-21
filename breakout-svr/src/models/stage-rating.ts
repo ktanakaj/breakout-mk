@@ -5,7 +5,6 @@
  * @module ./models/stage-rating
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -81,18 +80,17 @@ export default class StageRating extends Model<StageRating> {
 
 	/**
 	 * ステージの平均評価を取得する。
-	 * @function averageByHeaderIds
-	 * @param {number|Array} headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param headerIds 参照するステージのヘッダーID。配列で複数指定可。未指定時は全て。
+	 * @returns 検索結果。
 	 */
-	static averageByHeaderIds(headerIds: number | number[] = null): Bluebird<Object[]> {
+	static async averageByHeaderIds(headerIds: number | number[] = null): Promise<{ headerId: number, rating: number }[]> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
 			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
 		}
 		// ※ ステージ削除チェックのため、ヘッダーまでJOINする
-		return StageRating.scope("withheader").findAll<StageRating>({
+		return await StageRating.scope("withheader").findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
 			],
@@ -104,18 +102,17 @@ export default class StageRating extends Model<StageRating> {
 
 	/**
 	 * ユーザーの平均評価を取得する。
-	 * @function averageByUserIds
-	 * @param {number|Array} userIds 参照するユーザーID。配列で複数指定可。未指定時は全て。
-	 * @returns {Promise.<Array>} 検索結果。
+	 * @param userIds 参照するユーザーID。配列で複数指定可。未指定時は全て。
+	 * @returns 検索結果。
 	 */
-	static averageByUserIds(userIds: number | number[] = null): Bluebird<Object[]> {
+	static async averageByUserIds(userIds: number | number[] = null): Promise<{ userId: number, rating: number }[]> {
 		// ※ 評価は公開のステージに対するもののみ計算
 		let where = { status: "public" };
 		// ユーザーIDが指定された場合、そのユーザーのステージのみを対象にする
 		if (userIds) {
 			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
 		}
-		return StageRating.findAll<StageRating>({
+		return await StageRating.findAll<any>({
 			attributes: [
 				'header.userId', [Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
 			],

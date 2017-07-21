@@ -18,3 +18,19 @@ before(async function () {
 	// 	await db.sequelize.sync({ force: true });
 	// }
 });
+
+/*
+const redisHelper = require('../libs/redis-helper');
+
+beforeEach(() => {
+	// redisのモック化
+	redisHelper.client = {
+		multi: () => {
+			return {
+				zincrby: () => {},
+				execAsync: () => Promise.resolve(),
+			};
+		},
+	};
+});
+*/

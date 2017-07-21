@@ -6,13 +6,12 @@
  * @module ./routes/api/rankings
  */
 import * as express from 'express';
-import * as redis from '../../models/redis';
+import StagePlayRanking from '../../models/rankings/stage-play-ranking';
+import StageRatingRanking from '../../models/rankings/stage-rating-ranking';
+import StageFavoriteRanking from '../../models/rankings/stage-favorite-ranking';
+import UserPlayRanking from '../../models/rankings/user-play-ranking';
+import UserRatingRanking from '../../models/rankings/user-rating-ranking';
 const router = express.Router();
-const StagePlayRanking = redis['StagePlayRanking'];
-const StageRatingRanking = redis['StageRatingRanking'];
-const StageFavoriteRanking = redis['StageFavoriteRanking'];
-const UserPlayRanking = redis['UserPlayRanking'];
-const UserRatingRanking = redis['UserRatingRanking'];
 
 /**
  * @swagger
