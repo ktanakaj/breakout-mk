@@ -4,7 +4,7 @@
  * ゲームの各ステージのプレイログ1件に対応する。
  * @module ./models/playlog
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, ForeignKey, BelongsTo, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, ForeignKey, BelongsTo, Sequelize } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
@@ -15,39 +15,6 @@ import Stage from './stage';
 /**
  * プレイログモデル。
  */
-@Scopes({
-	playing: {
-		where: {
-			// score: null,
-		},
-	},
-	user: (userId) => {
-		return {
-			where: {
-				userId: userId,
-			},
-			order: [
-				['createdAt', 'DESC']
-			],
-		};
-	},
-	withstage: () => {
-		// ※ ログとの結合ということで、削除済みのステージも取っているので注意
-		return {
-			include: [{
-				model: Stage,
-				as: 'stage',
-				required: true,
-				include: [{
-					model: StageHeader,
-					as: 'header',
-					required: true,
-					paranoid: false,
-				}],
-			}],
-		};
-	},
-})
 @Table({
 	tableName: 'playlogs',
 	comment: 'プレイログ',
@@ -99,6 +66,39 @@ import Stage from './stage';
 			}
 		},
 	},
+	scopes: {
+		playing: {
+			where: {
+				// score: null,
+			},
+		},
+		user: (userId) => {
+			return {
+				where: {
+					userId: userId,
+				},
+				order: [
+					['createdAt', 'DESC']
+				],
+			};
+		},
+		withstage: () => {
+			// ※ ログとの結合ということで、削除済みのステージも取っているので注意
+			return {
+				include: [{
+					model: Stage,
+					as: 'stage',
+					required: true,
+					include: [{
+						model: StageHeader,
+						as: 'header',
+						required: true,
+						paranoid: false,
+					}],
+				}],
+			};
+		},
+	}
 })
 export default class Playlog extends Model<Playlog> {
 	/** ステージID */

@@ -69,6 +69,9 @@
  *             format: date-time
  *             description: 更新日時
  */
+// ↓なぜか↑のswaggerコメントがコンパイル時に消されるので対策
+const DUMMY = 0;
+
 import * as express from 'express';
 import * as expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';

@@ -4,7 +4,7 @@
  * ブロックくずしのユーザー一人一人に対応する。
  * @module ./models/user
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, Scopes, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, HasMany } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
@@ -29,21 +29,6 @@ const random = new Random();
 		['id', 'ASC']
 	],
 })
-@Scopes({
-	login: {
-		where: {
-			status: { $ne: "disable" },
-		},
-	},
-	auth: {
-		attributes: {
-			exclude: ['password'],
-		},
-		where: {
-			status: { $ne: "disable" },
-		},
-	},
-})
 @Table({
 	tableName: 'users',
 	comment: 'ユーザー',
@@ -55,6 +40,21 @@ const random = new Random();
 		beforeCreate: beforeSave,
 		beforeUpdate: beforeSave,
 	},
+	scopes: {
+		login: {
+			where: {
+				status: { $ne: "disable" },
+			},
+		},
+		auth: {
+			attributes: {
+				exclude: ['password'],
+			},
+			where: {
+				status: { $ne: "disable" },
+			},
+		},
+	}
 })
 export default class User extends Model<User> {
 	/** ユーザー名 */

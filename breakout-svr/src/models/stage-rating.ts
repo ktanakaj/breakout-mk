@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対する評価を扱う。
  * @module ./models/stage-rating
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -12,25 +12,6 @@ import StageHeader from './stage-header';
 /**
  * ステージ評価モデルクラス。
  */
-@Scopes({
-	one: (userId, headerId) => {
-		return {
-			where: {
-				userId: userId,
-				headerId: headerId,
-			},
-		};
-	},
-	withheader: () => {
-		return {
-			include: [{
-				model: StageHeader,
-				as: 'header',
-				required: true,
-			}],
-		};
-	},
-})
 @Table({
 	tableName: 'stageRatings',
 	comment: 'ステージ評価',
@@ -41,6 +22,25 @@ import StageHeader from './stage-header';
 	}, {
 		fields: ['headerId', "userId"],
 	}],
+	scopes: {
+		one: (userId, headerId) => {
+			return {
+				where: {
+					userId: userId,
+					headerId: headerId,
+				},
+			};
+		},
+		withheader: () => {
+			return {
+				include: [{
+					model: StageHeader,
+					as: 'header',
+					required: true,
+				}],
+			};
+		},
+	}
 })
 export default class StageRating extends Model<StageRating> {
 	/** ステージヘッダーID */

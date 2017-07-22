@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するコメントを扱う。
  * @module ./models/stage-comment
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -12,15 +12,6 @@ import StageHeader from './stage-header';
 /**
  * ステージコメントモデルクラス。
  */
-@Scopes({
-	withuser: () => {
-		return {
-			include: [{
-				model: User,
-			}],
-		};
-	},
-})
 @Table({
 	tableName: 'stageComments',
 	comment: 'ステージコメント',
@@ -31,6 +22,15 @@ import StageHeader from './stage-header';
 	}, {
 		fields: ['headerId', "createdAt"]
 	}],
+	scopes: {
+		withuser: () => {
+			return {
+				include: [{
+					model: User,
+				}],
+			};
+		},
+	}
 })
 export default class StageComment extends Model<StageComment> {
 	/** ステージヘッダーID */

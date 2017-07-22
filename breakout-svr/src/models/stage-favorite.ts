@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するお気に入りを扱う。
  * @module ./models/stage-favorite
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
@@ -17,32 +17,6 @@ import Playlog from './playlog';
 /**
  * ステージお気に入りモデルクラス。
  */
-@Scopes({
-	one: (userId, headerId) => {
-		return {
-			where: {
-				userId: userId,
-				headerId: headerId,
-			},
-		};
-	},
-	user: (userId) => {
-		return {
-			where: {
-				userId: userId,
-			},
-		};
-	},
-	withheader: () => {
-		return {
-			include: [{
-				model: StageHeader,
-				as: 'header',
-				required: true,
-			}],
-		};
-	},
-})
 @Table({
 	tableName: 'stageFavorites',
 	comment: 'ステージお気に入り',
@@ -74,6 +48,32 @@ import Playlog from './playlog';
 				.catch(console.error);
 		},
 	},
+	scopes: {
+		one: (userId, headerId) => {
+			return {
+				where: {
+					userId: userId,
+					headerId: headerId,
+				},
+			};
+		},
+		user: (userId) => {
+			return {
+				where: {
+					userId: userId,
+				},
+			};
+		},
+		withheader: () => {
+			return {
+				include: [{
+					model: StageHeader,
+					as: 'header',
+					required: true,
+				}],
+			};
+		},
+	}
 })
 export default class StageFavorite extends Model<StageFavorite> {
 	/** ステージヘッダーID */

@@ -22,11 +22,14 @@ function initialize(app: express.Express): void {
 
 	// ユーザー認証設定
 	passport.use(new passportLocal.Strategy(
-		async function (username, password, done) {
+		{
+			usernameField: 'name',
+		},
+		async function (name, password, done) {
 			// ユーザー名の存在とパスワードの一致をチェック
 			let user;
 			try {
-				user = await User.scope("login").findOne<User>({ where: { name: username } });
+				user = await User.scope("login").findOne<User>({ where: { name } });
 			} catch (e) {
 				return done(e);
 			}

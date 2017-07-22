@@ -115,7 +115,7 @@ export default class StageHeader extends Model<StageHeader> {
 
 	/** ユーザー */
 	@BelongsTo(() => User)
-	users: User[];
+	user: User[];
 
 	/** ステージ */
 	@HasMany(() => Stage)

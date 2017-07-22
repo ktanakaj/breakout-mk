@@ -4,7 +4,7 @@
  * ブロックくずしの一つの面に対応する。
  * @module ./models/stage
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, Scopes, BelongsTo, HasMany, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, HasMany, ForeignKey, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
@@ -17,70 +17,6 @@ import Playlog from './playlog';
 /**
  * ステージモデルクラス。
  */
-@Scopes({
-	latest: {
-		where: {
-			status: "latest",
-		},
-		order: [
-			['createdAt', 'DESC']
-		],
-	},
-	withuser: () => {
-		return {
-			include: [{
-				model: StageHeader,
-				as: 'header',
-				required: true,
-				include: [{
-					model: User,
-					required: true,
-				}],
-			}],
-		};
-	},
-	accessible: (userId) => {
-		let where = { status: "public" };
-		if (userId) {
-			where = <any>{
-				$or: [where, { userId: userId }]
-			};
-		}
-		return {
-			include: [{
-				model: StageHeader,
-				as: 'header',
-				where: where,
-				required: true,
-				include: [{
-					model: User,
-					where: {
-						status: { $ne: "disable" },
-					},
-					required: true,
-				}],
-			}],
-		};
-	},
-	user: (userId, status) => {
-		let where = { userId: userId };
-		if (status) {
-			where['status'] = status;
-		}
-		return {
-			include: [{
-				model: StageHeader,
-				as: 'header',
-				required: true,
-				where: where,
-				include: [{
-					model: User,
-					required: true,
-				}],
-			}],
-		};
-	},
-})
 @Table({
 	tableName: 'stages',
 	comment: 'ステージ',
@@ -90,6 +26,73 @@ import Playlog from './playlog';
 	}, {
 		fields: ['headerId', 'status', 'name']
 	}],
+	scopes: {
+		latest: {
+			where: {
+				status: "latest",
+			},
+			order: [
+				['createdAt', 'DESC']
+			],
+		},
+		withuser: () => {
+			return {
+				include: [{
+					model: StageHeader,
+					as: 'header',
+					required: true,
+					include: [{
+						model: User,
+						as: 'user',
+						required: true,
+					}],
+				}],
+			};
+		},
+		accessible: (userId) => {
+			let where = { status: "public" };
+			if (userId) {
+				where = <any>{
+					$or: [where, { userId: userId }]
+				};
+			}
+			return {
+				include: [{
+					model: StageHeader,
+					as: 'header',
+					where: where,
+					required: true,
+					include: [{
+						model: User,
+						as: 'user',
+						where: {
+							status: { $ne: "disable" },
+						},
+						required: true,
+					}],
+				}],
+			};
+		},
+		user: (userId, status) => {
+			let where = { userId: userId };
+			if (status) {
+				where['status'] = status;
+			}
+			return {
+				include: [{
+					model: StageHeader,
+					as: 'header',
+					required: true,
+					where: where,
+					include: [{
+						model: User,
+						as: 'user',
+						required: true,
+					}],
+				}],
+			};
+		},
+	}
 })
 export default class Stage extends Model<Stage> {
 	/** ステージヘッダーID */

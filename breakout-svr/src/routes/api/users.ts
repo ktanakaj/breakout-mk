@@ -47,8 +47,11 @@
  *                 type: integer
  *                 description: コメント数
  */
+// ↓なぜか↑のswaggerコメントがコンパイル時に消されるので対策
+const DUMMY = 0;
 
 import * as express from 'express';
+import * as expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
@@ -56,7 +59,7 @@ import User from '../../models/user';
 import Stage from '../../models/stage';
 import StageFavorite from '../../models/stage-favorite';
 import Playlog from '../../models/playlog';
-const router = express.Router();
+const router = expressPromiseRouter();
 
 /**
  * @swagger
@@ -80,10 +83,9 @@ const router = express.Router();
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.get('/', passportManager.authorize('admin'), function (req, res, next) {
-	User.findAll()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+	const users = await User.findAll();
+	res.json(users);
 });
 
 /**
@@ -116,29 +118,24 @@ router.get('/', passportManager.authorize('admin'), function (req, res, next) {
  *       200:
  *         description: 登録成功
  *         schema:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *               description: 認証トークン
+ *           $ref: '#/definitions/User'
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.post('/', function (req, res, next) {
-	const user = User.build<User>();
+router.post('/', async function (req: express.Request, res: express.Response): Promise<void> {
+	let user = User.build<User>();
 	user.merge(req.body);
-	user.save()
-		.then((user) => {
-			// 認証状態にする
-			req.login(user, (err) => {
-				if (err) {
-					next(err);
-				} else {
-					res.end();
-				}
-			});
-		})
-		.catch(next);
+	user = await user.save()
+	// 認証状態にする
+	await new Promise((resolve, reject) => {
+		req.login(user, (err) => {
+			if (err) {
+				return reject(err);
+			}
+			res.end();
+			resolve();
+		});
+	});
 });
 
 /**
@@ -159,7 +156,7 @@ router.post('/', function (req, res, next) {
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me', passportManager.authorize(), function (req, res) {
+router.get('/me', passportManager.authorize(), function (req: express.Request, res: express.Response): void {
 	res.json(req.user);
 });
 
@@ -183,10 +180,9 @@ router.get('/me', passportManager.authorize(), function (req, res) {
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me/stages', passportManager.authorize(), function (req, res, next) {
-	Stage.findUserStagesWithAccessibleAllInfo(req.user.id, true)
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/me/stages', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+	const stages = await Stage.findUserStagesWithAccessibleAllInfo(req.user.id, true);
+	res.json(stages);
 });
 
 /**
@@ -226,10 +222,9 @@ router.get('/me/stages', passportManager.authorize(), function (req, res, next) 
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me/favorites', passportManager.authorize(), function (req, res, next) {
-	StageFavorite.findStagesWithAccessibleAllInfo(req.user.id)
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/me/favorites', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+	const stages = await StageFavorite.findStagesWithAccessibleAllInfo(req.user.id);
+	res.json(stages);
 });
 
 /**
@@ -276,18 +271,16 @@ router.get('/me/favorites', passportManager.authorize(), function (req, res, nex
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', async function (req: express.Request, res: express.Response): Promise<void> {
 	let userId = validationUtils.toNumber(req.params.id);
-	let promise = null;
+	let user: User;
 	if (req.query.fields == "all") {
-		promise = User.findByIdWithAllInfo(userId);
+		user = await User.findByIdWithAllInfo(userId);
 	} else {
-		promise = User.findById(userId);
+		user = await User.findById<User>(userId);
 	}
-	promise
-		.then(validationUtils.notFound)
-		.then(res.json.bind(res))
-		.catch(next);
+	validationUtils.notFound(user);
+	res.json(user);
 });
 
 /**
@@ -334,23 +327,20 @@ router.get('/:id', function (req, res, next) {
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.put('/:id', passportManager.authorize(), function (req, res, next) {
+router.put('/:id', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分または管理者のみ更新可
 	passportManager.validateUserIdOrAdmin(req, req.params.id);
 
-	User.findById<User>(validationUtils.toNumber(req.params.id))
-		.then(validationUtils.notFound)
-		.then((user) => {
-			// 管理者は全ての項目が変更可能
-			user.merge(req.body, req.user.status == "admin");
-			return user.save();
-		})
-		.then((user) => {
-			// パスワードは隠す
-			user.password = "";
-			res.json(user);
-		})
-		.catch(next);
+	let user = await User.findById<User>(validationUtils.toNumber(req.params.id));
+	validationUtils.notFound(user);
+
+	// 管理者は全ての項目が変更可能
+	user.merge(req.body, req.user.status == "admin");
+	user = await user.save();
+
+	// パスワードは隠す
+	user.password = "";
+	res.json(user);
 });
 
 /**
@@ -375,10 +365,9 @@ router.put('/:id', passportManager.authorize(), function (req, res, next) {
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.get('/:id/stages', function (req, res, next) {
-	Stage.findUserStagesWithAccessibleAllInfo(validationUtils.toNumber(req.params.id), req.user && req.params.id == req.user.id)
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/:id/stages', async function (req: express.Request, res: express.Response): Promise<void> {
+	const stages = await Stage.findUserStagesWithAccessibleAllInfo(validationUtils.toNumber(req.params.id), req.user && req.params.id == req.user.id);
+	res.json(stages);
 });
 
 /**
@@ -405,10 +394,9 @@ router.get('/:id/stages', function (req, res, next) {
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.get('/:id/playlogs', function (req, res, next) {
-	Playlog.scope({ method: ['user', validationUtils.toNumber(req.params.id)] }).scope("withstage").findAll<Playlog>()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/:id/playlogs', async function (req: express.Request, res: express.Response): Promise<void> {
+	const playlogs = await Playlog.scope({ method: ['user', validationUtils.toNumber(req.params.id)] }).scope("withstage").findAll<Playlog>();
+	res.json(playlogs);
 });
 
 module.exports = router;
