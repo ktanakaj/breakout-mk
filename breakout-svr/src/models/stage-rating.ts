@@ -72,11 +72,11 @@ export default class StageRating extends Model<StageRating> {
 
 	/** ユーザー */
 	@BelongsTo(() => User)
-	users: User[];
+	user: User;
 
 	/** ステージヘッダー */
 	@BelongsTo(() => StageHeader)
-	header: StageHeader[];
+	header: StageHeader;
 
 	/**
 	 * ステージの平均評価を取得する。

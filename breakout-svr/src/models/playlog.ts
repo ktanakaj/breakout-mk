@@ -139,11 +139,11 @@ export default class Playlog extends Model<Playlog> {
 
 	/** ユーザー */
 	@BelongsTo(() => User)
-	users: User[];
+	user: User;
 
 	/** ステージ */
 	@BelongsTo(() => Stage)
-	stage: Stage[];
+	stage: Stage;
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。

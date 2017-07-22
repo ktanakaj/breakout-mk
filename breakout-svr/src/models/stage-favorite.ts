@@ -96,11 +96,11 @@ export default class StageFavorite extends Model<StageFavorite> {
 
 	/** ユーザー */
 	@BelongsTo(() => User)
-	users: User[];
+	user: User;
 
 	/** ステージヘッダー */
 	@BelongsTo(() => StageHeader)
-	header: StageHeader[];
+	header: StageHeader;
 
 	/**
 	 * ステージのお気に入り数を取得する。

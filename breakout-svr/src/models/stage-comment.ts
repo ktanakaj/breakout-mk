@@ -80,11 +80,11 @@ export default class StageComment extends Model<StageComment> {
 
 	/** ユーザー */
 	@BelongsTo(() => User)
-	users: User[];
+	user: User;
 
 	/** ステージヘッダー */
 	@BelongsTo(() => StageHeader)
-	header: StageHeader[];
+	header: StageHeader;
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
