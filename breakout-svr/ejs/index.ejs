@@ -1,32 +1,22 @@
 <!DOCTYPE html>
-<html lang="<%= lang %>" ng-app="breakoutApp">
+<html lang="<%= lang %>">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="<%= base %>">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" integrity="sha256-0YzDSJS0qH+wpvug+Im1cMB9CX919NMtHj0d2VVHPp4=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.1/angular-sanitize.min.js" integrity="sha256-g7fGuADdnozMMUMF01KiY9Dz4W5ubD4kCU/d+U8h3cY=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.1/angular-locale_ja-jp.min.js" integrity="sha256-9+1vir/agf4ZwbFZ3S3i/6Yyz77pxDXDrUZNg97US84=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.13.1/angular-translate.min.js" integrity="sha256-ZoXBV1ZUKjg/Pzin8Dwu+GECg+5Ia8f+Bt6yp6WE14o=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.13.1/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js" integrity="sha256-doYWHsSoKRvtjKvVcPzFAw7ESxJ58ukq0gjU4k/2dF4=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.4.0/ui-bootstrap.min.js" integrity="sha256-e3tXUy4rpqMNIbnLVFUCUETRIgU7eM0/kmE2KOJ5LZc=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.4.0/ui-bootstrap-tpls.min.js" integrity="sha256-S3XOFzlLRocTOXBeD/HwZFkD85nXpfArubD9CD0/ruY=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="bundle.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="styles/style.css">
-  <link rel="stylesheet" type="text/css" href="styles/dashboard.css">
-  <title><%= appName %></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="<%= base %>">
+    <script type="text/javascript" src="bundle.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link rel="stylesheet" type="text/css" href="styles/dashboard.css">
+    <title>
+        <%= appName %>
+    </title>
 </head>
+
 <body>
-  <header class="header">
-    <header-navi></header-navi>
-  </header>
-  <div class="container-fluid">
-    <div ng-view></div>
-  </div>
-  <footer class="footer">{{ "COPYRIGHT" | translate }}</footer>
+    <app-root>Loading...</app-root>
 </body>
+
 </html>
