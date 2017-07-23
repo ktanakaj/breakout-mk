@@ -10,7 +10,7 @@ import { Stage } from '../stages/stage.model';
  */
 @Component({
 	selector: 'stage-link',
-	template: "<span *ngIf=\"stage.header.deletedAt\"><stage-label stage=\"stage\" permission=\"permission\"></stage-label></span>" +
+	template: "<span *ngIf=\"stage && stage.header && stage.header.deletedAt\"><stage-label stage=\"stage\" permission=\"permission\"></stage-label></span>" +
 	"<a *ngIf=\"stage && (!stage.header || !stage.header.deletedAt)\" routerLink=\"/stages/{{ stage.id }}\"><stage-label stage=\"stage\" permission=\"permission\"></stage-label></a>",
 })
 export class StageLinkComponent {

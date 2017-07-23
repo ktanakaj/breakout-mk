@@ -100,7 +100,6 @@ export default class Stage extends Model<Stage> {
 	@ForeignKey(() => StageHeader)
 	@Column({
 		comment: "ステージヘッダーID",
-		primaryKey: true,
 		type: DataType.INTEGER,
 	})
 	headerId: number;

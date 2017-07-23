@@ -9,6 +9,9 @@ import * as Bluebird from 'bluebird';
 Bluebird.promisifyAll(redis.RedisClient.prototype);
 Bluebird.promisifyAll(redis.Multi.prototype);
 
+// 一応別名でエクスポート
+export const redisAsync = redis;
+
 export interface IRedisClientAsync extends redis.RedisClient {
 	multi(): IRedisMultiAsync;
 	flushallAsync(): Promise<string>;
