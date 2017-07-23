@@ -71,16 +71,22 @@
 	"DISABLED": "[disabled]",
 	"ID": "ID",
 	"KEY": "Key",
-	"AUTHOR": "Author",
-	"USER_NAME": "Name",
 	"PASSWORD": "Password",
-	"BLOCK_NAME": "Name",
-	"STAGE_NAME": "Name",
+	"AUTHOR": "Author",
 	"CREATED_AT": "Created At",
 	"UPDATED_AT": "Updated At",
 	"CREATED_DATE": "Created At",
 	"UPDATED_DATE": "Updated At",
-	"STAGE_CREATED_AT": "Created At",
+	"USER": {
+		"NAME": "Name"
+	},
+	"BLOCK": {
+		"NAME": "Name"
+	},
+	"STAGE": {
+		"NAME": "Name",
+		"CREATED_AT": "Created At"
+	},
 	"RANKING_NO": "No",
 	"COMMENT": "Comment",
 	"COMMENT_COUNT": "Comments",

@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-sm-3 col-md-2">
+        <stage-navi></stage-navi>
+    </div>
+
+    <div class="col-sm-offset-3 col-md-offset-2 main">
+        <h1 class="page-header">{{ "LATEST_STAGES" | translate }}</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{ "AUTHOR" | translate }}</th>
+                        <th>{{ "STAGE.NAME" | translate }}</th>
+                        <th *ngIf="me != null">{{ "STAGE.STATUS" | translate }}</th>
+                        <th>{{ "STAGE.CREATED_AT" | translate }}</th>
+                        <th>{{ "AVERAGE_RATING" | translate }}</th>
+                        <th *ngIf="me != null">{{ "TRIED_COUNT" | translate }}</th>
+                        <th *ngIf="me != null">{{ "CLEARED_COUNT" | translate }}</th>
+                        <th *ngIf="me != null">{{ "MAX_SCORE" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let stage of stages">
+                        <td>
+                            <user-link user="stage.header.user"></user-link>
+                        </td>
+                        <td>
+                            <stage-link stage="stage"></stage-link>
+                        </td>
+                        <td *ngIf="me != null">
+                            <!--<stage-header-status status="stage.header.status"></stage-header-status>-->
+                        </td>
+                        <td>{{ stage.createdAt | date: "shortDate" }}</td>
+                        <td>
+                            <!--<stage-rating rating="{{ stage.info.rating }}"></stage-rating>-->
+                        </td>
+                        <td *ngIf="me != null">{{ stage.info.tried || 0 }}</td>
+                        <td *ngIf="me != null">{{ stage.info.cleared || 0 }}</td>
+                        <td *ngIf="me != null">{{ stage.info.score || 0 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <footer *ngIf="me != null" class="content-footer"><a routerLink="/stages/new" class="btn btn-default btn-lg">{{ "NEW_STAGE" | translate }}</a></footer>
+    </div>
+</div>

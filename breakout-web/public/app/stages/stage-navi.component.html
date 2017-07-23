@@ -1,0 +1,15 @@
+<nav class="sidebar stage-navi">
+    <ul *ngFor="let subnavi of stageNavi" class="nav nav-sidebar">
+        <li *ngFor="let n of subnavi" class="{{ n.active ? 'active' : '' }}"><a routerLink="{{ n.href }}">{{ n.title | translate }}</a></li>
+    </ul>
+</nav>
+<div class="btn-group visible-xs stage-navi-mobile">
+    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+    <span class="caret"></span>
+  </button>
+    <ul *dropdownMenu class="dropdown-menu" role="menu">
+        <ng-container *ngFor="let subnavi of stageNavi">
+            <li *ngFor="let n of subnavi" role="menuitem"><a routerLink="{{ n.href }}">{{ n.title | translate }}</a></li>
+        </ng-container>
+    </ul>
+</div>

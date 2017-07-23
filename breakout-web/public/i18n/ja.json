@@ -71,16 +71,22 @@
 	"DISABLED": "【無効】",
 	"ID": "ID",
 	"KEY": "キー",
-	"AUTHOR": "作者",
-	"USER_NAME": "ユーザー名",
 	"PASSWORD": "パスワード",
-	"BLOCK_NAME": "ブロック名",
-	"STAGE_NAME": "ステージ名",
+	"AUTHOR": "作者",
 	"CREATED_AT": "登録日",
 	"UPDATED_AT": "更新日",
 	"CREATED_DATE": "登録日時",
 	"UPDATED_DATE": "更新日時",
-	"STAGE_CREATED_AT": "マップ登録日",
+	"USER": {
+		"NAME": "ユーザー名"
+	},
+	"BLOCK": {
+		"NAME": "ブロック名"
+	},
+	"STAGE": {
+		"NAME": "ステージ名",
+		"CREATED_AT": "マップ登録日"
+	},
 	"RANKING_NO": "順位",
 	"COMMENT": "コメント",
 	"COMMENT_COUNT": "コメント数",
