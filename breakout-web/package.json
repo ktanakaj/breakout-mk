@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run clean-app && webpack",
     "watch": "npm run clean-app && webpack --watch --devtool source-map",
-    "test": "NODE_ENV=test mocha --compilers ts:espower-typescript/guess --recursive ./test",
+    "test": "NODE_ENV=test karma start",
     "doc": "npm run clean-doc && typedoc ./public/app --exclude /**/test/**/*.ts --ignoreCompilerErrors --out ./out --mode file",
     "clean": "npm run clean-app & npm run clean-doc",
     "clean-app": "rm -f ./public/bundle.js ./public/bundle.js.map",
@@ -30,12 +30,13 @@
     "zone.js": "^0.8.11"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.41",
-    "@types/power-assert": "^1.4.29",
-    "core-js": "^2.4.1",
-    "espower-typescript": "^8.0.0",
-    "mocha": "^3.4.2",
-    "power-assert": "^1.4.2",
+    "@types/jasmine": "^2.5.53",
+    "core-js": "^2.5.0",
+    "jasmine-core": "^2.7.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.4",
     "ts-loader": "^2.1.0",
     "tslint": "^5.3.2",
     "typedoc": "^0.7.1",
