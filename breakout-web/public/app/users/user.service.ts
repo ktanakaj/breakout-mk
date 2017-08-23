@@ -2,6 +2,7 @@
  * ユーザー関連サービスモジュール。
  * @module ./app/users/user.service
  */
+import { EventEmitter } from 'events';
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import { ResponseError } from '../core/response-error';
@@ -15,7 +16,7 @@ const MAX_RETRY = 3;
  * ユーザー関連サービスクラス。
  */
 @Injectable()
-export class UserService {
+export class UserService extends EventEmitter {
 	/** 認証済みユーザー情報 */
 	me: User;
 
@@ -23,7 +24,9 @@ export class UserService {
 	 * モジュールをDIしてコンポーネントを生成する。
 	 * @param http HTTPモジュール。
 	 */
-	constructor(private http: Http) { }
+	constructor(private http: Http) {
+		super();
+	}
 
 	/**
 	 * 全ユーザーの参照。
@@ -103,6 +106,7 @@ export class UserService {
 			.then((res) => {
 				// プロパティに認証情報を持たせる
 				this.me = res.json();
+				this.emit('login', this.me);
 				return this.me;
 			})
 			.catch(ResponseError.throwError);
@@ -117,7 +121,9 @@ export class UserService {
 			.toPromise()
 			.then(() => {
 				// プロパティの認証情報を解除
+				let user = this.me;
 				this.me = null;
+				this.emit('logout', user);
 			})
 			.catch(ResponseError.throwError);
 	}
@@ -133,5 +139,17 @@ export class UserService {
 			.toPromise()
 			.then((res) => res.json())
 			.catch(ResponseError.throwError);
+	}
+
+	// イベント定義
+	on(event: 'login', listener: (user: User) => void): this;
+	on(event: 'logout', listener: (user: User) => void): this;
+	on(event: string | symbol, listener: (...args: any[]) => void): this {
+		return super.on(event, listener);
+	}
+	removeListener(event: 'login', listener: (user: User) => void): this;
+	removeListener(event: 'logout', listener: (user: User) => void): this;
+	removeListener(event: string | symbol, listener: (...args: any[]) => void): this {
+		return super.removeListener(event, listener);
 	}
 }

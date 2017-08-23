@@ -14,15 +14,15 @@ export interface User {
 	/** ユーザー名 */
 	name: string;
 	/** パスワード */
-	password: string;
+	password?: string;
 	/** ステータス */
 	status: string;
 	/** ユーザーコメント */
 	comment: string;
 	/** 登録日時 */
-	createdAt: Date;
+	createdAt?: Date;
 	/** 更新日時 */
-	updatedAt: Date;
+	updatedAt?: Date;
 
 	/** ユーザー作成ステージ */
 	headers?: StageHeader[];

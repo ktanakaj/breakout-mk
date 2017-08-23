@@ -1,4 +1,4 @@
 <div id="unity-container">
-    <iframe id="unity-frame" src="{{ gameUrl }}" seamless scrolling="no">loading...</iframe>
+    <iframe id="unity-frame" [src]="gameUrl" seamless scrolling="no">loading...</iframe>
 </div>
-<div><small><a href="{{ gameUrl }}" target="_blank">{{ "GAME_PAGE.IFRAME_NOT_LOADING" | translate }}</a></small></div>
+<div><small><a [href]="gameUrl" target="_blank">{{ "GAME_PAGE.IFRAME_NOT_LOADING" | translate }}</a></small></div>

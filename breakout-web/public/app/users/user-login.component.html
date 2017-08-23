@@ -1,0 +1,30 @@
+<div class="alert alert-warning" role="alert" *ngIf="error">{{ error | translate }}</div>
+<h1>{{ "USER_LOGIN.TITLE" | translate }}</h1>
+<form #f="ngForm" (ngSubmit)="login()" novalidate class="form-horizontal">
+    <fieldset class="form-group">
+        <label for="user.name" class="control-label col-xs-2">{{ "USER.NAME" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="user.name" name="name" [(ngModel)]="user.name" #name="ngModel" required>
+            <div class="warning" *ngIf="name.errors">
+                <div [hidden]="!name.errors.required">{{ "USER_LOGIN.NAME_REQUIRED" | translate }}</div>
+                <div [hidden]="!name.errors.maxlength">{{ "USER_LOGIN.NAME_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="user.password" class="control-label col-xs-2">{{ "USER.PASSWORD" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="password" id="user.password" name="password" [(ngModel)]="user.password" #password="ngModel" required>
+            <div class="warning" *ngIf="password.errors">
+                <div [hidden]="!password.errors.required">{{ "USER_LOGIN.PASSWORD_REQUIRED" | translate }}</div>
+                <div [hidden]="!password.errors.maxlength">{{ "USER_LOGIN.PASSWORD_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="!f.form.valid">{{ "LOGIN" | translate }}</button>
+        </div>
+    </div>
+</form>
+<footer class="content-footer"><a routerLink="/">{{ "BACK_TO_TOP" | translate }}</a></footer>

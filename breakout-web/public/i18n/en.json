@@ -44,7 +44,6 @@
 	"PLAY_STAGE": "Play Stage",
 	"STAGE_EDIT": "Edit Stage",
 	"USER_INFO": "User Information",
-	"USER_EDIT": "Edit User",
 	"PLAY_LOGS": "Play Logs",
 	"WHO_PLAY_LOGS": "'s Play Logs",
 	"BLOCK_EDIT": "Edit Block",
@@ -71,20 +70,24 @@
 	"DISABLED": "[disabled]",
 	"ID": "ID",
 	"KEY": "Key",
-	"PASSWORD": "Password",
-	"AUTHOR": "Author",
 	"CREATED_AT": "Created At",
 	"UPDATED_AT": "Updated At",
 	"CREATED_DATE": "Created At",
 	"UPDATED_DATE": "Updated At",
 	"USER": {
-		"NAME": "Name"
+		"NAME": "Name",
+		"PASSWORD": "Password"
 	},
 	"BLOCK": {
-		"NAME": "Name"
+		"NAME": "Name",
+		"COLOR": "Color",
+		"XSIZE": "X Size",
+		"YSIZE": "Y Size"
 	},
 	"STAGE": {
 		"NAME": "Name",
+		"AUTHOR": "Author",
+		"STATUS": "Status",
 		"CREATED_AT": "Created At"
 	},
 	"RANKING_NO": "No",
@@ -107,9 +110,6 @@
 	"RATING": "Rating",
 	"SCORE": "Score",
 	"STATUS": "Status",
-	"COLOR": "Color",
-	"XSIZE": "X Size",
-	"YSIZE": "Y Size",
 	"STAGE_TOTAL": "Stage:",
 	"USER_TOTAL": "User:",
 	"ADD_FAVORITE": "Add Favorite",
@@ -123,18 +123,6 @@
 	"STAGE_MAP_TEXTAREA_VISIBLE": "Show the map text.",
 	"DELETE_CONFIRMING_TITLE": "Delete",
 	"DELETE_CONFIRMING_BODY": "Are you sure you want to delete this?",
-	"USER_NEW_NAME_REQUIRED": "Please input new user name.",
-	"USER_NEW_NAME_MAXLENGTH": "Please input new user name within 255 letters.",
-	"USER_NEW_PASSWORD_REQUIRED": "Please input new password.",
-	"USER_NEW_PASSWORD_MAXLENGTH": "Please input new password within 255 letters.",
-	"USER_LOGIN_NAME_REQUIRED": "Please input the user name.",
-	"USER_LOGIN_NAME_MAXLENGTH": "Please input the user name within 255 letters.",
-	"USER_LOGIN_PASSWORD_REQUIRED": "Please input the password.",
-	"USER_LOGIN_PASSWORD_MAXLENGTH": "Please input the password within 255 letters.",
-	"USER_EDIT_NAME_REQUIRED": "Please input new user name.",
-	"USER_EDIT_NAME_MAXLENGTH": "Please input new user name within 255 letters.",
-	"USER_EDIT_PASSWORD_MAXLENGTH": "Please input new password within 255 letters.",
-	"USER_EDIT_PASSWORD_NOTICE": "* Please input new password if you want to change.",
 	"STAGE_EDIT_NAME_REQUIRED": "Please input new stage name.",
 	"STAGE_EDIT_NAME_MAXLENGTH": "Please input new stage name within 255 letters.",
 	"STAGE_EDIT_MAP_REQUIRED": "Please input new map data.",
@@ -146,6 +134,26 @@
 	"BLOCK_EDIT_NAME_MAXLENGTH": "Please input new block name within 255 letters.",
 	"GAME_PAGE": {
 		"IFRAME_NOT_LOADING": "Please click to this link if the game is not visible on the iframe."
+	},
+	"USER_NEW": {
+		"NAME_REQUIRED": "Please input new user name.",
+		"NAME_MAXLENGTH": "Please input new user name within 255 letters.",
+		"PASSWORD_REQUIRED": "Please input new password.",
+		"PASSWORD_MAXLENGTH": "Please input new password within 255 letters."
+	},
+	"USER_LOGIN": {
+		"TITLE": "Login",
+		"NAME_REQUIRED": "Please input the user name.",
+		"NAME_MAXLENGTH": "Please input the user name within 255 letters.",
+		"PASSWORD_REQUIRED": "Please input the password.",
+		"PASSWORD_MAXLENGTH": "Please input the password within 255 letters."
+	},
+	"USER_EDIT": {
+		"TITLE": "Edit User",
+		"NAME_REQUIRED": "Please input new user name.",
+		"NAME_MAXLENGTH": "Please input new user name within 255 letters.",
+		"PASSWORD_MAXLENGTH": "Please input new password within 255 letters.",
+		"PASSWORD_NOTICE": "* Please input new password if you want to change."
 	},
 	"Not Found": "Sorry. The resource is not found.",
 	"Internal Server Error": "Sorry. Internal Server Error.",

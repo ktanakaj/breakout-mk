@@ -4,6 +4,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Stage } from './stage.model';
+import { UserService } from '../users/user.service';
 import { StageService } from './stage.service';
 
 /**
@@ -21,9 +22,11 @@ export class LatestStagesComponent implements OnInit {
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
+	 * @param userService ユーザー関連サービス。
 	 * @param stageService ステージ関連サービス。
 	 */
 	constructor(
+		private userService: UserService,
 		private stageService: StageService) { }
 
 	/**

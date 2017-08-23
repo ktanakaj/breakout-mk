@@ -2,8 +2,10 @@
  * @file ブロックくずしメーカールートコンポーネント。
  */
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import browserHelper from './core/browser-helper';
+import { UserService } from './users/user.service';
 
 /**
  * ブロックくずしメーカーコンポーネントクラス。
@@ -20,10 +22,14 @@ export class AppComponent {
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
+	 * @param router ルートサービス。
 	 * @param translate 国際化サービス。
+	 * @param userService ユーザー関連サービス。
 	 */
 	constructor(
-		private translate: TranslateService) { }
+		private router: Router,
+		private translate: TranslateService,
+		private userService: UserService) { }
 
 	/**
 	 * コンポーネント起動時の処理。
@@ -33,18 +39,23 @@ export class AppComponent {
 		this.translate.setDefaultLang('en');
 		this.translate.use(browserHelper.getLanguage());
 
-		// ナビを読み込み
-		this.navi = this.makeNavi('nouser', '');
-		// TODO: ナビの認証・ページ移動時の折り畳み対応
+		// ナビを読み込み&認証時に更新するよう設定
+		this.navi = this.makeNavi();
+		this.userService.on('login', () => { this.navi = this.makeNavi(); });
+		this.userService.on('logout', () => { this.navi = this.makeNavi(); });
+
+		// ページ移動時はナビを折りたたむ（スマホ）
+		this.router.events.subscribe(() => {
+			this.isCollapsed = true;
+		});
 	}
 
 	/**
 	 * ユーザーに応じたナビリンクを生成する。
-	 * @param auth ユーザーの権限。
-	 * @param name ユーザー名。
 	 * @returns タブ配列。
 	 */
-	makeNavi(auth: string, name: string): { title: string, href: string, option?: string }[] {
+	makeNavi(): { title: string, href: string, option?: string }[] {
+		let user = this.userService.me || { name: '', status: "nouser" };
 		return [
 			// 未認証
 			{
@@ -75,7 +86,7 @@ export class AppComponent {
 			},
 			{
 				title: "USER_ME",
-				option: "(" + name + ")",
+				option: "(" + user.name + ")",
 				href: "/users/me",
 				auth: "user",
 			},
@@ -102,7 +113,7 @@ export class AppComponent {
 			},
 			{
 				title: "USER_ME",
-				option: "(" + name + ")",
+				option: "(" + user.name + ")",
 				href: "/users/me",
 				auth: "admin",
 			},
@@ -111,6 +122,6 @@ export class AppComponent {
 				href: "/users/logout",
 				auth: "admin",
 			},
-		].filter((v) => !v.auth || v.auth == auth);
+		].filter((v) => !v.auth || v.auth == user.status);
 	}
 }

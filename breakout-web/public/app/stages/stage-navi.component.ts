@@ -3,6 +3,8 @@
  * @module ./app/stages/stage-navi.component
  */
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../users/user.service';
 
 /**
  * ステージ一覧メニューコンポーネントクラス。
@@ -16,11 +18,19 @@ export class StageNaviComponent implements OnInit {
 	stageNavi: { title: string, href: string, auth?: string }[][] = [];
 
 	/**
+	 * サービスをDIしてコンポーネントを生成する。
+	 * @param route ルート情報。
+	 * @param userService ユーザー関連サービス。
+	 */
+	constructor(
+		private route: ActivatedRoute,
+		private userService: UserService) { }
+
+	/**
 	 * コンポーネント起動時の処理。
 	 */
 	async ngOnInit(): Promise<void> {
-		// TODO: 認証に対応する
-		this.stageNavi = this.makeNavi("nouser");
+		this.stageNavi = this.makeNavi(this.userService.me ? this.userService.me.status : "nouser");
 		this.activateNavi(this.stageNavi);
 	}
 
@@ -87,12 +97,16 @@ export class StageNaviComponent implements OnInit {
 	 * @param navi ナビ配列。
 	 */
 	activateNavi(navi: { href: string, active?: boolean }[][]): void {
-		// TODO: 対応する
-		// let path = $location.path();
-		// for (let i = 0; i < navi.length; i++) {
-		// 	for (let j = 0; j < navi[i].length; j++) {
-		// 		navi[i][j].active = navi[i][j].href == path;
-		// 	}
-		// }
+		this.route.url.subscribe((urls) => {
+			let path = '/';
+			if (urls.length > 0) {
+				path += urls[0].path;
+			}
+			for (let i = 0; i < navi.length; i++) {
+				for (let j = 0; j < navi[i].length; j++) {
+					navi[i][j].active = navi[i][j].href == path;
+				}
+			}
+		});
 	}
 }

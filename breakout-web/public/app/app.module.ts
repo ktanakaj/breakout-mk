@@ -10,10 +10,14 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CollapseModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
+import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
 import { StageLabelComponent } from './shared/stage-label.component';
 import { StageLinkComponent } from './shared/stage-link.component';
 import { UserLinkComponent } from './shared/user-link.component';
+import { UserNewComponent } from './users/user-new.component';
+import { UserLoginComponent } from './users/user-login.component';
+import { UserLogoutComponent } from './users/user-logout.component';
 import { GameComponent } from './games/game.component';
 import { StageNaviComponent } from './stages/stage-navi.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
@@ -21,6 +25,9 @@ import { LatestStagesComponent } from './stages/latest-stages.component';
 /** ルート定義 */
 const appRoutes: Routes = [
 	{ path: '', pathMatch: 'full', component: GameComponent },
+	{ path: 'users/new', component: UserNewComponent },
+	{ path: 'users/login', component: UserLoginComponent },
+	{ path: 'users/logout', component: UserLogoutComponent },
 	{ path: 'stages', component: LatestStagesComponent },
 	{ path: '**', redirectTo: '/' }
 ];
@@ -93,6 +100,9 @@ class DefaultErrorHandler implements ErrorHandler {
 		StageLabelComponent,
 		StageLinkComponent,
 		UserLinkComponent,
+		UserNewComponent,
+		UserLoginComponent,
+		UserLogoutComponent,
 		GameComponent,
 		StageNaviComponent,
 		LatestStagesComponent,
@@ -100,6 +110,7 @@ class DefaultErrorHandler implements ErrorHandler {
 	providers: [
 		{ provide: LOCALE_ID, useValue: browserHelper.getLocale() },
 		{ provide: ErrorHandler, useClass: DefaultErrorHandler },
+		UserService,
 	],
 	bootstrap: [AppComponent]
 })

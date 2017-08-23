@@ -44,7 +44,6 @@
 	"PLAY_STAGE": "ステージをプレイ",
 	"STAGE_EDIT": "ステージ登録",
 	"USER_INFO": "ユーザー情報",
-	"USER_EDIT": "ユーザー情報更新",
 	"PLAY_LOGS": "プレイ履歴",
 	"WHO_PLAY_LOGS": " のプレイ履歴",
 	"BLOCK_EDIT": "ブロック登録",
@@ -71,20 +70,24 @@
 	"DISABLED": "【無効】",
 	"ID": "ID",
 	"KEY": "キー",
-	"PASSWORD": "パスワード",
-	"AUTHOR": "作者",
 	"CREATED_AT": "登録日",
 	"UPDATED_AT": "更新日",
 	"CREATED_DATE": "登録日時",
 	"UPDATED_DATE": "更新日時",
 	"USER": {
-		"NAME": "ユーザー名"
+		"NAME": "ユーザー名",
+		"PASSWORD": "パスワード"
 	},
 	"BLOCK": {
-		"NAME": "ブロック名"
+		"NAME": "ブロック名",
+		"COLOR": "色",
+		"XSIZE": "Xサイズ",
+		"YSIZE": "Yサイズ"
 	},
 	"STAGE": {
 		"NAME": "ステージ名",
+		"AUTHOR": "作者",
+		"STATUS": "状態",
 		"CREATED_AT": "マップ登録日"
 	},
 	"RANKING_NO": "順位",
@@ -107,9 +110,6 @@
 	"RATING": "評価",
 	"SCORE": "スコア",
 	"STATUS": "状態",
-	"COLOR": "色",
-	"XSIZE": "Xサイズ",
-	"YSIZE": "Yサイズ",
 	"STAGE_TOTAL": "ステージ全体:",
 	"USER_TOTAL": "ユーザー個人:",
 	"ADD_FAVORITE": "お気に入りに登録",
@@ -123,18 +123,6 @@
 	"STAGE_MAP_TEXTAREA_VISIBLE": "マップテキストを表示",
 	"DELETE_CONFIRMING_TITLE": "削除確認",
 	"DELETE_CONFIRMING_BODY": "削除すると元に戻すことはできません。\n本当に削除しますか？",
-	"USER_NEW_NAME_REQUIRED": "ユーザー名を入力してください。",
-	"USER_NEW_NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
-	"USER_NEW_PASSWORD_REQUIRED": "パスワードを入力してください。",
-	"USER_NEW_PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。",
-	"USER_LOGIN_NAME_REQUIRED": "ユーザー名を入力してください。",
-	"USER_LOGIN_NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
-	"USER_LOGIN_PASSWORD_REQUIRED": "パスワードを入力してください。",
-	"USER_LOGIN_PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。",
-	"USER_EDIT_NAME_REQUIRED": "ユーザー名を入力してください。",
-	"USER_EDIT_NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
-	"USER_EDIT_PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。",
-	"USER_EDIT_PASSWORD_NOTICE": "※ 変更する場合のみ入力してください",
 	"STAGE_EDIT_NAME_REQUIRED": "ステージ名を入力してください。",
 	"STAGE_EDIT_NAME_MAXLENGTH": "ステージ名は255文字までで入力してください。",
 	"STAGE_EDIT_MAP_REQUIRED": "マップを入力してください。",
@@ -146,6 +134,26 @@
 	"BLOCK_EDIT_NAME_MAXLENGTH": "ブロック名は255文字までで入力してください。",
 	"GAME_PAGE": {
 		"IFRAME_NOT_LOADING": "iframeにゲームが正しく表示されない場合はこちら"
+	},
+	"USER_NEW": {
+		"NAME_REQUIRED": "ユーザー名を入力してください。",
+		"NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
+		"PASSWORD_REQUIRED": "パスワードを入力してください。",
+		"PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。"
+	},
+	"USER_EDIT": {
+		"TITLE": "ユーザー情報更新",
+		"NAME_REQUIRED": "ユーザー名を入力してください。",
+		"NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
+		"PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。",
+		"PASSWORD_NOTICE": "※ 変更する場合のみ入力してください"
+	},
+	"USER_LOGIN": {
+		"TITLE": "ログイン",
+		"NAME_REQUIRED": "ユーザー名を入力してください。",
+		"NAME_MAXLENGTH": "ユーザー名は255文字までで入力してください。",
+		"PASSWORD_REQUIRED": "パスワードを入力してください。",
+		"PASSWORD_MAXLENGTH": "パスワードは255文字までで入力してください。"
 	},
 	"Not Found": "データが存在しません。",
 	"Internal Server Error": "サーバーエラーが発生しました。",
