@@ -8,27 +8,35 @@ import { HttpModule, Http } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { CollapseModule } from 'ngx-bootstrap';
+import { CollapseModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
 import { StageLabelComponent } from './shared/stage-label.component';
 import { StageLinkComponent } from './shared/stage-link.component';
+import { StageHeaderStatusComponent } from './shared/stage-header-status.component';
+import { StageRatingComponent } from './shared/stage-rating.component';
 import { UserLinkComponent } from './shared/user-link.component';
+import { UserStatusComponent } from './shared/user-status.component';
+import { UserRatingComponent } from './shared/user-rating.component';
+import { BlockListComponent } from './blocks/block-list.component';
+import { StageNaviComponent } from './stages/stage-navi.component';
+import { LatestStagesComponent } from './stages/latest-stages.component';
+import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
 import { UserLogoutComponent } from './users/user-logout.component';
 import { GameComponent } from './games/game.component';
-import { StageNaviComponent } from './stages/stage-navi.component';
-import { LatestStagesComponent } from './stages/latest-stages.component';
 
 /** ルート定義 */
 const appRoutes: Routes = [
 	{ path: '', pathMatch: 'full', component: GameComponent },
+	{ path: 'blocks', component: BlockListComponent },
+	{ path: 'stages', component: LatestStagesComponent },
+	{ path: 'users', component: UserListComponent },
 	{ path: 'users/new', component: UserNewComponent },
 	{ path: 'users/login', component: UserLoginComponent },
 	{ path: 'users/logout', component: UserLogoutComponent },
-	{ path: 'stages', component: LatestStagesComponent },
 	{ path: '**', redirectTo: '/' }
 ];
 
@@ -94,18 +102,25 @@ class DefaultErrorHandler implements ErrorHandler {
 			}
 		}),
 		CollapseModule.forRoot(),
+		RatingModule.forRoot(),
 	],
 	declarations: [
 		AppComponent,
 		StageLabelComponent,
 		StageLinkComponent,
+		StageHeaderStatusComponent,
+		StageRatingComponent,
 		UserLinkComponent,
+		UserStatusComponent,
+		UserRatingComponent,
+		BlockListComponent,
+		StageNaviComponent,
+		LatestStagesComponent,
+		UserListComponent,
 		UserNewComponent,
 		UserLoginComponent,
 		UserLogoutComponent,
 		GameComponent,
-		StageNaviComponent,
-		LatestStagesComponent,
 	],
 	providers: [
 		{ provide: LOCALE_ID, useValue: browserHelper.getLocale() },

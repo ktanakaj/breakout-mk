@@ -28,11 +28,11 @@
                             <stage-link [stage]="stage"></stage-link>
                         </td>
                         <td *ngIf="userService.me != null">
-                            <!--<stage-header-status [status]="stage.header.status"></stage-header-status>-->
+                            <stage-header-status [status]="stage.header.status"></stage-header-status>
                         </td>
                         <td>{{ stage.createdAt | date: "shortDate" }}</td>
                         <td>
-                            <!--<stage-rating rating="{{ stage.info.rating }}"></stage-rating>-->
+                            <stage-rating rating="{{ stage.info.rating }}"></stage-rating>
                         </td>
                         <td *ngIf="userService.me != null">{{ stage.info.tried || 0 }}</td>
                         <td *ngIf="userService.me != null">{{ stage.info.cleared || 0 }}</td>
@@ -41,6 +41,6 @@
                 </tbody>
             </table>
         </div>
-        <footer *ngIf="me != null" class="content-footer"><a routerLink="/stages/new" class="btn btn-default btn-lg">{{ "NEW_STAGE" | translate }}</a></footer>
+        <footer *ngIf="userService.me != null" class="content-footer"><a routerLink="/stages/new" class="btn btn-default btn-lg">{{ "NEW_STAGE" | translate }}</a></footer>
     </div>
 </div>
