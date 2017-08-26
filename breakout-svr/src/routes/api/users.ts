@@ -132,7 +132,7 @@ router.post('/', async function (req: express.Request, res: express.Response): P
 			if (err) {
 				return reject(err);
 			}
-			res.end();
+			res.json(user);
 			resolve();
 		});
 	});

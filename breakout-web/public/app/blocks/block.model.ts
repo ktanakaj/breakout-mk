@@ -24,7 +24,7 @@ export interface Block {
 	/** RGB色 */
 	color: number | string;
 	/** 登録日時 */
-	createdAt: Date;
+	createdAt?: Date;
 	/** 更新日時 */
-	updatedAt: Date;
+	updatedAt?: Date;
 }

@@ -35,7 +35,7 @@ export class UserNewComponent {
 	async signup(): Promise<void> {
 		try {
 			// ユーザーを登録。認証も行われる
-			await this.userService.insert(this.user);
+			await this.userService.signup(this.user);
 			this.router.navigate(['/']);
 		} catch (e) {
 			this.error = e ? e.message : e;

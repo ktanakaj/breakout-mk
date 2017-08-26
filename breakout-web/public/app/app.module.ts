@@ -19,24 +19,31 @@ import { StageRatingComponent } from './shared/stage-rating.component';
 import { UserLinkComponent } from './shared/user-link.component';
 import { UserStatusComponent } from './shared/user-status.component';
 import { UserRatingComponent } from './shared/user-rating.component';
+import { GameComponent } from './games/game.component';
 import { BlockListComponent } from './blocks/block-list.component';
+import { BlockEditComponent } from './blocks/block-edit.component';
 import { StageNaviComponent } from './stages/stage-navi.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
 import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
 import { UserLogoutComponent } from './users/user-logout.component';
-import { GameComponent } from './games/game.component';
+import { RankingPlayComponent } from './rankings/ranking-play.component';
 
 /** ルート定義 */
 const appRoutes: Routes = [
 	{ path: '', pathMatch: 'full', component: GameComponent },
 	{ path: 'blocks', component: BlockListComponent },
+	{ path: 'blocks/new', component: BlockEditComponent },
+	{ path: 'blocks/:key', component: BlockEditComponent },
 	{ path: 'stages', component: LatestStagesComponent },
 	{ path: 'users', component: UserListComponent },
 	{ path: 'users/new', component: UserNewComponent },
 	{ path: 'users/login', component: UserLoginComponent },
 	{ path: 'users/logout', component: UserLogoutComponent },
+	{ path: 'rankings/play/:year/:month', component: RankingPlayComponent },
+	{ path: 'rankings/play/:year', component: RankingPlayComponent },
+	{ path: 'rankings/play', component: RankingPlayComponent },
 	{ path: '**', redirectTo: '/' }
 ];
 
@@ -113,14 +120,16 @@ class DefaultErrorHandler implements ErrorHandler {
 		UserLinkComponent,
 		UserStatusComponent,
 		UserRatingComponent,
+		GameComponent,
 		BlockListComponent,
+		BlockEditComponent,
 		StageNaviComponent,
 		LatestStagesComponent,
 		UserListComponent,
 		UserNewComponent,
 		UserLoginComponent,
 		UserLogoutComponent,
-		GameComponent,
+		RankingPlayComponent,
 	],
 	providers: [
 		{ provide: LOCALE_ID, useValue: browserHelper.getLocale() },

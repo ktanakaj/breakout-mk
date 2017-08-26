@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import { ResponseError } from '../core/response-error';
+import { PlayRanking } from './ranking.model';
 
 /**
  * ゲームのランキング関連サービスクラス。
@@ -50,8 +51,7 @@ export class RankingService {
 	 * @param limit 検索件数。
 	 * @returns 検索結果。
 	 */
-	//TODO: 戻り値の型修正
-	findStagePlayRanking(keys: string[], offset: number, limit: number): Promise<{}> {
+	findStagePlayRanking(keys: string[], offset: number, limit: number): Promise<PlayRanking[]> {
 		return this.http.get('/api/rankings/play/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
@@ -63,7 +63,7 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	//TODO: 戻り値の型修正
-	findStagePlayRankingKeys(): Promise<{}> {
+	findStagePlayRankingKeys(): Promise<string[]> {
 		return this.http.get('/api/rankings/play/keys')
 			.toPromise()
 			.then((res) => res.json())

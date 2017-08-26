@@ -1,0 +1,96 @@
+<div class="alert alert-warning" role="alert" *ngIf="error">{{ error | translate }}</div>
+<h1>{{ "BLOCK_EDIT.TITLE" | translate }}</h1>
+<form #f="ngForm" (ngSubmit)="put()" novalidate class="form-horizontal">
+    <fieldset class="form-group">
+        <label for="block.key" class="control-label col-xs-2">{{ "BLOCK.KEY" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.key" name="key" [(ngModel)]="block.key" #key="ngModel" required maxlength="6">
+            <div class="warning" *ngIf="key.errors">
+                <div [hidden]="!key.errors.required">{{ "BLOCK_EDIT.KEY_REQUIRED" | translate }}</div>
+                <div [hidden]="!key.errors.maxlength">{{ "BLOCK_EDIT.KEY_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.name" class="control-label col-xs-2">{{ "BLOCK.NAME" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.name" name="name" [(ngModel)]="block.name" #name="ngModel" required maxlength="255">
+            <div class="warning" *ngIf="name.errors">
+                <div [hidden]="!name.errors.required">{{ "BLOCK_EDIT.NAME_REQUIRED" | translate }}</div>
+                <div [hidden]="!name.errors.maxlength">{{ "BLOCK_EDIT.NAME_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.key" class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+        <div class="col-xs-5">
+            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="enable">{{ "STATUS_ENABLE" | translate }}</label>
+            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="disable">{{ "STATUS_DISABLE" | translate }}</label>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.hp" class="control-label col-xs-2">{{ "BLOCK.HP" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.hp" name="hp" [(ngModel)]="block.hp" #hp="ngModel" required maxlength="2" pattern="^[1-9]+[0-9]*$">
+            <div class="warning" *ngIf="hp.errors">
+                <div [hidden]="!hp.errors.required">HPを入力してください。</div>
+                <div [hidden]="!hp.errors.maxlength">2桁までの数値を入力してください。</div>
+                <div [hidden]="!hp.errors.pattern">有効な数値を入力してください。</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.score" class="control-label col-xs-2">{{ "BLOCK.SCORE" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.score" name="score" [(ngModel)]="block.score" #score="ngModel" required maxlength="5" pattern="^[1-9]+[0-9]*$">
+            <div class="warning" *ngIf="score.errors">
+                <div [hidden]="!score.errors.required">得点を入力してください。</div>
+                <div [hidden]="!score.errors.maxlength">5桁までの数値を入力してください。</div>
+                <div [hidden]="!score.errors.pattern">有効な数値を入力してください。</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.xsize" class="control-label col-xs-2">{{ "BLOCK.XSIZE" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.xsize" name="xsize" [(ngModel)]="block.xsize" #xsize="ngModel" required maxlength="2" pattern="^[1-9]+[0-9]*$" readonly="true">
+            <p class="help-block">※現バージョンでは固定</p>
+            <div class="warning" *ngIf="xsize.errors">
+                <div [hidden]="!xsize.errors.required">Xサイズを入力してください。</div>
+                <div [hidden]="!xsize.errors.maxlength">2桁までの数値を入力してください。</div>
+                <div [hidden]="!xsize.errors.pattern">有効な数値を入力してください。</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.ysize" class="control-label col-xs-2">{{ "BLOCK.YSIZE" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.ysize" name="ysize" [(ngModel)]="block.ysize" #ysize="ngModel" required maxlength="2" pattern="^[1-9]+[0-9]*$" readonly="true">
+            <p class="help-block">※現バージョンでは固定</p>
+            <div class="warning" *ngIf="ysize.errors">
+                <div [hidden]="!ysize.errors.required">Yサイズを入力してください。</div>
+                <div [hidden]="!ysize.errors.maxlength">2桁までの数値を入力してください。</div>
+                <div [hidden]="!ysize.errors.pattern">有効な数値を入力してください。</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="block.color" class="control-label col-xs-2">{{ "BLOCK.COLOR" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="block.color" name="color" [(ngModel)]="block.color" #color="ngModel" required pattern="^#?[0-9A-Fa-f]+$">
+            <div class="warning" *ngIf="color.errors">
+                <div [hidden]="!color.errors.required">色を入力してください。</div>
+                <div [hidden]="!color.errors.maxlength">2桁までの数値を入力してください。</div>
+                <div [hidden]="!color.errors.pattern">RGBの値を入力してください。</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset *ngIf="block.createdAt">
+        {{ "CREATED_DATE" | translate }}: {{ block.createdAt | date: "short" }}<br> {{ "UPDATED_DATE" | translate }}: {{ block.updatedAt | date: "short" }}
+    </fieldset>
+    <div>
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "SUBMIT" | translate }}</button>
+        <button type="button" class="btn btn-warning" (click)="reset()">{{ "RESET" | translate }}</button>
+    </div>
+</form>
+<footer class="content-footer"><a routerLink="/blocks">{{ "BACK_TO_LIST" | translate }}</a></footer>

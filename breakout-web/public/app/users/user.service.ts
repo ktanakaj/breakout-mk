@@ -26,6 +26,8 @@ export class UserService extends EventEmitter {
 	 */
 	constructor(private http: Http) {
 		super();
+		// 認証状態を復元
+		this.checkSession();
 	}
 
 	/**
@@ -70,19 +72,6 @@ export class UserService extends EventEmitter {
 	}
 
 	/**
-	 * 渡されたユーザー情報の新規登録。
-	 * @param user 保存するユーザー情報。
-	 * @returns 登録結果。
-	 */
-	insert(user: User): Promise<User> {
-		// ※ 登録成功時はセッションが開始される
-		return this.http.post('/api/users', user)
-			.toPromise()
-			.then((res) => res.json())
-			.catch(ResponseError.throwError);
-	}
-
-	/**
 	 * 渡されたユーザー情報の上書き。
 	 * @param user 保存するユーザー情報。
 	 * @returns 更新結果。
@@ -91,6 +80,24 @@ export class UserService extends EventEmitter {
 		return this.http.put("/api/users/" + user.id, user)
 			.toPromise()
 			.then((res) => res.json())
+			.catch(ResponseError.throwError);
+	}
+
+	/**
+	 * ユーザーの新規登録。
+	 * @param user 保存するユーザー情報。
+	 * @returns 登録結果。
+	 */
+	signup(user: User): Promise<User> {
+		// ※ 登録成功時はセッションが開始される
+		return this.http.post('/api/users', user)
+			.toPromise()
+			.then((res) => {
+				// プロパティに認証情報を持たせる
+				this.me = res.json();
+				this.emit('login', this.me);
+				return this.me;
+			})
 			.catch(ResponseError.throwError);
 	}
 
@@ -114,6 +121,7 @@ export class UserService extends EventEmitter {
 
 	/**
 	 * ログアウトする。
+	 * @returns 処理状態。
 	 */
 	logout(): Promise<void> {
 		// ※ ログアウト成功時はセッションが終了される
@@ -126,6 +134,26 @@ export class UserService extends EventEmitter {
 				this.emit('logout', user);
 			})
 			.catch(ResponseError.throwError);
+	}
+
+	/**
+	 * 認証情報の復元。
+	 * @returns 処理状態。
+	 */
+	checkSession(): Promise<void> {
+		// 認証しているかチェックのため自分を読み込み（401エラーは正常なので無視）
+		return this.http.get('/api/users/me')
+			.toPromise()
+			.then((res) => {
+				this.me = res.json();
+				this.emit('login', this.me);
+			})
+			.catch((e) => {
+				const err = new ResponseError(e);
+				if (!err.status || err.status != 401) {
+					throw err;
+				}
+			});
 	}
 
 	/**

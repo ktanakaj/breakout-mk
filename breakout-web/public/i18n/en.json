@@ -69,7 +69,6 @@
 	"DELETED": "[deleted]",
 	"DISABLED": "[disabled]",
 	"ID": "ID",
-	"KEY": "Key",
 	"CREATED_AT": "Created At",
 	"UPDATED_AT": "Updated At",
 	"CREATED_DATE": "Created At",
@@ -79,7 +78,10 @@
 		"PASSWORD": "Password"
 	},
 	"BLOCK": {
+		"KEY": "Key",
 		"NAME": "Name",
+		"HP": "HP",
+		"SCORE": "Score",
 		"COLOR": "Color",
 		"XSIZE": "X Size",
 		"YSIZE": "Y Size"
@@ -106,9 +108,7 @@
 	"CLEARED": "Cleared",
 	"PLAYLOG_CREATED_DATE": "Date",
 	"MAP": "Map",
-	"HP": "HP",
 	"RATING": "Rating",
-	"SCORE": "Score",
 	"STATUS": "Status",
 	"STAGE_TOTAL": "Stage:",
 	"USER_TOTAL": "User:",

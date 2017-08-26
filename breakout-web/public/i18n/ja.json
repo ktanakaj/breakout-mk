@@ -46,7 +46,6 @@
 	"USER_INFO": "ユーザー情報",
 	"PLAY_LOGS": "プレイ履歴",
 	"WHO_PLAY_LOGS": " のプレイ履歴",
-	"BLOCK_EDIT": "ブロック登録",
 	"NEW_BLOCK": "新規登録",
 	"BACK_TO_TOP": "TOPに戻る",
 	"BACK_TO_LIST": "一覧に戻る",
@@ -69,7 +68,6 @@
 	"DELETED": "【削除済】",
 	"DISABLED": "【無効】",
 	"ID": "ID",
-	"KEY": "キー",
 	"CREATED_AT": "登録日",
 	"UPDATED_AT": "更新日",
 	"CREATED_DATE": "登録日時",
@@ -79,7 +77,10 @@
 		"PASSWORD": "パスワード"
 	},
 	"BLOCK": {
+		"KEY": "キー",
 		"NAME": "ブロック名",
+		"HP": "HP",
+		"SCORE": "スコア",
 		"COLOR": "色",
 		"XSIZE": "Xサイズ",
 		"YSIZE": "Yサイズ"
@@ -106,9 +107,7 @@
 	"CLEARED": "クリア済",
 	"PLAYLOG_CREATED_DATE": "プレイ日時",
 	"MAP": "マップ",
-	"HP": "HP",
 	"RATING": "評価",
-	"SCORE": "スコア",
 	"STATUS": "状態",
 	"STAGE_TOTAL": "ステージ全体:",
 	"USER_TOTAL": "ユーザー個人:",
@@ -128,10 +127,13 @@
 	"STAGE_EDIT_MAP_REQUIRED": "マップを入力してください。",
 	"STAGE_EDIT_MAP_FORMAT": "マップは枠内に収まるサイズで、縦は25行まで、最低1つのブロックが必要です。",
 	"STAGE_EDIT_MAP_NOTICE": "※ ブロックの配置は半角スペースと改行で行います。",
-	"BLOCK_EDIT_KEY_REQUIRED": "キーを入力してください。",
-	"BLOCK_EDIT_KEY_MAXLENGTH": "キーは6文字までで入力してください。",
-	"BLOCK_EDIT_NAME_REQUIRED": "ブロック名を入力してください。",
-	"BLOCK_EDIT_NAME_MAXLENGTH": "ブロック名は255文字までで入力してください。",
+	"BLOCK_EDIT": {
+		"TITLE": "ブロック登録",
+		"KEY_REQUIRED": "キーを入力してください。",
+		"KEY_MAXLENGTH": "キーは6文字までで入力してください。",
+		"NAME_REQUIRED": "ブロック名を入力してください。",
+		"NAME_MAXLENGTH": "ブロック名は255文字までで入力してください。"
+	},
 	"GAME_PAGE": {
 		"IFRAME_NOT_LOADING": "iframeにゲームが正しく表示されない場合はこちら"
 	},
