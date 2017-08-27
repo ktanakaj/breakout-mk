@@ -12,6 +12,7 @@
  *   description: ゲーム関連API
  */
 import * as express from 'express';
+import * as expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
@@ -19,7 +20,7 @@ import validationUtils from '../../core/utils/validation-utils';
 import Stage from '../../models/stage';
 import Playlog from '../../models/playlog';
 const logger = log4js.getLogger('debug');
-const router = express.Router();
+const router = expressPromiseRouter();
 
 /**
  * @swagger
@@ -53,16 +54,13 @@ const router = express.Router();
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/start', passportManager.authorize(), function (req, res, next) {
+router.post('/start', async function (req: express.Request, res: express.Response): Promise<void> {
 	// ステージのアクセス可否チェック、ゲーム開始ログを保存
-	const userId = req.user.id;
-	Stage.scope({ method: ['accessible', userId] }).findById(validationUtils.toNumber(req.body.stageId))
-		.then(validationUtils.notFound)
-		.then((stage) => {
-			return Playlog.create({ stageId: stage.id, userId: userId });
-		})
-		.then(res.json.bind(res))
-		.catch(next);
+	const userId = req.user ? req.user.id : null;
+	const stage = await Stage.scope({ method: ['accessible', userId] }).findById(validationUtils.toNumber(req.body.stageId));
+	validationUtils.notFound(stage);
+	const playlog = await Playlog.create({ stageId: stage.id, userId: userId });
+	res.json(playlog);
 });
 
 /**
@@ -112,20 +110,17 @@ router.post('/start', passportManager.authorize(), function (req, res, next) {
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/end', function (req, res, next) {
+router.post('/end', async function (req: express.Request, res: express.Response): Promise<void> {
 	// プレイログの整合性をチェック。OKなら保存
-	Playlog.scope("playing").findById<Playlog>(validationUtils.toNumber(req.body.id))
-		.then(validationUtils.notFound)
-		.then((playlog) => {
-			playlog.merge(req.body);
-			if (playlog.hash() !== req.body.hash) {
-				logger.info(playlog.hash() + " !== " + req.body.hash);
-				throw new HttpError(400);
-			}
-			return playlog.save();
-		})
-		.then((playlog) => res.json(playlog))
-		.catch(next);
+	const playlog = await Playlog.scope("playing").findById<Playlog>(validationUtils.toNumber(req.body.id));
+	validationUtils.notFound(playlog);
+	playlog.merge(req.body);
+	if (playlog.hash() !== req.body.hash) {
+		logger.info(playlog.hash() + " !== " + req.body.hash);
+		throw new HttpError(400);
+	}
+	await playlog.save();
+	res.json(playlog);
 });
 
 module.exports = router;

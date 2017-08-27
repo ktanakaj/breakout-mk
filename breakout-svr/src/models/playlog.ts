@@ -8,6 +8,9 @@ import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, ForeignKe
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
+import StagePlayRanking from './rankings/stage-play-ranking';
+import StageScoreRanking from './rankings/stage-score-ranking';
+import UserPlayRanking from './rankings/user-play-ranking';
 import User from './user';
 import StageHeader from './stage-header';
 import Stage from './stage';
@@ -45,10 +48,8 @@ import Stage from './stage';
 		 * @param options 登録処理のオプション。
 		 */
 		afterCreate: function (playlog: Playlog, options: {}): void {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
-			redis.StagePlayRanking.addByLog(playlog)
-				.then(() => redis.UserPlayRanking.addByLog(playlog))
+			StagePlayRanking.addByLog(playlog)
+				.then(() => UserPlayRanking.addByLog(playlog))
 				.catch(console.error);
 		},
 		/**
@@ -57,11 +58,9 @@ import Stage from './stage';
 		 * @param options 更新処理のオプション。
 		 */
 		afterUpdate: function (playlog: Playlog, options: {}): void {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
 			// スコアが設定された場合、ランキングを更新
 			if (playlog.score != undefined && playlog.score != playlog.previous("score")) {
-				redis.StageScoreRanking.updateByLog(playlog)
+				StageScoreRanking.updateByLog(playlog)
 					.catch(console.error);
 			}
 		},
@@ -111,17 +110,15 @@ export default class Playlog extends Model<Playlog> {
 	stageId: number;
 
 	/** ユーザーID */
-	@AllowNull(false)
+	// 未認証ユーザーはnull
 	@ForeignKey(() => User)
 	@Column({
 		comment: 'ユーザーID',
 		type: DataType.INTEGER,
-		defaultValue: 0, // 未認証ユーザーは0
 	})
 	userId: number;
 
 	/** 獲得スコア */
-	@AllowNull(false)
 	@Column({
 		comment: '獲得スコア',
 		type: DataType.INTEGER,
@@ -136,6 +133,23 @@ export default class Playlog extends Model<Playlog> {
 		defaultValue: false,
 	})
 	cleared: boolean;
+
+	// ※ createdAt,updatedAtは桁数を指定するため明示的に指定
+	/** 作成日時 */
+	@AllowNull(false)
+	@Column({
+		comment: '作成日時',
+		type: DataType.DATE(3),
+	})
+	createdAt: Date;
+
+	/** 更新日時 */
+	@AllowNull(false)
+	@Column({
+		comment: '更新日時',
+		type: DataType.DATE(3),
+	})
+	updatedAt: Date;
 
 	/** ユーザー */
 	@BelongsTo(() => User)
@@ -177,7 +191,8 @@ export default class Playlog extends Model<Playlog> {
 		hashGenerator.update(config['game']['validation']['secret']);
 		hashGenerator.update(String(this.id));
 		hashGenerator.update(String(this.stageId));
-		hashGenerator.update(String(this.userId));
+		// ユーザーID=nullは0で代用
+		hashGenerator.update(String(this.userId || 0));
 		hashGenerator.update(String(this.score));
 		hashGenerator.update(String(this.isClear()));
 		// 更新時刻も入れることで、再送信を防ぐ
