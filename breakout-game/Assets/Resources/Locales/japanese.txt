@@ -1,0 +1,7 @@
+USER_LABEL_TEXT=User: {0}
+NOUSER=(未ログイン)
+STAGE_LABEL_TEXT=Stage: {0}
+NOTSELECTED=(未選択)
+STAGE_UNAVAILABLE=指定されたステージは現在プレイできません（ステージID:{0}）
+ERROR={0}\n\nゲームを再起動してください。
+FATAL_ERROR=エラーが発生しました。\nゲームを再起動してください。\n\n{0}

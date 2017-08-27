@@ -1,0 +1,7 @@
+USER_LABEL_TEXT=User: {0}
+NOUSER=(nouser)
+STAGE_LABEL_TEXT=Stage: {0}
+NOTSELECTED=(not selected)
+STAGE_UNAVAILABLE=This stage is not available now (ID:{0})
+ERROR={0}<br><br>Please reload this web page.
+FATAL_ERROR=Fatal Error.<br>Please reload this web page.<br><br>{0}

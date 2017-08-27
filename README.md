@@ -26,6 +26,7 @@
 * nginx 1.10.x
 * Express 4.x
     * Sequelize 3.x
+    * Sequelize-typescript 0.3.x
     * Passport 0.3.x
     * Node-config 1.x
     * Log4js 1.x
@@ -44,8 +45,8 @@
     * VirtualBox 5.1.x - 仮想環境
     * vagrant-vbguest - Vagrantプラグイン
 * Visual Studio Code - アプリ開発用エディター
-* Unity 5.3.x - WebGLゲーム開発用IDE
-    * Visual Studio Professional 2015 Update 2 - C# 開発用IDE
+* Unity 2017.1.0f3 - WebGLゲーム開発用IDE
+    * Visual Studio Community 2017 - C# 開発用IDE
 * MySQL Workbench 6.x - DB管理・EL図作成用ツール
 
 ## フォルダ構成
@@ -60,7 +61,7 @@
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
 2. `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
-3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、Assets/Scenes/Game を表示。WebGLをターゲットにして、`breakout_web/app/webgl` フォルダを出力先でビルドを行う。
+3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout_web/app/webgl` フォルダを出力先でビルドを行う。
 
 ※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。
 
