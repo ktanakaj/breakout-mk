@@ -8,7 +8,7 @@ import { HttpModule, Http } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { CollapseModule, RatingModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
@@ -28,7 +28,12 @@ import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
 import { UserLogoutComponent } from './users/user-logout.component';
+import { RankingDateNaviComponent } from './rankings/ranking-date-navi.component';
 import { RankingPlayComponent } from './rankings/ranking-play.component';
+import { RankingRatingComponent } from './rankings/ranking-rating.component';
+import { RankingFavoriteComponent } from './rankings/ranking-favorite.component';
+import { RankingPlayerComponent } from './rankings/ranking-player.component';
+import { RankingCreatorComponent } from './rankings/ranking-creator.component';
 
 /** ルート定義 */
 const appRoutes: Routes = [
@@ -44,6 +49,12 @@ const appRoutes: Routes = [
 	{ path: 'rankings/play/:year/:month', component: RankingPlayComponent },
 	{ path: 'rankings/play/:year', component: RankingPlayComponent },
 	{ path: 'rankings/play', component: RankingPlayComponent },
+	{ path: 'rankings/rating', component: RankingRatingComponent },
+	{ path: 'rankings/favorite', component: RankingFavoriteComponent },
+	{ path: 'rankings/player/:year/:month', component: RankingPlayerComponent },
+	{ path: 'rankings/player/:year', component: RankingPlayerComponent },
+	{ path: 'rankings/player', component: RankingPlayerComponent },
+	{ path: 'rankings/creator', component: RankingCreatorComponent },
 	{ path: '**', redirectTo: '/' }
 ];
 
@@ -108,6 +119,7 @@ class DefaultErrorHandler implements ErrorHandler {
 				deps: [Http]
 			}
 		}),
+		BsDropdownModule.forRoot(),
 		CollapseModule.forRoot(),
 		RatingModule.forRoot(),
 	],
@@ -120,6 +132,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		UserLinkComponent,
 		UserStatusComponent,
 		UserRatingComponent,
+		RankingDateNaviComponent,
 		GameComponent,
 		BlockListComponent,
 		BlockEditComponent,
@@ -130,6 +143,10 @@ class DefaultErrorHandler implements ErrorHandler {
 		UserLoginComponent,
 		UserLogoutComponent,
 		RankingPlayComponent,
+		RankingRatingComponent,
+		RankingFavoriteComponent,
+		RankingPlayerComponent,
+		RankingCreatorComponent,
 	],
 	providers: [
 		{ provide: LOCALE_ID, useValue: browserHelper.getLocale() },

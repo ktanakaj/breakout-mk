@@ -61,7 +61,7 @@ export default class UserPlayRanking extends SortedSet {
 	 */
 	static async addByLog(playlog: Playlog): Promise<void> {
 		// 未ログインは何もしない
-		if (playlog.userId == 0) {
+		if (!playlog.userId) {
 			return;
 		}
 

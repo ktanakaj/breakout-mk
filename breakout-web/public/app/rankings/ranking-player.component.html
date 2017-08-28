@@ -4,35 +4,31 @@
     </div>
 
     <div class="col-sm-offset-3 col-md-offset-2 main">
-        <h1 class="page-header">{{ "TOP_ACCESS_STAGES" | translate }}</h1>
-        <ranking-date-navi href="/rankings/play/" [keys]="keys" [selected]="selected"></ranking-date-navi>
+        <h1 class="page-header">{{ "TOP_ACTIVE_PLAYERS" | translate }}</h1>
+        <ranking-date-navi href="/rankings/player/" [keys]="keys" [selected]="selected"></ranking-date-navi>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>{{ "RANKING_NO" | translate }}</th>
-                        <th>{{ "STAGE.NAME" | translate }}</th>
-                        <th>{{ "STAGE.AUTHOR" | translate }}</th>
-                        <th>{{ "WAS_TRIED_COUNT" | translate }}</th>
-                        <th>{{ "WAS_CLEARED_COUNT" | translate }}</th>
+                        <th>{{ "USER.NAME" | translate }}</th>
+                        <th>{{ "TRIED_COUNT" | translate }}</th>
+                        <th>{{ "CLEARED_COUNT" | translate }}</th>
                         <th>{{ "MAX_SCORE" | translate }}</th>
-                        <th>{{ "STAGE.CREATED_AT" | translate }}</th>
+                        <th>{{ "CREATED_AT" | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let ranking of rankings">
                         <td>{{ ranking.no }}</td>
                         <td>
-                            <stage-link [stage]="ranking.stage" permission="true"></stage-link>
-                        </td>
-                        <td>
-                            <user-link [user]="ranking.stage.header.user"></user-link>
+                            <user-link [user]="ranking.user"></user-link>
                         </td>
                         <td>{{ ranking.score }}</td>
                         <td>{{ ranking.info.cleared || 0 }}</td>
                         <td>{{ ranking.info.score || 0 }}</td>
-                        <td>{{ ranking.stage.createdAt | date: "shortDate" }}</td>
+                        <td>{{ ranking.user.createdAt | date: "shortDate" }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,27 +1,27 @@
 /**
- * ステージプレイ回数順ランキングページコンポーネント。
+ * ユーザープレイ回数順ランキングページコンポーネント。
  * @module ./app/rankings/ranking-play.component
  */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { PlayRankingEntry } from './ranking.model';
+import { PlayerRankingEntry } from './ranking.model';
 import { UserService } from '../users/user.service';
 import { RankingService } from './ranking.service';
 
 /**
- * ステージプレイ回数順ランキングページコンポーネントクラス。
+ * ユーザープレイ回数順ランキングページコンポーネントクラス。
  */
 @Component({
-	templateUrl: 'app/rankings/ranking-play.component.html',
+	templateUrl: 'app/rankings/ranking-player.component.html',
 	providers: [
 		RankingService,
 	],
 })
-export class RankingPlayComponent implements OnInit {
+export class RankingPlayerComponent implements OnInit {
 	/** 選択中のキー */
 	selected = [];
 	/** ランキング一覧 */
-	rankings: PlayRankingEntry[] = [];
+	rankings: PlayerRankingEntry[] = [];
 	/** キー一覧 */
 	keys: string[][] = [];
 
@@ -45,7 +45,7 @@ export class RankingPlayComponent implements OnInit {
 			this.selected = [params['year'], params['month']];
 		});
 
-		this.rankings = await this.rankingService.findStagePlayRanking(this.selected, 0, 50);
-		this.keys = await this.rankingService.findStagePlayRankingKeys();
+		this.rankings = await this.rankingService.findUserPlayRanking(this.selected, 0, 50);
+		this.keys = await this.rankingService.findUserPlayRankingKeys();
 	}
 }

@@ -6,12 +6,13 @@
  * @module ./routes/api/rankings
  */
 import * as express from 'express';
+import * as expressPromiseRouter from 'express-promise-router';
 import StagePlayRanking from '../../models/rankings/stage-play-ranking';
 import StageRatingRanking from '../../models/rankings/stage-rating-ranking';
 import StageFavoriteRanking from '../../models/rankings/stage-favorite-ranking';
 import UserPlayRanking from '../../models/rankings/user-play-ranking';
 import UserRatingRanking from '../../models/rankings/user-rating-ranking';
-const router = express.Router();
+const router = expressPromiseRouter();
 
 /**
  * @swagger
@@ -31,10 +32,9 @@ const router = express.Router();
  *       200:
  *         $ref: '#/responses/RankingKeys'
  */
-router.get('/play/keys', function (req, res, next) {
-	StagePlayRanking.yearAndMonthsAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/play/keys', async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await StagePlayRanking.yearAndMonthsAsync()
+	res.json(rankings);
 });
 
 /**
@@ -83,10 +83,9 @@ router.get('/play/keys', function (req, res, next) {
  *                     type: integer
  *                     description: クリアされた回数
  */
-router.get(/\/play\/([0-9]*)\/?([0-9]*)/, function (req, res, next) {
-	new StagePlayRanking(req.params[0], req.params[1]).findRankingAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get(/\/play\/([0-9]*)\/?([0-9]*)/, async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await new StagePlayRanking(req.params[0], req.params[1]).findRankingAsync()
+	res.json(rankings);
 });
 
 /**
@@ -117,10 +116,9 @@ router.get(/\/play\/([0-9]*)\/?([0-9]*)/, function (req, res, next) {
  *               stage:
  *                 $ref: '#/definitions/Stage'
  */
-router.get('/rating/', function (req, res, next) {
-	new StageRatingRanking().findRankingAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/rating/', async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await new StageRatingRanking().findRankingAsync();
+	res.json(rankings);
 });
 
 /**
@@ -151,10 +149,9 @@ router.get('/rating/', function (req, res, next) {
  *               stage:
  *                 $ref: '#/definitions/Stage'
  */
-router.get('/favorite/', function (req, res, next) {
-	new StageFavoriteRanking().findRankingAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/favorite/', async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await new StageFavoriteRanking().findRankingAsync();
+	res.json(rankings);
 });
 
 /**
@@ -169,10 +166,9 @@ router.get('/favorite/', function (req, res, next) {
  *       200:
  *         $ref: '#/responses/RankingKeys'
  */
-router.get('/player/keys', function (req, res, next) {
-	UserPlayRanking.yearAndMonthsAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/player/keys', async function (req: express.Request, res: express.Response): Promise<void> {
+	const keys = await UserPlayRanking.yearAndMonthsAsync()
+	res.json(keys);
 });
 
 /**
@@ -221,10 +217,9 @@ router.get('/player/keys', function (req, res, next) {
  *                     type: integer
  *                     description: クリア回数
  */
-router.get(/\/player\/([0-9]*)\/?([0-9]*)/, function (req, res, next) {
-	new UserPlayRanking(req.params[0], req.params[1]).findRankingAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get(/\/player\/([0-9]*)\/?([0-9]*)/, async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await new UserPlayRanking(req.params[0], req.params[1]).findRankingAsync();
+	res.json(rankings);
 });
 
 /**
@@ -264,10 +259,9 @@ router.get(/\/player\/([0-9]*)\/?([0-9]*)/, function (req, res, next) {
  *                     type: integer
  *                     description: 作成ステージ数
  */
-router.get('/creator/', function (req, res, next) {
-	new UserRatingRanking().findRankingAsync()
-		.then(res.json.bind(res))
-		.catch(next);
+router.get('/creator/', async function (req: express.Request, res: express.Response): Promise<void> {
+	const rankings = await new UserRatingRanking().findRankingAsync();
+	res.json(rankings);
 });
 
 module.exports = router;

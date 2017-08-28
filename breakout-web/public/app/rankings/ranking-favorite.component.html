@@ -4,8 +4,7 @@
     </div>
 
     <div class="col-sm-offset-3 col-md-offset-2 main">
-        <h1 class="page-header">{{ "TOP_ACCESS_STAGES" | translate }}</h1>
-        <ranking-date-navi href="/rankings/play/" [keys]="keys" [selected]="selected"></ranking-date-navi>
+        <h1 class="page-header">{{ "TOP_FAVORITE_STAGES" | translate }}</h1>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
@@ -14,9 +13,7 @@
                         <th>{{ "RANKING_NO" | translate }}</th>
                         <th>{{ "STAGE.NAME" | translate }}</th>
                         <th>{{ "STAGE.AUTHOR" | translate }}</th>
-                        <th>{{ "WAS_TRIED_COUNT" | translate }}</th>
-                        <th>{{ "WAS_CLEARED_COUNT" | translate }}</th>
-                        <th>{{ "MAX_SCORE" | translate }}</th>
+                        <th>{{ "FAVORITE_COUNT" | translate }}</th>
                         <th>{{ "STAGE.CREATED_AT" | translate }}</th>
                     </tr>
                 </thead>
@@ -30,8 +27,6 @@
                             <user-link [user]="ranking.stage.header.user"></user-link>
                         </td>
                         <td>{{ ranking.score }}</td>
-                        <td>{{ ranking.info.cleared || 0 }}</td>
-                        <td>{{ ranking.info.score || 0 }}</td>
                         <td>{{ ranking.stage.createdAt | date: "shortDate" }}</td>
                     </tr>
                 </tbody>
