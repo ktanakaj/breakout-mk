@@ -7,6 +7,8 @@
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, Sequelize } from 'sequelize-typescript';
 import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
+import StageRatingRanking from './rankings/stage-rating-ranking'
+import UserRatingRanking from './rankings/user-rating-ranking'
 import User from './user';
 import Stage from './stage';
 import StageRating from './stage-rating';
@@ -149,8 +151,6 @@ export default class StageHeader extends Model<StageHeader> {
 	 * @returns 更新結果。
 	 */
 	setRating(userId: number, rating: number): Bluebird<StageRating> {
-		// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-		const redis = require('./redis');
 		// 既にある場合は上書き、ない場合は新規作成
 		return StageRating.scope({ method: ['one', userId, this.id] }).findOrInitialize<StageRating>({ where: {} })
 			.then(([stageRating]) => {
@@ -163,8 +163,8 @@ export default class StageHeader extends Model<StageHeader> {
 			.then((stageRating) => {
 				// 非公開以外は評価ランキングを更新
 				if (this.status === "public") {
-					new redis.StageRatingRanking().refreshAsync(stageRating.headerId)
-						.then(() => new redis.UserRatingRanking().refreshAsync(this.userId))
+					new StageRatingRanking().refreshAsync(stageRating.headerId)
+						.then(() => new UserRatingRanking().refreshAsync(this.userId))
 						.catch(console.error);
 				}
 				return stageRating;

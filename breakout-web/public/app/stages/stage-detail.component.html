@@ -1,0 +1,131 @@
+<div class="row" id="stages-detail" *ngIf="stage">
+    <div class="col-sm-3 col-md-2">
+        <stage-navi></stage-navi>
+    </div>
+
+    <div class="col-sm-offset-3 col-md-offset-2 main">
+        <h1 class="page-header">
+            <stage-label [stage]="stage"></stage-label>
+        </h1>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2 class="panel-title">{{ "STAGE_INFO" | translate }}</h2>
+            </div>
+            <div class="panel-body">
+                <p class="comment-body">{{ stage.comment }}</p>
+                <!--<stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>-->
+                <button type="button" class="btn btn-info btn-xs" (click)="mapTextareaVisible = true" *ngIf="userService.me && !mapTextareaVisible">{{ "STAGE_MAP_TEXTAREA_VISIBLE" | translate }}</button>
+                <textarea *ngIf="mapTextareaVisible" [(ngModel)]="stage.map" id="stage.map" name="stage.map" rows="10" readonly></textarea>
+                <div>{{ "STAGE.AUTHOR" | translate }}:
+                    <user-link [user]="stage.header.user"></user-link>
+                </div>
+                <div>{{ "STATUS" | translate }}:
+                    <stage-header-status status="{{ stage.header.status }}"></stage-header-status>
+                </div>
+                <div>{{ "CREATED_DATE" | translate }}: {{ stage.createdAt | date: "short" }}</div>
+                <div *ngIf="stage.createdAt != stage.updatedAt">（{{ "UPDATED_DATE" | translate }}: {{ stage.updatedAt | date: "short" }}）</div>
+                <div>
+                    <hr>
+                </div>
+                <div *ngIf="userService.me" class="row stage-info-header">
+                    <div class="col-md-3">{{ "STAGE_TOTAL" | translate }}</div>
+                    <div class="col-md-3">{{ "USER_TOTAL" | translate }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">{{ "AVERAGE_RATING" | translate }}:
+                        <stage-rating rating="{{ stage.info.rating }}"></stage-rating>
+                    </div>
+                    <div *ngIf="userService.me" class="col-md-3">{{ "RATING" | translate }}:
+                        <rating [(ngModel)]="stage.info.user.rating" [max]="5" (onHover)="hoveringOver(value)" (onLeave)="rate()"></rating>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">{{ "WAS_TRIED_COUNT" | translate }}: {{ stage.info.tried || 0 }}</div>
+                    <div *ngIf="userService.me" class="col-md-3">{{ "TRIED_COUNT" | translate }}: {{ stage.info.user.tried || 0 }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">{{ "WAS_CLEARED_COUNT" | translate }}: {{ stage.info.cleared || 0 }}</div>
+                    <div *ngIf="userService.me" class="col-md-3">{{ "CLEARED_COUNT" | translate }}: {{ stage.info.user.cleared || 0 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a routerLink="/games/{{ stage.id }}" class="btn btn-primary btn-lg">{{ "PLAY_STAGE" | translate }}</a>
+            <a *ngIf="userService.me && userService.me.id == stage.header.userId" routerLink="/stages/{{ stage.id }}/edit" class="btn btn-info btn-lg">{{ "EDIT" | translate }}</a>
+            <span *ngIf="userService.me && userService.me.id != stage.header.userId">
+                <button *ngIf="!stage.info.user.favorited" type="button" class="btn btn-info btn-lg" (click)="addFavorite()">{{ "ADD_FAVORITE" | translate }}</button>
+                <button *ngIf="stage.info.user.favorited" type="button" class="btn btn-info btn-lg" (click)="removeFavorite()">{{ "REMOVE_FAVORITE" | translate }}</button>
+            </span>
+        </div>
+
+        <div class="panel panel-info stage-score-ranking">
+            <div class="panel-heading">
+                <h2 class="panel-title">{{ "MAX_SCORE" | translate }}</h2>
+            </div>
+            <div class="panel-body">
+                <ranking-date-navi href="{{ '/stages/' + stage.id + '/rankings/score/' }}" [keys]="keys" [selected]="selected"></ranking-date-navi>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{{ "RANKING_NO" | translate }}</th>
+                                <th>{{ "USER.NAME" | translate }}</th>
+                                <th>{{ "SCORE" | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let ranking of rankings">
+                                <td>{{ ranking.no }}</td>
+                                <td>
+                                    <user-link [user]="ranking.user" nouser="true"></user-link>
+                                </td>
+                                <td>{{ ranking.score }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2 class="panel-title">{{ "COMMENT" | translate }}</h2>
+            </div>
+            <div class="panel-body">
+                <div *ngFor="let comment of stage.header.comments">
+                    <div class="comment-header">
+                        <a *ngIf="comment.userId > 0" routerLink="/users/{{ comment.userId }}">{{ comment.user.name }}</a>
+                        <span *ngIf="comment.userId <= 0">{{ comment.ipAddress }}</span>
+                        <span>{{ comment.createdAt | date: "short" }}</span>
+                        <span *ngIf="comment.createdAt != comment.updatedAt">{{ "COMMENT_UPDATED" | translate:{ updatedAt: comment.updatedAt } }}</span>
+                        <span *ngIf="comment.status == 'private'"><small>({{ "STAGE_COMMENT_PRIVATE" | translate }})</small></span>
+                        <span *ngIf="userService.me && (userService.me.id == stage.header.userId || userService.me.id == comment.userId)">
+                            <button type="button" class="btn btn-xs btn-danger" (click)="confirmDeleteComment(comment.id)">{{ "DELETE" | translate }}</button>
+                        </span>
+                    </div>
+                    <p class="comment-body">{{ comment.comment }}</p>
+                    <hr>
+                </div>
+                <button type="button" class="btn btn-info" (click)="commentFormEnable = true" *ngIf="!commentFormEnable">{{ "ADD_COMMENT" | translate }}</button>
+                <form #f="ngForm" (ngSubmit)="postComment()" *ngIf="commentFormEnable" novalidate>
+                    <fieldset class=”form-group”>
+                        <textarea [(ngModel)]="comment.comment" #comment="ngModel" class="form-control" name="comment.comment" required rows="2"></textarea>
+                        <div class="warning" *ngIf="comment.errors">
+                            <div [hidden]="!comment.errors.required">{{ "ADD_COMMENT_COMMENT_REQUIRED" | translate }}</div>
+                        </div>
+                    </fieldset>
+                    <fieldset class=”radio-inline”>
+                        <label><input type="radio" [(ngModel)]="comment.status" name="status" value="public">{{ "STATUS_PUBLIC" | translate }}</label>
+                        <label><input type="radio" [(ngModel)]="comment.status" name="status" value="private">{{ "STAGE_COMMENT_PRIVATE" | translate }}</label>
+                    </fieldset>
+                    <div>
+                        <button type="submit" class="btn btn-primary" [disabled]="!f.form.valid">{{ "ADD_COMMENT" | translate }}</button>
+                        <div class="error">{{ error }}</div>
+                        <div *ngIf="userService.me == null"><small>{{ "ADD_COMMENT_NOTICE" | translate }}</small></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,10 +3,10 @@
  * @module ./app/stages/stage.service
  */
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, URLSearchParams } from '@angular/http';
 import { ResponseError } from '../core/response-error';
 import { Block } from '../blocks/block.model';
-import { Stage, StageComment, StageFavorite, StageRating } from './stage.model';
+import { Stage, StageComment, StageFavorite, StageRating, StageWithInfo } from './stage.model';
 
 /** 通信失敗時のリトライ回数。 */
 const MAX_RETRY = 3;
@@ -52,7 +52,7 @@ export class StageService {
 	 * @param id 検索するステージID。
 	 * @returns 検索結果。
 	 */
-	findByIdWithAllInfo(id: number): Promise<Stage> {
+	findByIdWithAllInfo(id: number): Promise<StageWithInfo> {
 		// ※ 関連情報も一緒に取得
 		const params = new URLSearchParams();
 		params.set('fields', 'all');
@@ -183,7 +183,7 @@ export class StageService {
 	 * @returns 更新結果。
 	 */
 	rate(stageId: number, rating: number): Promise<StageRating> {
-		return this.http.post("/api/stages/" + stageId + "/rating", { rating: rating })
+		return this.http.post("/api/stages/" + stageId + "/rating", { rating })
 			.toPromise()
 			.then((res) => res.json())
 			.catch(ResponseError.throwError);

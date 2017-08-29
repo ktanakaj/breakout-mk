@@ -24,6 +24,7 @@ import { BlockListComponent } from './blocks/block-list.component';
 import { BlockEditComponent } from './blocks/block-edit.component';
 import { StageNaviComponent } from './stages/stage-navi.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
+import { StageDetailComponent } from './stages/stage-detail.component';
 import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
@@ -38,10 +39,12 @@ import { RankingCreatorComponent } from './rankings/ranking-creator.component';
 /** ルート定義 */
 const appRoutes: Routes = [
 	{ path: '', pathMatch: 'full', component: GameComponent },
+	{ path: 'games/:id', component: GameComponent },
 	{ path: 'blocks', component: BlockListComponent },
 	{ path: 'blocks/new', component: BlockEditComponent },
 	{ path: 'blocks/:key', component: BlockEditComponent },
 	{ path: 'stages', component: LatestStagesComponent },
+	{ path: 'stages/:id', component: StageDetailComponent },
 	{ path: 'users', component: UserListComponent },
 	{ path: 'users/new', component: UserNewComponent },
 	{ path: 'users/login', component: UserLoginComponent },
@@ -138,6 +141,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		BlockEditComponent,
 		StageNaviComponent,
 		LatestStagesComponent,
+		StageDetailComponent,
 		UserListComponent,
 		UserNewComponent,
 		UserLoginComponent,

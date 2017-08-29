@@ -27,6 +27,7 @@ import StageHeader from './stage-header';
 			return {
 				include: [{
 					model: User,
+					as: 'user',
 				}],
 			};
 		},
