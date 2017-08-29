@@ -29,7 +29,7 @@ export class RankingPlayerComponent implements OnInit {
 	 * サービスをDIしてコンポーネントを生成する。
 	 * @param route ルート情報。
 	 * @param userService ユーザー関連サービス。
-	 * @param rankingService ステージ関連サービス。
+	 * @param rankingService ランキング関連サービス。
 	 */
 	constructor(
 		private route: ActivatedRoute,
@@ -39,13 +39,14 @@ export class RankingPlayerComponent implements OnInit {
 	/**
 	 * コンポーネント起動時の処理。
 	 */
-	async ngOnInit(): Promise<void> {
-		// パラメータからキー生成
+	ngOnInit(): void {
 		this.route.params.subscribe(async (params: Params) => {
+			// パラメータからキー生成
 			this.selected = [params['year'], params['month']];
-		});
 
-		this.rankings = await this.rankingService.findUserPlayRanking(this.selected, 0, 50);
-		this.keys = await this.rankingService.findUserPlayRankingKeys();
+			// ランキングを読み込み
+			this.rankings = await this.rankingService.findUserPlayRanking(this.selected, 0, 50);
+			this.keys = await this.rankingService.findUserPlayRankingKeys();
+		});
 	}
 }

@@ -1,0 +1,31 @@
+<div class="row" *ngIf="user">
+    <div class="col-sm-3 col-md-2">
+        <stage-navi></stage-navi>
+    </div>
+
+    <div class="col-sm-offset-3 col-md-offset-2 main">
+        <h1 class="page-header"><a routerLink="/users/{{ user.id }}">{{ user.name }}</a>{{ "WHO_PLAY_LOGS" | translate }}</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{ "PLAYLOG.CREATED_DATE" | translate }}</th>
+                        <th>{{ "STAGE.NAME" | translate }}</th>
+                        <th>{{ "PLAYLOG.SCORE" | translate }}</th>
+                        <th>{{ "CLEARED" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let log of playlogs">
+                        <td>{{ log.createdAt | date: "short" }}</td>
+                        <td>
+                            <stage-link [stage]="log.stage"></stage-link>
+                        </td>
+                        <td>{{ log.score || '-' }}</td>
+                        <td>{{ log.cleared ? "○" : "×" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

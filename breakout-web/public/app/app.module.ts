@@ -29,6 +29,9 @@ import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
 import { UserLogoutComponent } from './users/user-logout.component';
+import { UserStageComponent } from './users/user-stage.component';
+import { UserPlaylogComponent } from './users/user-playlog.component';
+import { UserFavoriteComponent } from './users/user-favorite.component';
 import { RankingDateNaviComponent } from './rankings/ranking-date-navi.component';
 import { RankingPlayComponent } from './rankings/ranking-play.component';
 import { RankingRatingComponent } from './rankings/ranking-rating.component';
@@ -49,6 +52,10 @@ const appRoutes: Routes = [
 	{ path: 'users/new', component: UserNewComponent },
 	{ path: 'users/login', component: UserLoginComponent },
 	{ path: 'users/logout', component: UserLogoutComponent },
+	{ path: 'users/me/stages', component: UserStageComponent },
+	{ path: 'users/me/favorites', component: UserFavoriteComponent },
+	{ path: 'users/:id/stages', component: UserStageComponent },
+	{ path: 'users/:id/playlogs', component: UserPlaylogComponent },
 	{ path: 'rankings/play/:year/:month', component: RankingPlayComponent },
 	{ path: 'rankings/play/:year', component: RankingPlayComponent },
 	{ path: 'rankings/play', component: RankingPlayComponent },
@@ -146,6 +153,9 @@ class DefaultErrorHandler implements ErrorHandler {
 		UserNewComponent,
 		UserLoginComponent,
 		UserLogoutComponent,
+		UserStageComponent,
+		UserPlaylogComponent,
+		UserFavoriteComponent,
 		RankingPlayComponent,
 		RankingRatingComponent,
 		RankingFavoriteComponent,
