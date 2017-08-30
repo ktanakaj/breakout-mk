@@ -1,0 +1,50 @@
+<div class="alert alert-warning" role="alert" *ngIf="error">{{ error | translate }}</div>
+<h1>{{ "USER_EDIT.TITLE" | translate }}</h1>
+<form #f="ngForm" (ngSubmit)="put()" novalidate class="form-horizontal" *ngIf="user">
+    <fieldset class="form-group">
+        <label for="user.name" class="control-label col-xs-2">{{ "USER.NAME" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="text" id="user.name" name="name" [(ngModel)]="user.name" #name="ngModel" required maxlength="255">
+            <div class="warning" *ngIf="name.errors">
+                <div [hidden]="!name.errors.required">{{ "USER_EDIT.NAME_REQUIRED" | translate }}</div>
+                <div [hidden]="!name.errors.maxlength">{{ "USER_EDIT.NAME_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="user.password" class="control-label col-xs-2">{{ "USER.PASSWORD" | translate }}:</label>
+        <div class="col-xs-5">
+            <input type="password" id="user.password" name="password" [(ngModel)]="user.password" #password="ngModel" maxlength="255">
+            <div class="warning" *ngIf="password.errors">
+                <div [hidden]="!password.errors.maxlength">{{ "USER_EDIT.PASSWORD_MAXLENGTH" | translate }}</div>
+            </div>
+        </div>
+    </fieldset>
+    <div *ngIf="userService.me.status == 'admin'">
+        <fieldset class="form-group">
+            <label for="block.key" class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+            <div class="col-xs-5">
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="user">{{ "STATUS_USER" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="admin">{{ "STATUS_ADMIN" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="disable">{{ "STATUS_DISABLE" | translate }}</label>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="user.comment" class="control-label col-xs-2">{{ "COMMENT" | translate }}:</label>
+            <div class="col-xs-5">
+                <textarea [(ngModel)]="user.comment" id="user.comment" name="user.comment" class="form-control" rows="3"></textarea>
+            </div>
+        </fieldset>
+    </div>
+    <fieldset *ngIf="user.createdAt">
+        {{ "CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}<br> {{ "UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}
+    </fieldset>
+    <div>
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "UPDATE" | translate }}</button>
+        <button type="button" class="btn btn-warning" (click)="reset()">{{ "RESET" | translate }}</button>
+    </div>
+</form>
+<footer class="content-footer">
+    <a *ngIf="userService.me.status == 'user'" routerLink="/">{{ "BACK_TO_TOP" | translate }}</a>
+    <a *ngIf="userService.me.status == 'admin'" routerLink="/users">{{ "BACK_TO_LIST" | translate }}</a>
+</footer>

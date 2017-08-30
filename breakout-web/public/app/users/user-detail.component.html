@@ -1,0 +1,38 @@
+<div class="row" *ngIf="user">
+    <div class="col-sm-3 col-md-2">
+        <stage-navi></stage-navi>
+    </div>
+
+    <div class="col-sm-offset-3 col-md-offset-2 main">
+        <h1>{{ user.name }}</h1>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2 class="panel-title">{{ "USER_INFO" | translate }}</h2>
+            </div>
+            <div class="panel-body">
+                <div>{{ "STATUS" | translate }}:
+                    <user-status status="{{ user.status }}"></user-status>
+                </div>
+                <div>{{ "CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}</div>
+                <div>{{ "UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}</div>
+                <div>
+                    <hr>
+                </div>
+                <div>{{ "CREATED_COUNT" | translate }}: {{ user.info.created || 0 }}</div>
+                <div>{{ "AVERAGE_RATING" | translate }}:
+                    <user-rating rating="{{ user.info.rating }}"></user-rating>
+                </div>
+                <div>{{ "TOTAL_TRIED_COUNT" | translate }}: {{ user.info.tried || 0 }}</div>
+                <div>{{ "TOTAL_CLEARED_COUNT" | translate }}: {{ user.info.cleared || 0 }}</div>
+                <div>{{ "MAX_SCORE" | translate }}: {{ user.info.score || 0 }}</div>
+            </div>
+        </div>
+
+        <div>
+            <a routerLink="/users/{{ user.id }}/stages" class="btn btn-primary btn-lg">{{ "USER_STAGES" | translate }}</a>
+            <a routerLink="/users/{{ user.id }}/playlogs" class="btn btn-info btn-lg">{{ "PLAY_LOGS" | translate }}</a>
+            <a *ngIf="userService.me && (userService.me.status =='admin' || userService.vm.user.id == me.id)" routerLink="/users/{{ user.id }}/edit" class="btn btn-info btn-lg">{{ "EDIT" | translate }}</a>
+        </div>
+    </div>
+</div>

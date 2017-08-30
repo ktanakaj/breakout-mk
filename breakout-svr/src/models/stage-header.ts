@@ -18,12 +18,6 @@ import StageComment from './stage-comment';
 /**
  * ステージ情報モデルクラス。
  */
-@DefaultScope({
-	order: [
-		['status'],
-		['key', 'ASC']
-	],
-})
 @Table({
 	tableName: 'stageHeaders',
 	comment: 'ステージヘッダー',
