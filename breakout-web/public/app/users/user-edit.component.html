@@ -22,7 +22,7 @@
     </fieldset>
     <div *ngIf="userService.me.status == 'admin'">
         <fieldset class="form-group">
-            <label for="block.key" class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+            <label class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
             <div class="col-xs-5">
                 <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="user">{{ "STATUS_USER" | translate }}</label>
                 <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="admin">{{ "STATUS_ADMIN" | translate }}</label>
@@ -32,7 +32,7 @@
         <fieldset class="form-group">
             <label for="user.comment" class="control-label col-xs-2">{{ "COMMENT" | translate }}:</label>
             <div class="col-xs-5">
-                <textarea [(ngModel)]="user.comment" id="user.comment" name="user.comment" class="form-control" rows="3"></textarea>
+                <textarea [(ngModel)]="user.comment" id="user.comment" name="comment" class="form-control" rows="3"></textarea>
             </div>
         </fieldset>
     </div>

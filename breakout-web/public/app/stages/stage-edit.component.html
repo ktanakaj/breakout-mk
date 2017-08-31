@@ -1,0 +1,56 @@
+<div class="alert alert-warning" role="alert" *ngIf="error">{{ error | translate }}</div>
+<h1>{{ "STAGE_EDIT" | translate }}</h1>
+<div *ngIf="stage && blocks">
+    <form #f="ngForm" (ngSubmit)="put()" novalidate class="form-horizontal">
+        <fieldset class="form-group">
+            <label for="stage.name" class="control-label col-xs-2">{{ "STAGE.NAME" | translate }}:</label>
+            <div class="col-xs-5">
+                <input type="text" id="stage.name" name="name" [(ngModel)]="stage.name" #name="ngModel" required maxlength="255">
+                <div class="warning" *ngIf="name.errors">
+                    <div [hidden]="!name.errors.required">{{ "STAGE_EDIT.NAME_REQUIRED" | translate }}</div>
+                    <div [hidden]="!name.errors.maxlength">{{ "STAGE_EDIT.NAME_MAXLENGTH" | translate }}</div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+            <div class="col-xs-5">
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="stage.header.status" value="public">{{ "STATUS_PUBLIC" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="stage.header.status" value="private">{{ "STATUS_PRIVATE" | translate }}</label>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="stage.map" class="control-label col-xs-2">{{ "MAP" | translate }}:</label>
+            <div class="col-xs-5">
+                <!--<stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>-->
+                <ul class="map-buttons">
+                    <li *ngFor="let block of blocks"><button *ngIf="block.status != 'disable'" type="button" (click)="addBlock('[' + block.key + ']')" popover="{{ 'TOOLTIP_ADD_BLOCK' | translate:block }}" triggers="mouseenter"><span style="color:{{ block.color }}">■</span> {{ block.name }}[{{ block.key }}]</button></li>
+                </ul>
+                <textarea [(ngModel)]="stage.map" id="stage.map" name="stage.map" #map="ngModel" class="form-control" required rows="10"><!-- ng-trim="false" validate-map-format="{{ {xmax: 40, ymax: 22, blocks:blocks} }}" ng-model-options="{allowInvalid: true}">--></textarea>
+                <div class="warning" *ngIf="name.errors">
+                    <div [hidden]="!map.errors.required">{{ "STAGE_EDIT.MAP_REQUIRED" | translate }}</div>
+                    <div [hidden]="!map.errors.validateMapFormat">{{ "STAGE_EDIT.MAP_FORMAT" | translate }}</div>
+                </div>
+                <p class="help-block">{{ "STAGE_EDIT_MAP_NOTICE" | translate }}</p>
+            </div>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="stage.comment" class="control-label col-xs-2">{{ "COMMENT" | translate }}:</label>
+            <div class="col-xs-5">
+                <textarea [(ngModel)]="stage.comment" id="stage.comment" name="comment" class="form-control" rows="3"></textarea>
+            </div>
+        </fieldset>
+        <fieldset *ngIf="stage.id">
+            {{ "CREATED_DATE" | translate }}: {{ stage.createdAt | date: "short" }}<br> {{ "UPDATED_DATE" | translate }}: {{ stage.updatedAt | date: "short" }}
+        </fieldset>
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "SUBMIT" | translate }}</button>
+            <button type="button" class="btn btn-warning" (click)="reset()">{{ "RESET" | translate }}</button>
+            <button *ngIf="stage.id" type="button" class="btn btn-danger" (click)="confirmDelete()">{{ "DELETE" | translate }}</button>
+        </div>
+    </form>
+    <footer class="content-footer">
+        <a *ngIf="stage.id" routerLink="/stages/{{ stage.id }}">{{ "BACK_TO_DETAIL" | translate }}</a>
+        <a *ngIf="!stage.id" routerLink="/stages">{{ "BACK_TO_LIST" | translate }}</a>
+    </footer>
+</div>

@@ -8,7 +8,7 @@ import { HttpModule, Http } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { BsDropdownModule, CollapseModule, RatingModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
@@ -25,6 +25,7 @@ import { BlockEditComponent } from './blocks/block-edit.component';
 import { StageNaviComponent } from './stages/stage-navi.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
 import { StageDetailComponent } from './stages/stage-detail.component';
+import { StageEditComponent } from './stages/stage-edit.component';
 import { UserListComponent } from './users/user-list.component';
 import { UserNewComponent } from './users/user-new.component';
 import { UserLoginComponent } from './users/user-login.component';
@@ -49,6 +50,8 @@ const appRoutes: Routes = [
 	{ path: 'blocks/new', component: BlockEditComponent },
 	{ path: 'blocks/:key', component: BlockEditComponent },
 	{ path: 'stages', component: LatestStagesComponent },
+	{ path: 'stages/new', component: StageEditComponent },
+	{ path: 'stages/:id/edit', component: StageEditComponent },
 	{ path: 'stages/:id', component: StageDetailComponent },
 	{ path: 'users', component: UserListComponent },
 	{ path: 'users/new', component: UserNewComponent },
@@ -136,6 +139,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		}),
 		BsDropdownModule.forRoot(),
 		CollapseModule.forRoot(),
+		PopoverModule.forRoot(),
 		RatingModule.forRoot(),
 	],
 	declarations: [
@@ -154,6 +158,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		StageNaviComponent,
 		LatestStagesComponent,
 		StageDetailComponent,
+		StageEditComponent,
 		UserListComponent,
 		UserNewComponent,
 		UserLoginComponent,
