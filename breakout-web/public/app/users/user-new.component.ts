@@ -38,7 +38,10 @@ export class UserNewComponent {
 			await this.userService.signup(this.user);
 			this.router.navigate(['/']);
 		} catch (e) {
-			this.error = e ? e.message : e;
+			if (e.name === 'BadRequestError') {
+				return this.error = e.message;
+			}
+			throw e;
 		}
 	}
 }

@@ -4,7 +4,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
-import { ResponseError } from '../core/response-error';
+import { throwErrorByResponse } from '../core/http-error';
 import { Block } from '../blocks/block.model';
 import { Stage, StageComment, StageFavorite, StageRating, StageWithInfo } from './stage.model';
 
@@ -31,7 +31,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -44,7 +44,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -60,7 +60,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -79,7 +79,7 @@ export class StageService {
 		return observable
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -91,7 +91,7 @@ export class StageService {
 		return this.http.delete("/api/stages/" + id)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -104,7 +104,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -116,7 +116,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -128,7 +128,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -140,7 +140,7 @@ export class StageService {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -160,7 +160,7 @@ export class StageService {
 		return observable
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -173,7 +173,7 @@ export class StageService {
 		return this.http.delete("/api/stages/" + stageId + "/comments/" + commentId)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -186,7 +186,7 @@ export class StageService {
 		return this.http.post("/api/stages/" + stageId + "/rating", { rating })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -198,7 +198,7 @@ export class StageService {
 		return this.http.post("/api/stages/" + stageId + "/favorite", {})
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -210,7 +210,7 @@ export class StageService {
 		return this.http.delete("/api/stages/" + stageId + "/favorite")
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**

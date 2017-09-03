@@ -35,3 +35,11 @@ export interface User {
 	/** ステージレーティング */
 	ratings?: StageRating[];
 }
+
+/**
+ * ユーザー情報+詳細情報。
+ */
+export interface UserWithInfo extends User {
+	// ユーザー詳細情報
+	info: {};
+}

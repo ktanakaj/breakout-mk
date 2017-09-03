@@ -31,8 +31,8 @@
 
         <div>
             <a routerLink="/users/{{ user.id }}/stages" class="btn btn-primary btn-lg">{{ "USER_STAGES" | translate }}</a>
-            <a routerLink="/users/{{ user.id }}/playlogs" class="btn btn-info btn-lg">{{ "PLAY_LOGS" | translate }}</a>
-            <a *ngIf="userService.me && (userService.me.status =='admin' || userService.vm.user.id == me.id)" routerLink="/users/{{ user.id }}/edit" class="btn btn-info btn-lg">{{ "EDIT" | translate }}</a>
+            <a *ngIf="userService.me && userService.me.id == user.id" routerLink="/users/me/playlogs" class="btn btn-info btn-lg">{{ "PLAY_LOGS" | translate }}</a>
+            <a *ngIf="userService.me && (userService.me.status =='admin' || userService.me.id == user.id)" routerLink="/users/{{ user.id }}/edit" class="btn btn-info btn-lg">{{ "EDIT" | translate }}</a>
         </div>
     </div>
 </div>

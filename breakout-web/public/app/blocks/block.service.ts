@@ -4,7 +4,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { ResponseError } from '../core/response-error';
+import { throwErrorByResponse } from '../core/http-error';
 import { Block } from './block.model';
 
 /** 通信失敗時のリトライ回数。 */
@@ -36,7 +36,7 @@ export class BlockService {
 				});
 				return blocks;
 			})
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -53,7 +53,7 @@ export class BlockService {
 				block.color = BlockService.hexColor(block.color);
 				return block;
 			})
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class BlockService {
 		return observable
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**

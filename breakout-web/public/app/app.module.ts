@@ -10,8 +10,10 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BsDropdownModule, CollapseModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
+import { HttpError } from './core/http-error';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
+import { AuthGuard } from './auth-guard.service';
 import { StageLabelComponent } from './shared/stage-label.component';
 import { StageLinkComponent } from './shared/stage-link.component';
 import { StageHeaderStatusComponent } from './shared/stage-header-status.component';
@@ -46,23 +48,23 @@ import { RankingCreatorComponent } from './rankings/ranking-creator.component';
 const appRoutes: Routes = [
 	{ path: '', pathMatch: 'full', component: GameComponent },
 	{ path: 'games/:id', component: GameComponent },
-	{ path: 'blocks', component: BlockListComponent },
-	{ path: 'blocks/new', component: BlockEditComponent },
-	{ path: 'blocks/:key', component: BlockEditComponent },
+	{ path: 'blocks', component: BlockListComponent, canActivate: [AuthGuard] },
+	{ path: 'blocks/new', component: BlockEditComponent, canActivate: [AuthGuard] },
+	{ path: 'blocks/:key', component: BlockEditComponent, canActivate: [AuthGuard] },
 	{ path: 'stages', component: LatestStagesComponent },
-	{ path: 'stages/new', component: StageEditComponent },
-	{ path: 'stages/:id/edit', component: StageEditComponent },
+	{ path: 'stages/new', component: StageEditComponent, canActivate: [AuthGuard] },
+	{ path: 'stages/:id/edit', component: StageEditComponent, canActivate: [AuthGuard] },
 	{ path: 'stages/:id', component: StageDetailComponent },
 	{ path: 'users', component: UserListComponent },
 	{ path: 'users/new', component: UserNewComponent },
 	{ path: 'users/login', component: UserLoginComponent },
 	{ path: 'users/logout', component: UserLogoutComponent },
-	{ path: 'users/me/stages', component: UserStageComponent },
-	{ path: 'users/me/favorites', component: UserFavoriteComponent },
-	{ path: 'users/me', component: UserDetailComponent },
+	{ path: 'users/me/stages', component: UserStageComponent, canActivate: [AuthGuard] },
+	{ path: 'users/me/playlogs', component: UserPlaylogComponent, canActivate: [AuthGuard] },
+	{ path: 'users/me/favorites', component: UserFavoriteComponent, canActivate: [AuthGuard] },
+	{ path: 'users/me', component: UserDetailComponent, canActivate: [AuthGuard] },
 	{ path: 'users/:id/stages', component: UserStageComponent },
-	{ path: 'users/:id/playlogs', component: UserPlaylogComponent },
-	{ path: 'users/:id/edit', component: UserEditComponent },
+	{ path: 'users/:id/edit', component: UserEditComponent, canActivate: [AuthGuard] },
 	{ path: 'users/:id', component: UserDetailComponent },
 	{ path: 'rankings/play/:year/:month', component: RankingPlayComponent },
 	{ path: 'rankings/play/:year', component: RankingPlayComponent },
@@ -81,6 +83,14 @@ const appRoutes: Routes = [
  */
 @Injectable()
 class DefaultErrorHandler implements ErrorHandler {
+	/** HttpErrorとメッセージの対応表 */
+	msgIdByStatus = {
+		400: 'ERROR.BAD_REQUEST',
+		401: 'ERROR.UNAUTHORIZED',
+		403: 'ERROR.FORBIDDEN',
+		404: 'ERROR.NOT_FOUND',
+	};
+
 	/**
 	 * サービスをDIしてハンドラーを生成する。
 	 * @param translate 国際化サービス。
@@ -96,26 +106,13 @@ class DefaultErrorHandler implements ErrorHandler {
 		if (error && error.rejection) {
 			error = error.rejection;
 		}
-		// 404等のエラーの場合、専用のエラーメッセージを表示。それ以外は想定外のエラーとして扱う
-		let msgId = 'ERROR.FATAL';
-		if (error.name === "ResponseError") {
-			switch (error.status) {
-				case 400:
-					msgId = 'ERROR.BAD_REQUEST';
-					break;
-				case 401:
-					msgId = 'ERROR.UNAUTHORIZED';
-					break;
-				case 403:
-					msgId = 'ERROR.FORBIDDEN';
-					break;
-				case 404:
-					msgId = 'ERROR.NOT_FOUND';
-					break;
-			}
+		// 404等のエラーの場合、専用のエラーメッセージを表示。それ以外はデフォルトのエラー
+		let msgId;
+		if (error instanceof HttpError) {
+			msgId = this.msgIdByStatus[error.status];
 		}
 		console.error(error);
-		this.translate.get(msgId).subscribe((res: string) => {
+		this.translate.get(msgId || 'ERROR.FATAL').subscribe((res: string) => {
 			window.alert(res);
 		});
 	}
@@ -177,6 +174,7 @@ class DefaultErrorHandler implements ErrorHandler {
 	providers: [
 		{ provide: LOCALE_ID, useValue: browserHelper.getLocale() },
 		{ provide: ErrorHandler, useClass: DefaultErrorHandler },
+		AuthGuard,
 		UserService,
 	],
 	bootstrap: [AppComponent]

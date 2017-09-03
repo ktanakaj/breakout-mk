@@ -5,8 +5,8 @@
 import { EventEmitter } from 'events';
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
-import { ResponseError } from '../core/response-error';
-import { User } from './user.model';
+import { throwErrorByResponse, UnauthorizedError } from '../core/http-error';
+import { User, UserWithInfo } from './user.model';
 import { Playlog } from './playlog.model';
 
 /** 通信失敗時のリトライ回数。 */
@@ -19,6 +19,8 @@ const MAX_RETRY = 3;
 export class UserService extends EventEmitter {
 	/** 認証済みユーザー情報 */
 	me: User;
+	/** 認証処理遷移先URL */
+	backupUrl: string;
 
 	/**
 	 * モジュールをDIしてコンポーネントを生成する。
@@ -39,7 +41,7 @@ export class UserService extends EventEmitter {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -52,7 +54,7 @@ export class UserService extends EventEmitter {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -60,7 +62,7 @@ export class UserService extends EventEmitter {
 	 * @param id 検索するユーザーID。
 	 * @returns 検索結果。
 	 */
-	findByIdWithAllInfo(id: number): Promise<User> {
+	findByIdWithAllInfo(id: number): Promise<UserWithInfo> {
 		// ※ 関連情報も一緒に取得
 		const params = new URLSearchParams();
 		params.set('fields', 'all');
@@ -68,7 +70,18 @@ export class UserService extends EventEmitter {
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
+	}
+
+	/**
+	 * 自分自身の情報を取得する。
+	 * @returns 検索結果。
+	 */
+	findMe(): Promise<User> {
+		return this.http.get('/api/users/me')
+			.toPromise()
+			.then((res) => res.json())
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -80,7 +93,7 @@ export class UserService extends EventEmitter {
 		return this.http.put("/api/users/" + user.id, user)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -98,13 +111,14 @@ export class UserService extends EventEmitter {
 				this.emit('login', this.me);
 				return this.me;
 			})
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
 	 * ログインする。
-	 * @param user 認証するユーザー情報。
-	 * @returns 認証結果。
+	 * @param name ユーザー名。
+	 * @param password パスワード。
+	 * @returns 認証成功時はユーザー情報。
 	 */
 	login(name: string, password: string): Promise<User> {
 		// ※ 認証成功時はセッションが開始される
@@ -116,7 +130,7 @@ export class UserService extends EventEmitter {
 				this.emit('login', this.me);
 				return this.me;
 			})
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -133,40 +147,38 @@ export class UserService extends EventEmitter {
 				this.me = null;
 				this.emit('logout', user);
 			})
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
 	 * 認証情報の復元。
-	 * @returns 処理状態。
+	 * @returns 認証中の場合true、それ以外はfalse。
 	 */
-	checkSession(): Promise<void> {
-		// 認証しているかチェックのため自分を読み込み（401エラーは正常なので無視）
-		return this.http.get('/api/users/me')
-			.toPromise()
-			.then((res) => {
-				this.me = res.json();
-				this.emit('login', this.me);
-			})
-			.catch((e) => {
-				const err = new ResponseError(e);
-				if (!err.status || err.status != 401) {
-					throw err;
-				}
-			});
+	async checkSession(): Promise<boolean> {
+		// 認証しているかチェックのため自分を読み込み
+		try {
+			const user = await this.findMe();
+			this.me = user;
+			this.emit('login', user);
+			return true;
+		} catch (e) {
+			if (e.name === 'UnauthorizedError') {
+				return false;
+			}
+			throw e;
+		}
 	}
 
 	/**
-	 * 指定されたユーザーIDのユーザーのプレイログの検索。
-	 * @param id 検索するユーザーID。
+	 * プレイログの検索。
 	 * @returns 検索結果。
 	 */
-	findPlaylogs(id: number): Promise<Playlog[]> {
-		return this.http.get('/api/users/' + id + "/playlogs")
+	findPlaylogs(): Promise<Playlog[]> {
+		return this.http.get('/api/users/me/playlogs')
 			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	// イベント定義

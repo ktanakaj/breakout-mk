@@ -56,7 +56,10 @@ export class UserEditComponent implements OnInit {
 			await this.userService.update(this.user);
 			this.router.navigate(['/users']);
 		} catch (e) {
-			this.error = e;
+			if (e.name === 'BadRequestError') {
+				return this.error = e.message;
+			}
+			throw e;
 		}
 	};
 }

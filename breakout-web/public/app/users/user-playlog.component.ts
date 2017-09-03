@@ -33,13 +33,8 @@ export class UserPlaylogComponent implements OnInit {
 	 * コンポーネント起動時の処理。
 	 */
 	async ngOnInit(): Promise<void> {
-		this.route.params.subscribe(async (params: Params) => {
-			// パラメータからユーザーID取得
-			const id = Number(params['id']);
-
-			// ユーザーとプレイログを読み込み
-			this.user = await this.userService.findById(id);
-			this.playlogs = await this.userService.findPlaylogs(id);
-		});
+		// プレイログを読み込み
+		this.user = this.userService.me;
+		this.playlogs = await this.userService.findPlaylogs();
 	}
 }

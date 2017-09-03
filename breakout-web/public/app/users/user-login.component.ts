@@ -34,9 +34,13 @@ export class UserLoginComponent {
 	async login(): Promise<void> {
 		try {
 			await this.userService.login(this.user.name, this.user.password);
-			this.router.navigate(['/']);
+			this.router.navigate([this.userService.backupUrl || '/']);
 		} catch (e) {
-			this.error = e ? e.message : e;
+			if (e.name === 'UnauthorizedError') {
+				// TODO: 専用のメッセージに変える
+				return this.error = e.message;
+			}
+			throw e;
 		}
 	}
 }

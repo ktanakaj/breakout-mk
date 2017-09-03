@@ -187,6 +187,33 @@ router.get('/me/stages', passportManager.authorize(), async function (req: expre
 
 /**
  * @swagger
+ * /users/me/playlogs:
+ *   get:
+ *     tags:
+ *       - users
+ *     summary: 自分のプレイログ一覧
+ *     description: 自分のプレイログの一覧を取得する。
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         schema:
+ *           type: array
+ *           items:
+ *             allOf:
+ *               - $ref: '#/definitions/Playlog'
+ *               - properties:
+ *                   stage:
+ *                     $ref: '#/definitions/Stage'
+ *       400:
+ *         $ref: '#/responses/BadRequest'
+ */
+router.get('/me/playlogs', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+	const playlogs = await Playlog.scope({ method: ['user', req.user.id] }).scope("withstage").findAll<Playlog>();
+	res.json(playlogs);
+});
+
+/**
+ * @swagger
  * /users/me/favorites:
  *   get:
  *     tags:
@@ -368,35 +395,6 @@ router.put('/:id', passportManager.authorize(), async function (req: express.Req
 router.get('/:id/stages', async function (req: express.Request, res: express.Response): Promise<void> {
 	const stages = await Stage.findUserStagesWithAccessibleAllInfo(validationUtils.toNumber(req.params.id), req.user && req.params.id == req.user.id);
 	res.json(stages);
-});
-
-/**
- * @swagger
- * /users/{id}/playlogs:
- *   get:
- *     tags:
- *       - users
- *     summary: ユーザーのプレイログ一覧
- *     description: 指定されたユーザーのプレイログの一覧を取得する。
- *     parameters:
- *       - $ref: '#/parameters/userIdPathParam'
- *     responses:
- *       200:
- *         description: 取得成功
- *         schema:
- *           type: array
- *           items:
- *             allOf:
- *               - $ref: '#/definitions/Playlog'
- *               - properties:
- *                   stage:
- *                     $ref: '#/definitions/Stage'
- *       400:
- *         $ref: '#/responses/BadRequest'
- */
-router.get('/:id/playlogs', async function (req: express.Request, res: express.Response): Promise<void> {
-	const playlogs = await Playlog.scope({ method: ['user', validationUtils.toNumber(req.params.id)] }).scope("withstage").findAll<Playlog>();
-	res.json(playlogs);
 });
 
 module.exports = router;

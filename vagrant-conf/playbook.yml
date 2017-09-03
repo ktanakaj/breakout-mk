@@ -70,8 +70,6 @@
           npm: name=tslint global=yes
         - name: Install "node-pre-gyp" node.js package globally
           npm: name=node-pre-gyp global=yes
-        - name: Install "wscat" node.js package globally
-          npm: name=wscat global=yes
       - block:
         - name: Action to enable service mariadb
           service: name=mariadb state=started enabled=yes

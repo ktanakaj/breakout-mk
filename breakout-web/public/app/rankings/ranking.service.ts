@@ -4,7 +4,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
-import { ResponseError } from '../core/response-error';
+import { throwErrorByResponse } from '../core/http-error';
 import { PlayRankingEntry, RatingRankingEntry, FavoriteRankingEntry, ScoreRankingEntry, PlayerRankingEntry, CreatorRankingEntry } from './ranking.model';
 
 /**
@@ -55,7 +55,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/play/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -66,7 +66,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/play/keys')
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -81,7 +81,7 @@ export class RankingService {
 		return this.http.get('/api/stages/' + id + '/rankings/score/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -93,7 +93,7 @@ export class RankingService {
 		return this.http.get('/api/stages/' + id + '/rankings/score/keys')
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -106,7 +106,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/rating/', { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/favorite/', { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -133,7 +133,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/player/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -144,7 +144,7 @@ export class RankingService {
 		return this.http.get('/api/rankings/player/keys')
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 
 	/**
@@ -157,6 +157,6 @@ export class RankingService {
 		return this.http.get('/api/rankings/creator/', { search: this.makePagingQuery(offset, limit) })
 			.toPromise()
 			.then((res) => res.json())
-			.catch(ResponseError.throwError);
+			.catch(throwErrorByResponse);
 	}
 }
