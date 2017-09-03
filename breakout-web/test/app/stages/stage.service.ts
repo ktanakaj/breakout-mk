@@ -1,5 +1,5 @@
 ﻿/**
- * @file stage.jsのテスト。
+ * @file stage.tsのテスト。
  */
 import { StageService } from '../../../public/app/stages/stage.service';
 const service = new StageService(null);

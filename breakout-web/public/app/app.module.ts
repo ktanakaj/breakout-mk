@@ -25,6 +25,7 @@ import { UserRatingComponent } from './shared/user-rating.component';
 import { GameComponent } from './games/game.component';
 import { BlockListComponent } from './blocks/block-list.component';
 import { BlockEditComponent } from './blocks/block-edit.component';
+import { MapFormatValidator } from './stages/map-format-validator.directive';
 import { StageNaviComponent } from './stages/stage-navi.component';
 import { StagePreviewComponent } from './stages/stage-preview.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
@@ -155,6 +156,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		GameComponent,
 		BlockListComponent,
 		BlockEditComponent,
+		MapFormatValidator,
 		StageNaviComponent,
 		StagePreviewComponent,
 		LatestStagesComponent,

@@ -2,7 +2,7 @@
  * ステージプレビューコンポーネント。
  * @module ./app/stages/stage-previre.component
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import modelUtils from '../core/model-utils';
 import { Block } from '../blocks/block.model';
 import { StageService } from './stage.service';
@@ -14,7 +14,7 @@ import { StageService } from './stage.service';
 	selector: 'stage-preview',
 	templateUrl: 'app/stages/stage-preview.component.html',
 })
-export class StagePreviewComponent {
+export class StagePreviewComponent implements OnInit {
 	/** マップ文字列 */
 	map: string = '';
 	/** ブロックマスタ */

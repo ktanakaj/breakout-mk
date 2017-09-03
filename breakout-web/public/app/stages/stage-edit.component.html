@@ -26,7 +26,7 @@
                 <ul class="map-buttons">
                     <li *ngFor="let block of blocks"><button *ngIf="block.status != 'disable'" type="button" (click)="addBlock('[' + block.key + ']')" popover="{{ 'TOOLTIP_ADD_BLOCK' | translate:block }}" triggers="mouseenter"><span [style]="('color:' + block.color) | safeStyle">■</span> {{ block.name }}[{{ block.key }}]</button></li>
                 </ul>
-                <textarea [(ngModel)]="stage.map" id="stage.map" name="stage.map" #map="ngModel" class="form-control" required rows="10"><!-- ng-trim="false" validate-map-format="{{ {xmax: 40, ymax: 22, blocks:blocks} }}" ng-model-options="{allowInvalid: true}">--></textarea>
+                <textarea [(ngModel)]="stage.map" id="stage.map" name="stage.map" #map="ngModel" class="form-control" required rows="10" [validateMapFormat]="{xmax: 40, ymax: 22, blocks:blocks}"></textarea>
                 <div class="warning" *ngIf="name.errors">
                     <div [hidden]="!map.errors.required">{{ "STAGE_EDIT.MAP_REQUIRED" | translate }}</div>
                     <div [hidden]="!map.errors.validateMapFormat">{{ "STAGE_EDIT.MAP_FORMAT" | translate }}</div>
