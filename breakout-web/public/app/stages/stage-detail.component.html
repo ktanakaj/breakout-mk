@@ -13,7 +13,7 @@
             </div>
             <div class="panel-body">
                 <p class="comment-body">{{ stage.comment }}</p>
-                <!--<stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>-->
+                <stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>
                 <button type="button" class="btn btn-info btn-xs" (click)="mapTextareaVisible = true" *ngIf="userService.me && !mapTextareaVisible">{{ "STAGE_MAP_TEXTAREA_VISIBLE" | translate }}</button>
                 <textarea *ngIf="mapTextareaVisible" [(ngModel)]="stage.map" id="stage.map" name="stage.map" rows="10" readonly></textarea>
                 <div>{{ "STAGE.AUTHOR" | translate }}:

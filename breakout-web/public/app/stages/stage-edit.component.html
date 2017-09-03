@@ -22,9 +22,9 @@
         <fieldset class="form-group">
             <label for="stage.map" class="control-label col-xs-2">{{ "MAP" | translate }}:</label>
             <div class="col-xs-5">
-                <!--<stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>-->
+                <stage-preview [map]="stage.map" [blocks]="blocks" xmax="40" ymax="30"></stage-preview>
                 <ul class="map-buttons">
-                    <li *ngFor="let block of blocks"><button *ngIf="block.status != 'disable'" type="button" (click)="addBlock('[' + block.key + ']')" popover="{{ 'TOOLTIP_ADD_BLOCK' | translate:block }}" triggers="mouseenter"><span style="color:{{ block.color }}">■</span> {{ block.name }}[{{ block.key }}]</button></li>
+                    <li *ngFor="let block of blocks"><button *ngIf="block.status != 'disable'" type="button" (click)="addBlock('[' + block.key + ']')" popover="{{ 'TOOLTIP_ADD_BLOCK' | translate:block }}" triggers="mouseenter"><span [style]="('color:' + block.color) | safeStyle">■</span> {{ block.name }}[{{ block.key }}]</button></li>
                 </ul>
                 <textarea [(ngModel)]="stage.map" id="stage.map" name="stage.map" #map="ngModel" class="form-control" required rows="10"><!-- ng-trim="false" validate-map-format="{{ {xmax: 40, ymax: 22, blocks:blocks} }}" ng-model-options="{allowInvalid: true}">--></textarea>
                 <div class="warning" *ngIf="name.errors">

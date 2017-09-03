@@ -3,7 +3,7 @@
  * @module ./app/stages/stage-detail.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Block } from '../blocks/block.model';
 import { ScoreRankingEntry } from '../rankings/ranking.model';
 import { StageWithInfo, StageComment } from './stage.model';
@@ -61,18 +61,17 @@ export class StageDetailComponent implements OnInit {
 	 * コンポーネント起動時の処理。
 	 * @returns 処理状態。
 	 */
-	ngOnInit(): void {
-		this.route.params.subscribe(async (params: Params) => {
-			// パラメータからキー生成
-			this.selected = [params['year'], params['month']];
+	async ngOnInit(): Promise<void> {
+		// パラメータからキー生成
+		const params = this.route.snapshot.params;
+		this.selected = [params['year'], params['month']];
 
-			// ステージIDから画面表示に必要な情報を取得
-			const id = params['id'];
-			this.stage = await this.stageService.findByIdWithAllInfo(id);
-			this.blocks = await this.blockService.findAll();
-			this.rankings = await this.rankingService.findStageScoreRanking(id, this.selected, 0, 50);
-			this.keys = await this.rankingService.findStageScoreRankingKeys(id);
-		});
+		// ステージIDから画面表示に必要な情報を取得
+		const id = params['id'];
+		this.stage = await this.stageService.findByIdWithAllInfo(id);
+		this.blocks = await this.blockService.findAll();
+		this.rankings = await this.rankingService.findStageScoreRanking(id, this.selected, 0, 50);
+		this.keys = await this.rankingService.findStageScoreRankingKeys(id);
 	}
 
 	/**

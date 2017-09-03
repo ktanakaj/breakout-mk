@@ -1,0 +1,16 @@
+<div class="stage-preview">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th *ngFor="let cell of mapData[0]; let i = index">{{ i }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of mapData; let i = index">
+                <th>{{ i }}</th>
+                <td *ngFor="let cell of row" [style]="(cell && cell.color ? 'background-color: ' + cell.color : '') | safeStyle"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

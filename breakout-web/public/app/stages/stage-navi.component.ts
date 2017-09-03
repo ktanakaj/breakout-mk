@@ -97,16 +97,15 @@ export class StageNaviComponent implements OnInit {
 	 * @param navi ナビ配列。
 	 */
 	activateNavi(navi: { href: string, active?: boolean }[][]): void {
-		this.route.url.subscribe((urls) => {
-			let path = '/';
-			if (urls.length > 0) {
-				path += urls[0].path;
+		const urls = this.route.snapshot.url;
+		let path = '/';
+		if (urls.length > 0) {
+			path += urls[0].path;
+		}
+		for (let i = 0; i < navi.length; i++) {
+			for (let j = 0; j < navi[i].length; j++) {
+				navi[i][j].active = navi[i][j].href == path;
 			}
-			for (let i = 0; i < navi.length; i++) {
-				for (let j = 0; j < navi[i].length; j++) {
-					navi[i][j].active = navi[i][j].href == path;
-				}
-			}
-		});
+		}
 	}
 }

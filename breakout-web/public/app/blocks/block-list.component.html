@@ -34,7 +34,7 @@
                 <td>{{ block.score }}</td>
                 <td>{{ block.xsize }}</td>
                 <td>{{ block.ysize }}</td>
-                <td><span style="color:{{ block.color }}">■</span> <code>{{ block.color }}</code></td>
+                <td><span [style]="('color:' + block.color) | safeStyle">■</span> <code>{{ block.color }}</code></td>
                 <td>{{ block.createdAt | date: "shortDate" }}</td>
                 <td>{{ block.updatedAt | date: "shortDate" }}</td>
             </tr>

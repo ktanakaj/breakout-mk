@@ -14,6 +14,7 @@ import { HttpError } from './core/http-error';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './auth-guard.service';
+import { SafeStylePipe } from './shared/safe-style.pipe';
 import { StageLabelComponent } from './shared/stage-label.component';
 import { StageLinkComponent } from './shared/stage-link.component';
 import { StageHeaderStatusComponent } from './shared/stage-header-status.component';
@@ -25,6 +26,7 @@ import { GameComponent } from './games/game.component';
 import { BlockListComponent } from './blocks/block-list.component';
 import { BlockEditComponent } from './blocks/block-edit.component';
 import { StageNaviComponent } from './stages/stage-navi.component';
+import { StagePreviewComponent } from './stages/stage-preview.component';
 import { LatestStagesComponent } from './stages/latest-stages.component';
 import { StageDetailComponent } from './stages/stage-detail.component';
 import { StageEditComponent } from './stages/stage-edit.component';
@@ -141,6 +143,7 @@ class DefaultErrorHandler implements ErrorHandler {
 	],
 	declarations: [
 		AppComponent,
+		SafeStylePipe,
 		StageLabelComponent,
 		StageLinkComponent,
 		StageHeaderStatusComponent,
@@ -153,6 +156,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		BlockListComponent,
 		BlockEditComponent,
 		StageNaviComponent,
+		StagePreviewComponent,
 		LatestStagesComponent,
 		StageDetailComponent,
 		StageEditComponent,

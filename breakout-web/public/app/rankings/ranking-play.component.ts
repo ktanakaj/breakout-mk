@@ -3,7 +3,7 @@
  * @module ./app/rankings/ranking-play.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PlayRankingEntry } from './ranking.model';
 import { UserService } from '../users/user.service';
 import { RankingService } from './ranking.service';
@@ -38,15 +38,15 @@ export class RankingPlayComponent implements OnInit {
 
 	/**
 	 * コンポーネント起動時の処理。
+	 * @returns 処理状態。
 	 */
-	ngOnInit(): void {
-		this.route.params.subscribe(async (params: Params) => {
-			// パラメータからキー生成
-			this.selected = [params['year'], params['month']];
+	async ngOnInit(): Promise<void> {
+		// パラメータからキー生成
+		const params = this.route.snapshot.params;
+		this.selected = [params['year'], params['month']];
 
-			// ランキングを読み込み
-			this.rankings = await this.rankingService.findStagePlayRanking(this.selected, 0, 50);
-			this.keys = await this.rankingService.findStagePlayRankingKeys();
-		});
+		// ランキングを読み込み
+		this.rankings = await this.rankingService.findStagePlayRanking(this.selected, 0, 50);
+		this.keys = await this.rankingService.findStagePlayRankingKeys();
 	}
 }

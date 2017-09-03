@@ -3,7 +3,7 @@
  * @module ./app/blocks/block-edit.component
  */
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Block } from './block.model';
 import { BlockService } from './block.service';
 
@@ -38,27 +38,28 @@ export class BlockEditComponent implements OnInit {
 
 	/**
 	 * コンポーネント起動時の処理。
+	 * @returns 処理状態。
 	 */
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
 		// 初期表示ではリセットを呼び出し
-		this.reset();
+		await this.reset();
 	}
 
 	/**
 	 * 初期表示への状態リセット。
+	 * @returns 処理状態。
 	 */
-	reset(): void {
+	async reset(): Promise<void> {
 		// 一旦新規作成のデータで初期化
 		// ※ 現状インゲームが未対応のため、ブロックのサイズは固定
 		// TODO: サイズを可変に戻す
 		this.block = Object.assign({}, DEFAULT_BLOCK);
 
 		// キーが指定された場合は、そのIDのデータを初期表示
-		this.route.params.subscribe(async (params: Params) => {
-			if (params['key']) {
-				this.block = await this.blockService.findById(params['key']);
-			}
-		});
+		const params = this.route.snapshot.params;
+		if (params['key']) {
+			this.block = await this.blockService.findById(params['key']);
+		}
 	};
 
 	/**
@@ -70,7 +71,10 @@ export class BlockEditComponent implements OnInit {
 			await this.blockService.save(this.block);
 			this.router.navigate(['/blocks/']);
 		} catch (e) {
-			this.error = e ? e.message : e;
+			if (e.name === 'BadRequestError') {
+				return this.error = e.message;
+			}
+			throw e;
 		}
 	};
 }
