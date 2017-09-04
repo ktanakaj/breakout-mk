@@ -60,6 +60,7 @@ export class BlockService {
 	 * 渡されたブロック情報の登録／上書き。
 	 * @param block 保存するブロック情報。
 	 * @returns 登録結果。
+	 * @throws 登録失敗、または通信エラーの場合。
 	 */
 	save(block: Block): Promise<Block> {
 		// 日時がない場合は新規

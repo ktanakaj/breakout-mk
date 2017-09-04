@@ -3,8 +3,6 @@
  * @module ./app/users/user-playlog.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { User } from './user.model';
 import { Playlog } from './playlog.model';
 import { UserService } from './user.service';
 
@@ -15,8 +13,6 @@ import { UserService } from './user.service';
 	templateUrl: 'app/users/user-playlog.component.html',
 })
 export class UserPlaylogComponent implements OnInit {
-	/** ユーザー */
-	user: User;
 	/** プレイログ一覧 */
 	playlogs: Playlog[] = [];
 
@@ -26,15 +22,14 @@ export class UserPlaylogComponent implements OnInit {
 	 * @param userService ユーザー関連サービス。
 	 */
 	constructor(
-		private route: ActivatedRoute,
 		private userService: UserService) { }
 
 	/**
 	 * コンポーネント起動時の処理。
+	 * @returns 処理状態。
 	 */
 	async ngOnInit(): Promise<void> {
 		// プレイログを読み込み
-		this.user = this.userService.me;
 		this.playlogs = await this.userService.findPlaylogs();
 	}
 }

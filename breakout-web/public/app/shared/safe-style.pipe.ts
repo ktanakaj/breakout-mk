@@ -21,7 +21,7 @@ export class SafeStylePipe implements PipeTransform {
 	 * @param value CSS文字列。
 	 * @returns 安全と明示されたCSS文字列。
 	 */
-	transform(value): SafeStyle {
+	transform(value: string): SafeStyle {
 		return this.sanitized.bypassSecurityTrustStyle(value);
 	}
 }

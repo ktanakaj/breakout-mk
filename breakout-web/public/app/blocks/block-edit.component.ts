@@ -56,9 +56,9 @@ export class BlockEditComponent implements OnInit {
 		this.block = Object.assign({}, DEFAULT_BLOCK);
 
 		// キーが指定された場合は、そのIDのデータを初期表示
-		const params = this.route.snapshot.params;
-		if (params['key']) {
-			this.block = await this.blockService.findById(params['key']);
+		const key = this.route.snapshot.params['key'];
+		if (key) {
+			this.block = await this.blockService.findById(key);
 		}
 	};
 

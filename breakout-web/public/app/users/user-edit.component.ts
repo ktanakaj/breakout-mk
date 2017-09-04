@@ -3,7 +3,7 @@
  * @module ./app/users/user-edit.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from './user.model';
 import { UserService } from './user.service';
 
@@ -40,7 +40,7 @@ export class UserEditComponent implements OnInit {
 
 	/**
 	 * 初期表示への状態リセット。
-	 * @function reset
+	 * @returns 処理状態。
 	 */
 	async reset(): Promise<void> {
 		let userId = this.route.snapshot.params['id'];
@@ -49,7 +49,7 @@ export class UserEditComponent implements OnInit {
 
 	/**
 	 * 更新処理。
-	 * @function put
+	 * @returns 処理状態。
 	 */
 	async put(): Promise<void> {
 		try {

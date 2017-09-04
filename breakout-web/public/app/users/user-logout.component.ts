@@ -24,6 +24,7 @@ export class UserLogoutComponent implements OnInit {
 
 	/**
 	 * コンポーネント起動時の処理。
+	 * @returns 処理状態。
 	 */
 	async ngOnInit(): Promise<void> {
 		await this.userService.logout();

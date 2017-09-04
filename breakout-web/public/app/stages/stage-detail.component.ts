@@ -140,7 +140,7 @@ export class StageDetailComponent implements OnInit {
 	 * レーティング表示更新。
 	 * @param $value レーティング値。
 	 */
-	hoveringOver(value: number) {
+	hoveringOver(value: number): void {
 		// TODO: レーティングの動作は見直し
 		this.stage.info.user.rating = value;
 	};

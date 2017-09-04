@@ -25,6 +25,7 @@ export class UserListComponent implements OnInit {
 
 	/**
 	 * コンポーネント起動時の処理。
+	 * @returns 処理状態。
 	 */
 	async ngOnInit(): Promise<void> {
 		this.users = await this.userService.findAll();

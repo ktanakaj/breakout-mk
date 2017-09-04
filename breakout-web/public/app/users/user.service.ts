@@ -76,6 +76,7 @@ export class UserService extends EventEmitter {
 	/**
 	 * 自分自身の情報を取得する。
 	 * @returns 検索結果。
+	 * @throws 未認証状態、または通信エラーの場合。
 	 */
 	findMe(): Promise<User> {
 		return this.http.get('/api/users/me')
@@ -88,6 +89,7 @@ export class UserService extends EventEmitter {
 	 * 渡されたユーザー情報の上書き。
 	 * @param user 保存するユーザー情報。
 	 * @returns 更新結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	update(user: User): Promise<User> {
 		return this.http.put("/api/users/" + user.id, user)
@@ -100,6 +102,7 @@ export class UserService extends EventEmitter {
 	 * ユーザーの新規登録。
 	 * @param user 保存するユーザー情報。
 	 * @returns 登録結果。
+	 * @throws 登録失敗、または通信エラーの場合。
 	 */
 	signup(user: User): Promise<User> {
 		// ※ 登録成功時はセッションが開始される
@@ -119,6 +122,7 @@ export class UserService extends EventEmitter {
 	 * @param name ユーザー名。
 	 * @param password パスワード。
 	 * @returns 認証成功時はユーザー情報。
+	 * @throws 認証失敗、または通信エラーの場合。
 	 */
 	login(name: string, password: string): Promise<User> {
 		// ※ 認証成功時はセッションが開始される
@@ -172,6 +176,7 @@ export class UserService extends EventEmitter {
 	/**
 	 * プレイログの検索。
 	 * @returns 検索結果。
+	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findPlaylogs(): Promise<Playlog[]> {
 		return this.http.get('/api/users/me/playlogs')

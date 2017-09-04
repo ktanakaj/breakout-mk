@@ -67,6 +67,7 @@ export class StageService {
 	 * 渡されたステージ情報の登録／上書き。
 	 * @param stage 保存するステージ情報。
 	 * @returns 登録結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	save(stage: Stage): Promise<Stage> {
 		// IDがない場合は新規
@@ -86,6 +87,7 @@ export class StageService {
 	 * 指定されたステージIDのデータの削除。
 	 * @param id 削除するステージID。
 	 * @returns 削除結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	deleteById(id: number): Promise<Stage> {
 		return this.http.delete("/api/stages/" + id)
@@ -110,10 +112,10 @@ export class StageService {
 	/**
 	 * 自分が作成したステージの検索。
 	 * @returns 検索結果。
+	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findByMe(): Promise<Stage[]> {
 		return this.http.get('/api/users/me/stages')
-			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
 			.catch(throwErrorByResponse);
@@ -122,10 +124,10 @@ export class StageService {
 	/**
 	 * 自分がお気に入りしたステージの検索。
 	 * @returns 検索結果。
+	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findFavoriteByMe(): Promise<Stage[]> {
 		return this.http.get('/api/users/me/favorites')
-			.retry(MAX_RETRY)
 			.toPromise()
 			.then((res) => res.json())
 			.catch(throwErrorByResponse);
@@ -148,6 +150,7 @@ export class StageService {
 	 * @param stageId コメントと関連するステージID。
 	 * @param comment 保存するステージコメント。
 	 * @returns 登録データ。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	saveComment(stageId: number, comment: StageComment): Promise<StageComment> {
 		// IDがない場合は新規
@@ -168,6 +171,7 @@ export class StageService {
 	 * @param stageId コメントと関連するステージID。
 	 * @param commentId 削除するステージコメントID。
 	 * @returns 削除結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	deleteCommentById(stageId: number, commentId: number): Promise<StageComment> {
 		return this.http.delete("/api/stages/" + stageId + "/comments/" + commentId)
@@ -181,6 +185,7 @@ export class StageService {
 	 * @param stageId 評価するステージID。
 	 * @param rating レーティング。
 	 * @returns 更新結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	rate(stageId: number, rating: number): Promise<StageRating> {
 		return this.http.post("/api/stages/" + stageId + "/rating", { rating })
@@ -193,6 +198,7 @@ export class StageService {
 	 * 指定されたステージのお気に入り登録。
 	 * @param stageId 登録するステージID。
 	 * @returns 更新結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	addFavorite(stageId: number): Promise<StageFavorite> {
 		return this.http.post("/api/stages/" + stageId + "/favorite", {})
@@ -205,6 +211,7 @@ export class StageService {
 	 * 指定されたステージのお気に入り削除。
 	 * @param stageId 削除するステージID。
 	 * @returns 削除結果。
+	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	removeFavorite(stageId: number): Promise<StageFavorite> {
 		return this.http.delete("/api/stages/" + stageId + "/favorite")

@@ -1,10 +1,10 @@
-<div class="row" *ngIf="user">
+<div class="row">
     <div class="col-sm-3 col-md-2">
         <stage-navi></stage-navi>
     </div>
 
     <div class="col-sm-offset-3 col-md-offset-2 main">
-        <h1 class="page-header"><a routerLink="/users/{{ user.id }}">{{ user.name }}</a>{{ "WHO_PLAY_LOGS" | translate }}</h1>
+        <h1 class="page-header">{{ "PLAY_LOGS.TITLE" | translate }}</h1>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
