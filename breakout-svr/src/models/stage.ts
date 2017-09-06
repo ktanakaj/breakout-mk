@@ -5,7 +5,6 @@
  * @module ./models/stage
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, HasMany, ForeignKey, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';
@@ -175,32 +174,29 @@ export default class Stage extends Model<Stage> {
 	 * @param options saveオプション。
 	 * @returns 実行結果。
 	 */
-	saveAll(options: {} = {}): Bluebird<Stage> {
+	async saveAll(options: {} = {}): Promise<Stage> {
 		/**
 		 * ステージを必要なら新バージョンの形でsave()する。
 		 * @function saveWithNewVersion
 		 * @param {Object} options saveオプション。
 		 * @returns {Promise.<Stage>} 実行結果。
 		 */
-		const saveWithNewVersion = (options) => {
+		const saveWithNewVersion = async (options) => {
 			// 新規またはマップが変わっていない場合、普通にsave
 			if (this.isNewRecord || this.map == this.previous("map")) {
-				return this.save(options);
+				return await this.save(options);
 			}
 			// マップが変わった場合は、旧レコードを updated にして新レコードを登録
 			const newRecord = Stage.build();
 			objectUtils.copy(newRecord, this, ["headerId", "name", "map", "comment"]);
 
-			return Stage.findById<Stage>(this.id)
-				.then((oldRecord) => {
-					oldRecord.status = "updated";
-					return oldRecord;
-				})
-				.then((oldRecord) => oldRecord.save(options))
-				.then(() => newRecord.save(options));
+			const oldRecord = await Stage.findById<Stage>(this.id);
+			oldRecord.status = "updated";
+			await oldRecord.save(options)
+			return await newRecord.save(options);
 		};
 
-		return this.sequelize.transaction((t) => {
+		return await this.sequelize.transaction(async (t) => {
 			options = options || {};
 			options['transaction'] = options['transaction'] || t;
 
@@ -208,11 +204,9 @@ export default class Stage extends Model<Stage> {
 				throw new Error("this.header is unloaded");
 			}
 			// 新規の場合はヘッダーIDが必要なのでヘッダーから保存
-			return this.header.save(options)
-				.then((header) => {
-					this.headerId = header.id;
-				})
-				.then(() => saveWithNewVersion(options));
+			const header = await this.header.save(options);
+			this.headerId = header.id;
+			return await saveWithNewVersion(options);
 		});
 	}
 
@@ -233,53 +227,50 @@ export default class Stage extends Model<Stage> {
 	 * @param userId アクセス中のユーザーのID。
 	 * @returns 検索結果。
 	 */
-	static findByIdWithAccessibleAllInfo(stageId: number, userId: number): Bluebird<Stage> {
-		return Stage.scope({ method: ['accessible', userId] }).findById<Stage>(stageId)
-			.then((stage) => {
-				if (!stage) return stage;
+	static async findByIdWithAccessibleAllInfo(stageId: number, userId: number): Promise<Stage> {
+		const stage = await Stage.scope({ method: ['accessible', userId] }).findById<Stage>(stageId);
+		if (!stage) return stage;
 
-				// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
-				// 普通のオブジェクトに詰め替えて返す
-				const result = stage.toJSON();
-				result.info = { tried: 0, score: 0, cleared: 0, user: { tried: 0, score: 0, cleared: 0, rating: 0, favorited: false } };
+		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
+		// 普通のオブジェクトに詰め替えて返す
+		const result = stage.toJSON();
+		result.info = { tried: 0, score: 0, cleared: 0, user: { tried: 0, score: 0, cleared: 0, rating: 0, favorited: false } };
 
-				// コメント
-				return stage.header.getCommentsByUserId(userId)
-					.then((comments) => result.header.comments = comments)
-					// レーティング（平均）
-					.then(() => new StageRatingRanking().getAsync(String(stage.headerId)))
-					.then((score) => result.info.rating = score)
-					// ステージの統計情報
-					.then(() => Playlog.reportByStageIds(stageId))
-					.then((reports) => {
-						for (let r of reports) {
-							result.info.tried = r.tried;
-							result.info.score = r.score;
-							result.info.cleared = r.cleared;
-						}
-					})
-					.then(() => {
-						// ログイン時のみの情報
-						if (!userId) {
-							return;
-						}
+		// コメント
+		const comments = await stage.header.getCommentsByUserId(userId);
+		result.header.comments = comments;
 
-						// ステージのユーザーの統計情報
-						return Playlog.reportForUser(userId, stageId)
-							.then((reports) => {
-								for (let r of reports) {
-									result.info.user = r;
-								}
-							})
-							// お気に入り有無
-							.then(() => StageFavorite.scope({ method: ['one', userId, stage.headerId] }).findOne())
-							.then((favorite) => result.info.user.favorited = !!favorite)
-							// レーティング（ユーザー）
-							.then(() => stage.header.getRating(userId))
-							.then((rating) => result.info.user.rating = rating);
-					})
-					.then(() => result);
-			});
+		// レーティング（平均）
+		const score = await new StageRatingRanking().getAsync(String(stage.headerId));
+		result.info.rating = score;
+
+		// ステージの統計情報
+		const reports = await Playlog.reportByStageIds(stageId);
+		for (let r of reports) {
+			result.info.tried = r.tried;
+			result.info.score = r.score;
+			result.info.cleared = r.cleared;
+		}
+
+		// ログイン時のみの情報
+		if (!userId) {
+			return result;
+		}
+
+		// ステージのユーザーの統計情報
+		const reports2 = await Playlog.reportForUser(userId, stageId);
+		for (let r of reports2) {
+			result.info.user = r;
+		}
+		// お気に入り有無
+		const favorite = await StageFavorite.scope({ method: ['one', userId, stage.headerId] }).findOne();
+		result.info.user.favorited = !!favorite;
+
+		// レーティング（ユーザー）
+		const rating = await stage.header.getRating(userId);
+		result.info.user.rating = rating;
+
+		return result;
 	}
 
 	/**
@@ -288,38 +279,35 @@ export default class Stage extends Model<Stage> {
 	 * @param options findAllオプション。
 	 * @returns 検索結果。
 	 */
-	static findLatestStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Bluebird<Stage[]> {
+	static async findLatestStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Promise<Stage[]> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		return Stage.scope("latest").scope({ method: ['accessible', userId] }).findAll<Stage>(options)
-			.then((stages) => {
-				if (stages.length <= 0) return results;
+		const stages = await Stage.scope("latest").scope({ method: ['accessible', userId] }).findAll<Stage>(options);
+		if (stages.length <= 0) return results;
 
-				// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
-				// 普通のオブジェクトに詰め替えて返す
-				for (let stage of stages) {
-					let result = stage.toJSON();
-					result.info = {};
-					results.push(result);
-				}
+		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
+		// 普通のオブジェクトに詰め替えて返す
+		for (let stage of stages) {
+			let result = stage.toJSON();
+			result.info = {};
+			results.push(result);
+		}
 
-				if (userId <= 0) {
-					return results;
-				}
+		if (userId <= 0) {
+			return results;
+		}
 
-				// ユーザーのプレイ回数・クリア回数・ハイスコア
-				return Playlog.reportForUser(userId, results.map((stage) => stage.id))
-					.then((reports) => objectUtils.mergeArray(results, reports, "id", "stageId", "info"));
-			})
-			// ステージの平均評価
-			.then(() => Promise.all(results.map((stage) => ranking.getAsync(stage.headerId))))
-			.then((scores) => {
-				for (let i = 0; i < scores.length; i++) {
-					results[i].info.rating = scores[i] || 0;
-				}
-				return results;
-			});
+		// ユーザーのプレイ回数・クリア回数・ハイスコア
+		const reports = await Playlog.reportForUser(userId, results.map((stage) => stage.id));
+		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
+
+		// ステージの平均評価
+		const scores = await Promise.all(results.map((stage) => ranking.getAsync(stage.headerId)));
+		for (let i = 0; i < scores.length; i++) {
+			results[i].info.rating = scores[i] || 0;
+		}
+		return results;
 	}
 
 	/**
@@ -330,38 +318,39 @@ export default class Stage extends Model<Stage> {
 	 * @returns 検索結果。
 	 */
 	//TODO: 戻り値の型修正
-	static findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options: {} = undefined): Bluebird<Object[]> {
+	static async findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options: {} = undefined): Promise<Stage[]> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		return Stage.scope("latest").scope({ method: ['user', userId, all ? null : "public"] }).findAll<Stage>(options)
-			.then((stages) => {
-				if (stages.length <= 0) return results;
+		const stages = await Stage.scope("latest").scope({ method: ['user', userId, all ? null : "public"] }).findAll<Stage>(options);
+		if (stages.length <= 0) return results;
 
-				// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
-				// 普通のオブジェクトに詰め替えて返す
-				for (let stage of stages) {
-					let result = stage.toJSON();
-					result.info = {};
-					results.push(result);
-				}
+		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
+		// 普通のオブジェクトに詰め替えて返す
+		for (let stage of stages) {
+			let result = stage.toJSON();
+			result.info = {};
+			results.push(result);
+		}
 
-				// ステージの挑まれた回数・クリアされた回数・ハイスコア
-				return Playlog.reportByStageIds(results.map((stage) => stage.id))
-					.then((reports) => objectUtils.mergeArray(results, reports, "id", "stageId", "info"));
-			})
-			// ステージの平均評価
-			.then(() => Promise.all(results.map((stage) => ranking.getAsync(stage.headerId))))
-			.then((scores) => {
-				for (let i = 0; i < scores.length; i++) {
-					results[i].info.rating = scores[i] || 0;
-				}
-			})
-			// お気に入り数
-			.then(() => StageFavorite.countByHeaderIds(results.map((stage) => stage.headerId)))
-			.then((reports) => objectUtils.mergeArray(results, reports, "headerId", "headerId", "info.favorites", "cnt"))
-			// コメント数
-			.then(() => StageComment.countByHeaderIds(results.map((stage) => stage.headerId)))
-			.then((reports) => objectUtils.mergeArray(results, reports, "headerId", "headerId", "info.comments", "cnt"));
+		// ステージの挑まれた回数・クリアされた回数・ハイスコア
+		const reports = await Playlog.reportByStageIds(results.map((stage) => stage.id))
+		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
+
+		// ステージの平均評価
+		const scores = await Promise.all(results.map((stage) => ranking.getAsync(stage.headerId)));
+		for (let i = 0; i < scores.length; i++) {
+			results[i].info.rating = scores[i] || 0;
+		}
+
+		// お気に入り数
+		const reports2 = await StageFavorite.countByHeaderIds(results.map((stage) => stage.headerId));
+		objectUtils.mergeArray(results, reports2, "headerId", "headerId", "info.favorites", "cnt");
+
+		// コメント数
+		const reports3 = await StageComment.countByHeaderIds(results.map((stage) => stage.headerId));
+		objectUtils.mergeArray(results, reports3, "headerId", "headerId", "info.comments", "cnt");
+
+		return results;
 	}
 }

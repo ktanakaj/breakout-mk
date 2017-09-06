@@ -5,10 +5,11 @@
  * @module ./models/stage-header
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
+import StagePlayRanking from './rankings/stage-play-ranking'
 import StageRatingRanking from './rankings/stage-rating-ranking'
 import UserRatingRanking from './rankings/user-rating-ranking'
+import StageFavoriteRanking from './rankings/stage-favorite-ranking'
 import User from './user';
 import Stage from './stage';
 import StageRating from './stage-rating';
@@ -35,12 +36,10 @@ import StageComment from './stage-comment';
 		 * @param options 更新処理のオプション。
 		 */
 		afterUpdate: function (header: StageHeader, options: {}): void {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
 			// 公開/非公開が変わった場合、評価ランキングに登録/削除
 			// ※ 評価以外は非公開でも載せているのでとりあえずOK
 			if (header.status != undefined && header.status != header.previous("status")) {
-				const stageRanking = new redis.StageRatingRanking();
+				const stageRanking = new StageRatingRanking();
 				let promise;
 				if (header.status == "public") {
 					promise = stageRanking.refreshAsync(header.id);
@@ -48,7 +47,7 @@ import StageComment from './stage-comment';
 					promise = stageRanking.deleteAsync(header.id);
 				}
 				promise
-					.then(() => new redis.UserRatingRanking().refreshAsync(header.userId))
+					.then(() => new UserRatingRanking().refreshAsync(header.userId))
 					.catch(console.error);
 			}
 		},
@@ -58,16 +57,12 @@ import StageComment from './stage-comment';
 		 * @param options 削除処理のオプション。
 		 */
 		afterDestroy: function (header: StageHeader, options: {}): void {
-			// ※ 外側でredisをrequireすると循環参照で死ぬっぽいのでここでやる
-			const redis = require('./redis');
 			const multi = require('../libs/redis-helper').client.multi();
 
 			// ※ ステージ別ランキングなど、残っていても導線がないものはそのまま
-			const favoriteRanking = new redis.StageFavoriteRanking();
-			favoriteRanking.multi = multi;
+			const favoriteRanking = new StageFavoriteRanking(multi);
 			favoriteRanking.delete(header.id);
-			const ratingRanking = new redis.StageRatingRanking();
-			ratingRanking.multi = multi;
+			const ratingRanking = new StageRatingRanking(multi);
 			ratingRanking.delete(header.id);
 
 			// プレイ回数ランキングはステージに紐づくので過去バージョンも含めて消す
@@ -75,13 +70,12 @@ import StageComment from './stage-comment';
 				.then((stages) => {
 					let promises = [];
 					for (let stage of <Stage[]>stages) {
-						promises.push(redis.StagePlayRanking.deleteAll(multi, stage.id));
+						promises.push(StagePlayRanking.deleteAll(multi, stage.id));
 					}
 					return Promise.all(promises);
 				})
 				.then(() => {
-					const ratingRanking = new redis.UserRatingRanking();
-					ratingRanking.multi = multi;
+					const ratingRanking = new UserRatingRanking(multi);
 					return ratingRanking.refresh(header.userId);
 				})
 				.then(() => multi.execAsync())
@@ -144,25 +138,25 @@ export default class StageHeader extends Model<StageHeader> {
 	 * @param rating レーティング。
 	 * @returns 更新結果。
 	 */
-	setRating(userId: number, rating: number): Bluebird<StageRating> {
+	async setRating(userId: number, rating: number): Promise<StageRating> {
 		// 既にある場合は上書き、ない場合は新規作成
-		return StageRating.scope({ method: ['one', userId, this.id] }).findOrInitialize<StageRating>({ where: {} })
-			.then(([stageRating]) => {
-				stageRating.headerId = this.id;
-				stageRating.userId = userId;
-				stageRating.rating = rating;
-				return stageRating;
-			})
-			.then((stageRating) => stageRating.save())
-			.then((stageRating) => {
-				// 非公開以外は評価ランキングを更新
-				if (this.status === "public") {
-					new StageRatingRanking().refreshAsync(stageRating.headerId)
-						.then(() => new UserRatingRanking().refreshAsync(this.userId))
-						.catch(console.error);
-				}
-				return stageRating;
-			});
+		const result = await StageRating.scope({ method: ['one', userId, this.id] }).findOrInitialize<StageRating>({ where: {} });
+		const stageRating = result[0];
+		stageRating.headerId = this.id;
+		stageRating.userId = userId;
+		stageRating.rating = rating;
+		stageRating.save();
+
+		// 非公開以外は評価ランキングを更新
+		if (this.status === "public") {
+			try {
+				await new StageRatingRanking().refreshAsync(stageRating.headerId);
+				await new UserRatingRanking().refreshAsync(this.userId);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+		return stageRating;
 	}
 
 	/**

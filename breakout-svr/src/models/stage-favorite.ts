@@ -5,7 +5,6 @@
  * @module ./models/stage-favorite
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
-import * as Bluebird from 'bluebird';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';
@@ -129,32 +128,31 @@ export default class StageFavorite extends Model<StageFavorite> {
 	 * @returns 検索結果。
 	 */
 	// TODO: 戻り値の型修正
-	static findStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Bluebird<Object[]> {
+	static async findStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Promise<Stage[]> {
 		let results = [];
 
-		return StageFavorite.scope({ method: ['user', userId] }).findAll<StageFavorite>(options)
-			.then((favorites) => {
-				if (favorites.length <= 0) return results;
+		const favorites = await StageFavorite.scope({ method: ['user', userId] }).findAll<StageFavorite>(options);
+		if (favorites.length <= 0) return results;
 
-				return Stage.scope(["latest", "withuser"]).findAll<Stage>({ where: { headerId: { in: favorites.map((f) => f.headerId) } } })
-					.then((stages) => {
-						if (stages.length <= 0) return results;
+		const stages = await Stage.scope(["latest", "withuser"]).findAll<Stage>({ where: { headerId: { in: favorites.map((f) => f.headerId) } } });
+		if (stages.length <= 0) return results;
 
-						// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
-						// 普通のオブジェクトに詰め替えて返す
-						for (let stage of stages) {
-							let result = stage.toJSON();
-							result.info = {};
-							results.push(result);
-						}
+		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
+		// 普通のオブジェクトに詰め替えて返す
+		for (let stage of stages) {
+			let result = stage.toJSON();
+			result.info = {};
+			results.push(result);
+		}
 
-						// ユーザーのプレイ回数・クリア回数・ハイスコア
-						return Playlog.reportForUser(userId, results.map((stage) => stage.id))
-							.then((reports) => objectUtils.mergeArray(results, reports, "id", "stageId", "info"))
-							// ステージのコメント数
-							.then(() => StageComment.countByHeaderIds(stages.map((s) => s.headerId)))
-							.then((reports) => objectUtils.mergeArray(results, reports, "headerId", "headerId", "info.comments", "cnt"));
-					});
-			});
+		// ユーザーのプレイ回数・クリア回数・ハイスコア
+		const reports = await Playlog.reportForUser(userId, results.map((stage) => stage.id));
+		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
+
+		// ステージのコメント数
+		const reports2 = await StageComment.countByHeaderIds(stages.map((s) => s.headerId));
+		objectUtils.mergeArray(results, reports2, "headerId", "headerId", "info.comments", "cnt");
+
+		return results;
 	}
 }

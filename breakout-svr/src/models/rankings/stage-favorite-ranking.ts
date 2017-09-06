@@ -2,6 +2,7 @@
  * ステージお気に入り数ランキングモデルクラスのNode.jsモジュール。
  * @module ./models/redis/stage-favorite-ranking
  */
+import { IRedisMultiAsync } from '../../core/redis/redis-async';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import Stage from '../stage';
@@ -19,9 +20,10 @@ export interface RankingEntry extends Entry {
 export default class StageFavoriteRanking extends SortedSet {
 	/**
 	 * コレクションインスタンスを生成する。
+	 * @param multi 参照するmultiインスタンス。
 	 */
-	constructor() {
-		super(BASE_NAME, redis.getClient());
+	constructor(multi: IRedisMultiAsync = null) {
+		super(BASE_NAME, redis.getClient(), multi);
 	}
 
 	/**
