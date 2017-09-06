@@ -9,7 +9,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { BsDropdownModule, CollapseModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule, ModalModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
 import { HttpError } from './core/http-error';
 import { UserService } from './users/user.service';
@@ -141,6 +141,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		}),
 		BsDropdownModule.forRoot(),
 		CollapseModule.forRoot(),
+		ModalModule.forRoot(),
 		PopoverModule.forRoot(),
 		RatingModule.forRoot(),
 	],

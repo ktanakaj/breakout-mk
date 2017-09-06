@@ -2,8 +2,9 @@
  * ステージ編集ページコンポーネント。
  * @module ./app/stages/stage-edit.component
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Block } from '../blocks/block.model';
 import { Stage } from './stage.model';
 import { BlockService } from '../blocks/block.service';
@@ -26,6 +27,8 @@ export class StageEditComponent implements OnInit {
 	blocks: Block[] = [];
 	/** エラー情報 */
 	error: string;
+	/** 削除確認モーダル */
+	@ViewChild('confirmModal') public confirmModal: ModalDirective;
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
@@ -84,19 +87,7 @@ export class StageEditComponent implements OnInit {
 	 * 削除確認処理。
 	 */
 	confirmDelete() {
-		/*
-		$scope.dialogTitle = "DELETE_CONFIRMING_TITLE";
-		$scope.dialogBody = "DELETE_CONFIRMING_BODY";
-		let modalInstance = $uibModal.open({
-			animation: true,
-			ariaLabelledBy: 'modal-title',
-			ariaDescribedBy: 'modal-body',
-			templateUrl: 'views/confirming_dialog.html',
-			size: "sm",
-			scope: $scope,
-		});
-		modalInstance.result.then(() => this.delete());
-		*/
+		this.confirmModal.show();
 	}
 
 	/**

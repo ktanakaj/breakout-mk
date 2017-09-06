@@ -54,3 +54,23 @@
         <a *ngIf="!stage.id" routerLink="/stages">{{ "BACK_TO_LIST" | translate }}</a>
     </footer>
 </div>
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">{{ "DELETE_CONFIRMING_TITLE" | translate }}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="confirmModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>{{ "DELETE_CONFIRMING_BODY" | translate }}</div>
+                <div>
+                    <button type="button" class="btn btn-danger" (click)="delete()">{{ "DELETE" | translate }}</button>
+                    <button type="button" class="btn btn-secondary" (click)="confirmModal.hide()">{{ "CANCEL" | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
