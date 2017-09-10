@@ -18,12 +18,14 @@ import { StageService } from './stage.service';
 	]
 })
 export class MapFormatValidator implements Validator {
-	/** バリデータパラメータ */
-	params: { xmax: number, ymax: number, blocks: Block[] } = <any>{};
-	/** マップデータ */
-	mapData: Block[][] = [];
+	/** マップX方向サイズ */
+	xmax: number = 0;
+	/** マップY方向サイズ */
+	ymax: number = 0;
 	/** ブロックマスタ */
 	blockMap: Object = {};
+	/** マップデータ */
+	mapData: Block[][] = [];
 
 	/**
 	 * バリデーターを生成する。
@@ -38,7 +40,10 @@ export class MapFormatValidator implements Validator {
 	 */
 	@Input('validateMapFormat')
 	set setValidateMapFormat(params: { xmax: number, ymax: number, blocks: Block[] }) {
-		this.initializeMapData(params);
+		this.xmax = params.xmax || 99;
+		this.ymax = params.ymax || 99;
+		this.blockMap = modelUtils.modelsToMap(params.blocks || [], "key");
+		this.mapData = modelUtils.makeEmptyTable(this.xmax, this.ymax);
 	}
 
 	/**
@@ -59,7 +64,7 @@ export class MapFormatValidator implements Validator {
 
 		// サイズオーバーのチェック
 		// ※ サイズオーバーがなければループに入らず一瞬で終わるはず
-		for (let y = this.mapData.length - 1; y >= this.params.ymax; y--) {
+		for (let y = this.mapData.length - 1; y >= this.ymax; y--) {
 			for (let x = this.mapData[y].length - 1; x >= 0; x--) {
 				if (this.mapData[y][x]) {
 					// サイズY MAX以上の位置にオブジェクト有
@@ -70,7 +75,7 @@ export class MapFormatValidator implements Validator {
 			}
 		}
 		for (let y = this.mapData.length - 1; y >= 0; y--) {
-			for (let x = this.mapData[y].length - 1; x >= this.params.xmax; x--) {
+			for (let x = this.mapData[y].length - 1; x >= this.xmax; x--) {
 				if (this.mapData[y][x]) {
 					// サイズX MAX以上の位置にオブジェクト有
 					return {
@@ -92,17 +97,5 @@ export class MapFormatValidator implements Validator {
 		return {
 			validateMapFormat: true
 		}
-	}
-
-	/**
-	 * 引数からマップデータ等の初期生成を行う。
-	 * @param attr 引数JSON文字列。
-	 */
-	initializeMapData(params: { xmax: number, ymax: number, blocks: Block[] }): void {
-		this.params = params;
-		this.params.xmax = this.params.xmax || 99;
-		this.params.ymax = this.params.ymax || 99;
-		this.mapData = modelUtils.makeEmptyTable(this.params.xmax, this.params.ymax);
-		this.blockMap = modelUtils.modelsToMap(this.params.blocks || [], "key");
 	}
 }

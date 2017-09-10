@@ -17,8 +17,6 @@ import { StageService } from './stage.service';
 export class StagePreviewComponent implements OnInit {
 	/** マップ文字列 */
 	map: string = '';
-	/** ブロックマスタ */
-	blocks: Block[] = [];
 	/** X方向のサイズ */
 	@Input() xmax: number = 0;
 	/** Y方向のサイズ */
@@ -53,7 +51,6 @@ export class StagePreviewComponent implements OnInit {
 	 */
 	@Input('blocks')
 	set setBlocks(blocks: Block[]) {
-		this.blocks = blocks;
 		this.blockMap = modelUtils.modelsToMap(blocks, "key");
 		this.stageService.updateMapData(this.mapData, this.map, this.blockMap);
 	}
@@ -64,9 +61,6 @@ export class StagePreviewComponent implements OnInit {
 	ngOnInit(): void {
 		// 高速化のため、最初にマップデータを作って以後はそこに差分を反映する
 		this.mapData = modelUtils.makeEmptyTable(this.xmax, this.ymax);
-		if (this.blocks && this.map) {
-			this.blockMap = modelUtils.modelsToMap(this.blocks, "key");
-			this.stageService.updateMapData(this.mapData, this.map, this.blockMap);
-		}
+		this.stageService.updateMapData(this.mapData, this.map, this.blockMap);
 	}
 }
