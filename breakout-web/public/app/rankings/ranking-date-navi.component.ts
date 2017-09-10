@@ -2,7 +2,7 @@
  * ランキング年月プルダウンコンポーネント。
  * @module ./app/rankings/ranking-date-navi.component
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -12,15 +12,14 @@ import { TranslateService } from '@ngx-translate/core';
 	selector: 'ranking-date-navi',
 	templateUrl: 'app/rankings/ranking-date-navi.component.html',
 })
-export class RankingDateNaviComponent implements OnInit {
-	/** レーティング値 */
-	@Input() href: string = '';
-	/** レーティング値 */
-	@Input() keys: string[][] = [];
-	/** レーティング値 */
-	@Input() selected: string[] = [];
-
+export class RankingDateNaviComponent {
+	/** ベースのURL */
+	href: string = '';
+	/** 年月キー */
+	keys: string[][] = [];
+	/** 選択中の年月ラベル */
 	selectedLabel: string = '';
+	/** メニュー配列 */
 	menus: { label: string, href: string }[] = [];
 
 	/**
@@ -31,10 +30,41 @@ export class RankingDateNaviComponent implements OnInit {
 		private translate: TranslateService) { }
 
 	/**
-	 * コンポーネント起動時の処理。
+	 * ベースのURLを設定する。
+	 * @param href ベースのURL。
 	 */
-	async ngOnInit(): Promise<void> {
-		this.selectedLabel = await this.makeLabel(this.selected.filter((v) => v));
+	@Input('href')
+	set setHref(href: string) {
+		this.href = href;
+		this.updateMenus();
+	}
+
+	/**
+	 * 年月キーを設定する。
+	 * @param keys 年月キー。
+	 */
+	@Input('keys')
+	set setKeys(keys: string[][]) {
+		this.keys = keys;
+		this.updateMenus();
+	}
+
+	/**
+	 * 選択中のキーを設定する。
+	 * @param selected 選択中のキー。
+	 */
+	@Input('selected')
+	set setSelected(selected: string[]) {
+		this.makeLabel(selected.filter((v) => v))
+			.then((label) => this.selectedLabel = label);
+	}
+
+	/**
+	 * メニューを更新する。
+	 * @returns 処理状態。
+	 */
+	async updateMenus(): Promise<void> {
+		this.menus = [];
 		if (Array.isArray(this.keys)) {
 			for (let i in this.keys) {
 				let yearAndMonth = this.keys[i].filter((v) => v);
@@ -51,20 +81,20 @@ export class RankingDateNaviComponent implements OnInit {
 	 */
 	async makeLabel(yearAndMonth: string[]): Promise<string> {
 		return new Promise<string>((resolve) => {
-			if (!yearAndMonth || yearAndMonth.length == 0) {
-				this.translate.get("TIME_SPAN_TOTAL").subscribe((res: string) => {
-					resolve(res);
-				});
+			let key: string = "TIME_SPAN_TOTAL";
+			let params: Object = {};
+			if (yearAndMonth) {
+				if (yearAndMonth.length == 1) {
+					key = "TIME_SPAN_STYLE_YEAR";
+					params = { year: yearAndMonth[0] };
+				} else if (yearAndMonth.length > 1) {
+					key = "TIME_SPAN_STYLE_YEAR_AND_MONTH";
+					params = { year: yearAndMonth[0], month: yearAndMonth[1] };
+				}
 			}
-			if (yearAndMonth.length == 1) {
-				this.translate.get("TIME_SPAN_STYLE_YEAR", { year: yearAndMonth[0] }).subscribe((res: string) => {
-					resolve(res);
-				});
-			} else {
-				this.translate.get("TIME_SPAN_STYLE_YEAR_AND_MONTH", { year: yearAndMonth[0], month: yearAndMonth[1] }).subscribe((res: string) => {
-					resolve(res);
-				});
-			}
+			this.translate.get(key, params).subscribe((res: string) => {
+				resolve(res);
+			});
 		});
 	}
 }
