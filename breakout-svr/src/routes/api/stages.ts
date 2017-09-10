@@ -402,7 +402,7 @@ router.delete('/:id', passportManager.authorize(), async function (req: express.
 	validationUtils.notFound(stage);
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	const result = await stage.header.destroy();
-	res.json.bind(result);
+	res.json(result);
 });
 
 /**

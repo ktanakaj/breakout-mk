@@ -6,6 +6,7 @@
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
+import redis from './rankings/redis'
 import StagePlayRanking from './rankings/stage-play-ranking'
 import StageRatingRanking from './rankings/stage-rating-ranking'
 import UserRatingRanking from './rankings/user-rating-ranking'
@@ -57,7 +58,7 @@ import StageComment from './stage-comment';
 		 * @param options 削除処理のオプション。
 		 */
 		afterDestroy: function (header: StageHeader, options: {}): void {
-			const multi = require('../libs/redis-helper').client.multi();
+			const multi = redis.getClient().multi();
 
 			// ※ ステージ別ランキングなど、残っていても導線がないものはそのまま
 			const favoriteRanking = new StageFavoriteRanking(multi);
