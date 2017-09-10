@@ -44,12 +44,11 @@ export default class StageComment extends Model<StageComment> {
 	headerId: number;
 
 	/** ユーザーID */
-	@AllowNull(false)
+	// 未認証ユーザーはnull
 	@ForeignKey(() => User)
 	@Column({
 		comment: 'ユーザーID',
 		type: DataType.INTEGER,
-		defaultValue: 0, // 未認証ユーザーは0
 	})
 	userId: number;
 

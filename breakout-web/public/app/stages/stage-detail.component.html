@@ -101,7 +101,7 @@
                         <span *ngIf="comment.createdAt != comment.updatedAt">{{ "COMMENT_UPDATED" | translate:{ updatedAt: comment.updatedAt } }}</span>
                         <span *ngIf="comment.status == 'private'"><small>({{ "STAGE_COMMENT_PRIVATE" | translate }})</small></span>
                         <span *ngIf="userService.me && (userService.me.id == stage.header.userId || userService.me.id == comment.userId)">
-                            <button type="button" class="btn btn-xs btn-danger" (click)="confirmDeleteComment(comment.id)">{{ "DELETE" | translate }}</button>
+                            <button type="button" class="btn btn-xs btn-danger" (click)="confirmDeleteComment(comment)">{{ "DELETE" | translate }}</button>
                         </span>
                     </div>
                     <p class="comment-body">{{ comment.comment }}</p>
@@ -110,14 +110,14 @@
                 <button type="button" class="btn btn-info" (click)="commentFormEnable = true" *ngIf="!commentFormEnable">{{ "ADD_COMMENT" | translate }}</button>
                 <form #f="ngForm" (ngSubmit)="postComment()" *ngIf="commentFormEnable" novalidate>
                     <fieldset class=”form-group”>
-                        <textarea [(ngModel)]="comment.comment" #comment="ngModel" class="form-control" name="comment.comment" required rows="2"></textarea>
+                        <textarea [(ngModel)]="commentForm.comment" #comment="ngModel" class="form-control" name="commentForm.comment" required rows="2"></textarea>
                         <div class="warning" *ngIf="comment.errors">
                             <div [hidden]="!comment.errors.required">{{ "ADD_COMMENT_COMMENT_REQUIRED" | translate }}</div>
                         </div>
                     </fieldset>
                     <fieldset class=”radio-inline”>
-                        <label><input type="radio" [(ngModel)]="comment.status" name="status" value="public">{{ "STATUS_PUBLIC" | translate }}</label>
-                        <label><input type="radio" [(ngModel)]="comment.status" name="status" value="private">{{ "STAGE_COMMENT_PRIVATE" | translate }}</label>
+                        <label><input type="radio" [(ngModel)]="commentForm.status" name="status" value="public">{{ "STATUS_PUBLIC" | translate }}</label>
+                        <label><input type="radio" [(ngModel)]="commentForm.status" name="status" value="private">{{ "STAGE_COMMENT_PRIVATE" | translate }}</label>
                     </fieldset>
                     <div>
                         <button type="submit" class="btn btn-primary" [disabled]="!f.form.valid">{{ "ADD_COMMENT" | translate }}</button>
@@ -125,6 +125,26 @@
                         <div *ngIf="userService.me == null"><small>{{ "ADD_COMMENT_NOTICE" | translate }}</small></div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">{{ "DELETE_CONFIRMING_TITLE" | translate }}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="confirmModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>{{ "DELETE_CONFIRMING_BODY" | translate }}</div>
+                <div>
+                    <button type="button" class="btn btn-danger" (click)="deleteComment(selectedComment)">{{ "DELETE" | translate }}</button>
+                    <button type="button" class="btn btn-secondary" (click)="confirmModal.hide()">{{ "CANCEL" | translate }}</button>
+                </div>
             </div>
         </div>
     </div>

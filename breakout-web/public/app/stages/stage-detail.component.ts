@@ -2,8 +2,9 @@
  * ステージ詳細ページコンポーネント。
  * @module ./app/stages/stage-detail.component
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Block } from '../blocks/block.model';
 import { ScoreRankingEntry } from '../rankings/ranking.model';
 import { StageWithInfo, StageComment } from './stage.model';
@@ -24,6 +25,8 @@ import { StageService } from './stage.service';
 	],
 })
 export class StageDetailComponent implements OnInit {
+	/** ステージID */
+	stageId: number;
 	/** ステージ */
 	stage: StageWithInfo;
 	/** ブロックマスタ */
@@ -35,10 +38,14 @@ export class StageDetailComponent implements OnInit {
 	/** 選択中のランキングキー */
 	selected: string[];
 	/** ステージコメント */
-	comment: StageComment;
-	// { status: "public" }
+	commentForm: StageComment = <any>{ status: 'public' };
 	/** エラー情報 */
 	error: string;
+
+	/** 選択中のコメント */
+	selectedComment;
+	/** 削除確認モーダル */
+	@ViewChild('confirmModal') public confirmModal: ModalDirective;
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
@@ -67,12 +74,20 @@ export class StageDetailComponent implements OnInit {
 
 		// パラメータからステージID、ランキングキーを読み込み詳細表示
 		this.route.params.subscribe(async (params: Params) => {
-			const id = params['id'];
+			this.stageId = params['id'];
 			this.selected = [params['year'], params['month']];
-			this.stage = await this.stageService.findByIdWithAllInfo(id);
-			this.keys = await this.rankingService.findStageScoreRankingKeys(id);
-			this.rankings = await this.rankingService.findStageScoreRanking(id, this.selected, 0, 50);
+			await this.reset();
 		});
+	}
+
+	/**
+	 * ページ表示情報を読み込む。
+	 * @returns 処理状態。
+	 */
+	async reset() {
+		this.stage = await this.stageService.findByIdWithAllInfo(this.stageId);
+		this.keys = await this.rankingService.findStageScoreRankingKeys(this.stageId);
+		this.rankings = await this.rankingService.findStageScoreRanking(this.stageId, this.selected, 0, 50);
 	}
 
 	/**
@@ -80,9 +95,11 @@ export class StageDetailComponent implements OnInit {
 	 * @returns 処理状態。
 	 */
 	async postComment(): Promise<void> {
+		this.error = '';
 		try {
-			await this.stageService.saveComment(this.stage.id, this.comment)
-			this.router.navigate([`/stages/${this.stage.id}`]);
+			await this.stageService.saveComment(this.stageId, this.commentForm);
+			this.commentForm.comment = '';
+			await this.reset();
 		} catch (e) {
 			this.error = e;
 		}
@@ -90,33 +107,23 @@ export class StageDetailComponent implements OnInit {
 
 	/**
 	 * コメント削除確認処理。
-	 * @param commentId 削除するコメントのID。
+	 * @param comment 削除するコメント。
 	 */
-	confirmDeleteComment(commentId: number) {
-		/*
-		$scope.dialogTitle = "DELETE_CONFIRMING_TITLE";
-		$scope.dialogBody = "DELETE_CONFIRMING_BODY";
-		let modalInstance = $uibModal.open({
-			animation: true,
-			ariaLabelledBy: 'modal-title',
-			ariaDescribedBy: 'modal-body',
-			templateUrl: 'parts/confirming_dialog.html',
-			size: "sm",
-			scope: $scope,
-		});
-		modalInstance.result.then(() => this.deleteComment(commentId));
-		*/
+	confirmDeleteComment(comment: StageComment) {
+		this.selectedComment = comment;
+		this.confirmModal.show();
 	};
 
 	/**
 	 * コメント削除処理。
-	 * @param commentId 削除するコメントのID。
+	 * @param comment 削除するコメント。
 	 * @returns 処理状態。
 	 */
-	async deleteComment(commentId: number): Promise<void> {
+	async deleteComment(comment: StageComment): Promise<void> {
 		try {
-			await this.stageService.deleteCommentById(this.stage.id, commentId);
-			this.router.navigate([`/stages/${this.stage.id}`]);
+			await this.stageService.deleteCommentById(this.stageId, comment.id);
+			await this.reset();
+			this.confirmModal.hide();
 		} catch (e) {
 			this.error = e;
 		}

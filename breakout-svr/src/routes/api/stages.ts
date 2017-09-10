@@ -511,7 +511,7 @@ router.post('/:id/comments/', async function (req: express.Request, res: express
 	comment.userId = userId;
 	comment.ipAddress = req.ip;
 	const result = await comment.save();
-	res.json.bind(result);
+	res.json(result);
 });
 
 /**
