@@ -128,8 +128,7 @@ export default class Stage extends Model<Stage> {
 	})
 	map: string;
 
-	/** ステージ名 */
-	@AllowNull(false)
+	/** ステージコメント */
 	@Column({
 		comment: 'ステージコメント',
 		type: DataType.TEXT,

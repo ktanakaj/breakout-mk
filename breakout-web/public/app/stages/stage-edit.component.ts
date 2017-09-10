@@ -2,7 +2,7 @@
  * ステージ編集ページコンポーネント。
  * @module ./app/stages/stage-edit.component
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Block } from '../blocks/block.model';
@@ -27,6 +27,8 @@ export class StageEditComponent implements OnInit {
 	blocks: Block[] = [];
 	/** エラー情報 */
 	error: string;
+	/** マップテキストエリア操作用リファレンス */
+	@ViewChild('stageMap') public stageMapTextarea: ElementRef;
 	/** 削除確認モーダル */
 	@ViewChild('confirmModal') public confirmModal: ModalDirective;
 
@@ -109,19 +111,16 @@ export class StageEditComponent implements OnInit {
 
 	/**
 	 * ブロックの追加。
-	 * @param {string} 追加する文字列。
+	 * @param word 追加する文字列。
 	 */
 	addBlock(word): void {
-		/*
-		let textarea = angular.element(document.getElementById('stage.map'));
-		let p = textarea.prop("selectionStart");
+		let p = this.stageMapTextarea.nativeElement.selectionStart;
 		let text = this.stage.map || "";
 		this.stage.map = text.slice(0, p) + word + text.slice(p);
 		// カーソルを追加した文字列の後ろに移動。だがbind前にやると戻ってしまうため、時間をおいて実行
-		$timeout(() => {
-			textarea.prop("selectionStart", p + word.length);
-			textarea.prop("selectionEnd", p + word.length);
+		setTimeout(() => {
+			this.stageMapTextarea.nativeElement.selectionStart = p + word.length;
+			this.stageMapTextarea.nativeElement.selectionEnd = p + word.length;
 		}, 100);
-		*/
 	}
 }
