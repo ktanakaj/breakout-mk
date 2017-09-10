@@ -68,7 +68,7 @@ import Stage from './stage';
 	scopes: {
 		playing: {
 			where: {
-				// score: null,
+				score: { $eq: null },
 			},
 		},
 		user: (userId) => {

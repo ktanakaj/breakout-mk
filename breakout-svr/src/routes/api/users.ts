@@ -208,7 +208,7 @@ router.get('/me/stages', passportManager.authorize(), async function (req: expre
  *         $ref: '#/responses/BadRequest'
  */
 router.get('/me/playlogs', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
-	const playlogs = await Playlog.scope({ method: ['user', req.user.id] }).scope("withstage").findAll<Playlog>();
+	const playlogs = await Playlog.scope(<any>[{ method: ['user', req.user.id] }, "withstage"]).findAll<Playlog>();
 	res.json(playlogs);
 });
 

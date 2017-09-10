@@ -283,7 +283,7 @@ export default class Stage extends Model<Stage> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		const stages = await Stage.scope("latest").scope({ method: ['accessible', userId] }).findAll<Stage>(options);
+		const stages = await Stage.scope(<any>["latest", { method: ['accessible', userId] }]).findAll<Stage>(options);
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
@@ -322,7 +322,7 @@ export default class Stage extends Model<Stage> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		const stages = await Stage.scope("latest").scope({ method: ['user', userId, all ? null : "public"] }).findAll<Stage>(options);
+		const stages = await Stage.scope(<any>["latest", { method: ['user', userId, all ? null : "public"] }]).findAll<Stage>(options);
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
