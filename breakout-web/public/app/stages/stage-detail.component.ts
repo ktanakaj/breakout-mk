@@ -134,7 +134,6 @@ export class StageDetailComponent implements OnInit {
 	 * @returns 処理状態。
 	 */
 	async rate(): Promise<void> {
-		// TODO: レーティングの動作は見直し
 		if (this.stage.info.user.rating) {
 			try {
 				await this.stageService.rate(this.stage.id, this.stage.info.user.rating);
@@ -146,10 +145,9 @@ export class StageDetailComponent implements OnInit {
 
 	/**
 	 * レーティング表示更新。
-	 * @param $value レーティング値。
+	 * @param value レーティング値。
 	 */
 	hoveringOver(value: number): void {
-		// TODO: レーティングの動作は見直し
 		this.stage.info.user.rating = value;
 	};
 

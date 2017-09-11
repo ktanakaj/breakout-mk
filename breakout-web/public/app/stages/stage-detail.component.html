@@ -36,7 +36,7 @@
                         <stage-rating rating="{{ stage.info.rating }}"></stage-rating>
                     </div>
                     <div *ngIf="userService.me" class="col-md-3">{{ "RATING" | translate }}:
-                        <rating [(ngModel)]="stage.info.user.rating" [max]="5" (onHover)="hoveringOver(value)" (onLeave)="rate()"></rating>
+                        <rating [(ngModel)]="stage.info.user.rating" [max]="5" (onHover)="hoveringOver($event)" (onLeave)="rate()"></rating>
                     </div>
                 </div>
                 <div class="row">

@@ -699,7 +699,7 @@ router.post('/:id/rating', passportManager.authorize(), async function (req: exp
 	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
 	const result = await stage.header.setRating(req.user.id, req.body.rating);
-	res.json.bind(result);
+	res.json(result);
 });
 
 module.exports = router;

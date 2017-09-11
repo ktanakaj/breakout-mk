@@ -146,7 +146,7 @@ export default class StageHeader extends Model<StageHeader> {
 		stageRating.headerId = this.id;
 		stageRating.userId = userId;
 		stageRating.rating = rating;
-		stageRating.save();
+		await stageRating.save();
 
 		// 非公開以外は評価ランキングを更新
 		if (this.status === "public") {
