@@ -23,6 +23,7 @@ import { StageRatingComponent } from './shared/stage-rating.component';
 import { UserLinkComponent } from './shared/user-link.component';
 import { UserStatusComponent } from './shared/user-status.component';
 import { UserRatingComponent } from './shared/user-rating.component';
+import { HeaderNaviComponent } from './core/header-navi.component';
 import { GameComponent } from './games/game.component';
 import { BlockListComponent } from './blocks/block-list.component';
 import { BlockEditComponent } from './blocks/block-edit.component';
@@ -159,6 +160,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		UserStatusComponent,
 		UserRatingComponent,
 		RankingDateNaviComponent,
+		HeaderNaviComponent,
 		GameComponent,
 		BlockListComponent,
 		BlockEditComponent,
