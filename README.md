@@ -1,7 +1,8 @@
 # ブロックくずしメーカー
 ブロックくずしのWebアプリで、ユーザーがCMSのように自分でステージを登録＆共有可能。
 
-某所でJavaScriptの研修課題として作った奴ですが、諸般の事情によりお蔵入りしたため、TypeScriptにリライトして公開。
+某所でJavaScriptの研修課題として作った奴ですが、諸般の事情によりお蔵入りしたため、TypeScriptにリライトして公開。  
+（Webアプリ部がメインなので、インゲームはショボいです…。）
 
 ## 機能
 * ブロックくずしゲーム
@@ -31,12 +32,9 @@
 * Angular 4.x
 
 ### 対応ブラウザ
-* &gt;= Google Chrome Ver51.0.2704.106
-* &gt;= Microsoft Edge Ver25.10586.0.0
-* &gt;= Firefox Ver48.0
-* &gt;= Safari (iOS 9.3.4)
-
-※ iPhone/Android等では警告が出ますが、新しめの機種であれば動作するはずです。ただし端末によってはプレイしづらい可能性があります。
+* &gt;= Google Chrome Ver61.0.3163.91
+* &gt;= Microsoft Edge Ver40.15063.0.0
+* &gt;= Firefox Ver55.3
 
 ### 開発環境
 * Vagrant 1.9.x - 仮想環境管理
@@ -61,7 +59,8 @@
 2. `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
 3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout_web/app/webgl` フォルダを出力先でビルドを行う。
 
-※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。
+※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
+※ どうしても `npm install` に失敗する場合は、飛ばして以降を手動で実行してください…。
 
 ## 起動方法
 Web側アプリはVM起動時に自動的に立ち上がります。

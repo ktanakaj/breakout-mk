@@ -125,9 +125,16 @@
     - block:
       - block:
         - name: Install node.js package for the server application
-          npm: path={{ app_svr_dir }} executable="npm --no-bin-links"
+          shell: npm install --no-bin-links
+          args:
+            chdir: "{{ app_svr_dir }}"
+          retries: 3
         - name: Install node.js package for the client application
-          npm: path={{ app_web_dir }} executable="npm --no-bin-links"
+          npm:
+            path: "{{ app_web_dir }}"
+            executable: "npm --no-bin-links"
+            state: latest
+          retries: 3
         - name: Build the server application
           shell: npm run {{ build_target }} chdir={{ app_svr_dir }}
         - name: Build the client application
