@@ -1,6 +1,6 @@
 <h1>
-    <span *ngIf="userService.me.status != 'admin'">{{ "BLOCKS" | translate }}</span>
-    <span *ngIf="userService.me.status == 'admin'">{{ "BLOCKS_ADMIN" | translate }}</span>
+    <span *ngIf="userService.me.status != 'admin'">{{ "BLOCK_LIST.TITLE" | translate }}</span>
+    <span *ngIf="userService.me.status == 'admin'">{{ "BLOCK_LIST.TITLE_ADMIN" | translate }}</span>
 </h1>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
@@ -8,14 +8,14 @@
             <tr>
                 <th>{{ "BLOCK.KEY" | translate }}</th>
                 <th>{{ "BLOCK.NAME" | translate }}</th>
-                <th>{{ "STATUS" | translate }}</th>
+                <th>{{ "BLOCK.STATUS" | translate }}</th>
                 <th>{{ "BLOCK.HP" | translate }}</th>
                 <th>{{ "BLOCK.SCORE" | translate }}</th>
                 <th>{{ "BLOCK.XSIZE" | translate }}</th>
                 <th>{{ "BLOCK.YSIZE" | translate }}</th>
                 <th>{{ "BLOCK.COLOR" | translate }}</th>
-                <th>{{ "CREATED_AT" | translate }}</th>
-                <th>{{ "UPDATED_AT" | translate }}</th>
+                <th>{{ "BLOCK.CREATED_AT" | translate }}</th>
+                <th>{{ "BLOCK.UPDATED_AT" | translate }}</th>
             </tr>
         </thead>
         <tbody>
@@ -26,8 +26,8 @@
                 </td>
                 <td>{{ block.name }}</td>
                 <td [ngSwitch]="block.status">
-                    <span *ngSwitchCase="enable">{{ "STATUS_ENABLE" | translate }}</span>
-                    <span *ngSwitchCase="disable">{{ "STATUS_DISABLE" | translate }}</span>
+                    <span *ngSwitchCase="'enable'">{{ "BLOCK.STATUS_ENABLE" | translate }}</span>
+                    <span *ngSwitchCase="'disable'">{{ "BLOCK.STATUS_DISABLE" | translate }}</span>
                     <span *ngSwitchDefault>{{ block.status }}</span>
                 </td>
                 <td>{{ block.hp }}</td>
@@ -41,4 +41,4 @@
         </tbody>
     </table>
 </div>
-<footer *ngIf="userService.me.status == 'admin'" class="content-footer"><a routerLink="/blocks/new" class="btn btn-default btn-lg">{{ "NEW_BLOCK" | translate }}</a></footer>
+<footer *ngIf="userService.me.status == 'admin'" class="content-footer"><a routerLink="/blocks/new" class="btn btn-default btn-lg">{{ "BLOCK_LIST.NEW_BLOCK" | translate }}</a></footer>

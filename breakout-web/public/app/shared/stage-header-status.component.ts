@@ -10,8 +10,8 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'stage-header-status',
 	template: '<span [ngSwitch]="status">' +
-	'<span *ngSwitchCase="public">{{ "STATUS_PUBLIC" | translate }}</span>' +
-	'<span *ngSwitchCase="private">{{ "STATUS_PRIVATE" | translate }}</span>' +
+	'<span *ngSwitchCase="\'public\'">{{ "STAGE.STATUS_PUBLIC" | translate }}</span>' +
+	'<span *ngSwitchCase="\'private\'">{{ "STAGE.STATUS_PRIVATE" | translate }}</span>' +
 	'<span *ngSwitchDefault>{{ status }}</span>' +
 	'</span>',
 })

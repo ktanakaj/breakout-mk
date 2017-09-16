@@ -1,6 +1,6 @@
 <div class="btn-group ranking-date-navi" dropdown>
     <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-	  {{ "TIME_SPAN" | translate }}: {{ selectedLabel }} <span class="caret"></span>
+	  {{ "TIME_SPAN.HEADER" | translate }}: {{ selectedLabel }} <span class="caret"></span>
 	</button>
     <ul *dropdownMenu class="dropdown-menu" role="menu">
         <li *ngFor="let menu of menus" role="menuitem"><a routerLink="{{ menu.href }}">{{ menu.label }}</a></li>

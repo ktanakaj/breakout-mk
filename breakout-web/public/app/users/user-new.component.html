@@ -21,8 +21,10 @@
             </div>
         </div>
     </fieldset>
-    <div>
-        <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "SIGN_UP" | translate }}</button>
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "SIGN_UP" | translate }}</button>
+        </div>
     </div>
 </form>
 <footer class="content-footer"><a routerLink="/">{{ "BACK_TO_TOP" | translate }}</a></footer>

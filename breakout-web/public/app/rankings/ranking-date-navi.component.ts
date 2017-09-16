@@ -81,14 +81,14 @@ export class RankingDateNaviComponent {
 	 */
 	async makeLabel(yearAndMonth: string[]): Promise<string> {
 		return new Promise<string>((resolve) => {
-			let key: string = "TIME_SPAN_TOTAL";
+			let key: string = "TIME_SPAN.TOTAL";
 			let params: Object = {};
 			if (yearAndMonth) {
 				if (yearAndMonth.length == 1) {
-					key = "TIME_SPAN_STYLE_YEAR";
+					key = "TIME_SPAN.YEAR";
 					params = { year: yearAndMonth[0] };
 				} else if (yearAndMonth.length > 1) {
-					key = "TIME_SPAN_STYLE_YEAR_AND_MONTH";
+					key = "TIME_SPAN.YEAR_AND_MONTH";
 					params = { year: yearAndMonth[0], month: yearAndMonth[1] };
 				}
 			}

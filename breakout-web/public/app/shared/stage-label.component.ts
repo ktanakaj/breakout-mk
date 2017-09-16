@@ -10,9 +10,9 @@ import { Stage } from '../stages/stage.model';
  */
 @Component({
 	selector: 'stage-label',
-	template: "<span *ngIf=\"stage && stage.header && stage.header.deletedAt\">{{ 'DELETED' | translate }}</span>" +
-	"<span *ngIf=\"permission && stage && stage.header && stage.header.status == 'private'\">{{ \"PRIVATE\" | translate }}</span>" +
-	"<span *ngIf=\"stage && stage.status == 'updated'\">{{ 'OLD_VERSION' | translate }}</span>" +
+	template: "<span *ngIf=\"stage && stage.header && stage.header.deletedAt\">{{ 'STAGE.DELETED' | translate }}</span>" +
+	"<span *ngIf=\"permission && stage && stage.header && stage.header.status == 'private'\">{{ \"STAGE.PRIVATE\" | translate }}</span>" +
+	"<span *ngIf=\"stage && stage.status == 'updated'\">{{ 'STAGE.OLD_VERSION' | translate }}</span>" +
 	"{{ stage.name }}",
 })
 export class StageLabelComponent {

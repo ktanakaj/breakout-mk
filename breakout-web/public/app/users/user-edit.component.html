@@ -22,22 +22,22 @@
     </fieldset>
     <div *ngIf="userService.me.status == 'admin'">
         <fieldset class="form-group">
-            <label class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+            <label class="control-label col-xs-2">{{ "USER.STATUS" | translate }}:</label>
             <div class="col-xs-5">
-                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="user">{{ "STATUS_USER" | translate }}</label>
-                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="admin">{{ "STATUS_ADMIN" | translate }}</label>
-                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="disable">{{ "STATUS_DISABLE" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="user">{{ "USER.STATUS_USER" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="admin">{{ "USER.STATUS_ADMIN" | translate }}</label>
+                <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="user.status" value="disable">{{ "USER.STATUS_DISABLE" | translate }}</label>
             </div>
         </fieldset>
         <fieldset class="form-group">
-            <label for="user.comment" class="control-label col-xs-2">{{ "COMMENT" | translate }}:</label>
+            <label for="user.comment" class="control-label col-xs-2">{{ "USER.COMMENT" | translate }}:</label>
             <div class="col-xs-5">
                 <textarea [(ngModel)]="user.comment" id="user.comment" name="comment" class="form-control" rows="3"></textarea>
             </div>
         </fieldset>
     </div>
     <fieldset *ngIf="user.createdAt">
-        {{ "CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}<br> {{ "UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}
+        {{ "USER.CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}<br> {{ "USER.UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}
     </fieldset>
     <div>
         <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "UPDATE" | translate }}</button>

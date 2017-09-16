@@ -4,20 +4,20 @@
     </div>
 
     <div class="col-sm-offset-3 col-md-offset-2 main">
-        <h1 class="page-header"><a routerLink="/users/{{ user.id }}">{{ user.name }}</a>{{ "WHO_STAGES" | translate }}</h1>
+        <h1 class="page-header"><a routerLink="/users/{{ user.id }}">{{ user.name }}</a>{{ "STAGE_LIST.WHO_STAGES" | translate }}</h1>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>{{ "STAGE.NAME" | translate }}</th>
-                        <th *ngIf="userService.me != null">{{ "STATUS" | translate }}</th>
+                        <th *ngIf="userService.me != null">{{ "STAGE.STATUS" | translate }}</th>
                         <th>{{ "STAGE.CREATED_AT" | translate }}</th>
-                        <th>{{ "AVERAGE_RATING" | translate }}</th>
-                        <th>{{ "WAS_TRIED_COUNT" | translate }}</th>
-                        <th>{{ "WAS_CLEARED_COUNT" | translate }}</th>
-                        <th>{{ "MAX_SCORE" | translate }}</th>
-                        <th>{{ "FAVORITE_COUNT" | translate }}</th>
-                        <th>{{ "COMMENT_COUNT" | translate }}</th>
+                        <th>{{ "RANKING.AVERAGE_RATING" | translate }}</th>
+                        <th>{{ "RANKING.WAS_TRIED_COUNT" | translate }}</th>
+                        <th>{{ "RANKING.WAS_CLEARED_COUNT" | translate }}</th>
+                        <th>{{ "RANKING.MAX_SCORE" | translate }}</th>
+                        <th>{{ "RANKING.FAVORITE_COUNT" | translate }}</th>
+                        <th>{{ "RANKING.COMMENT_COUNT" | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +41,6 @@
                 </tbody>
             </table>
         </div>
-        <footer *ngIf="userService.me != null && userService.me.id == user.id" class="content-footer"><a routerLink="/stages/new" class="btn btn-default btn-lg">{{ "NEW_STAGE" | translate }}</a></footer>
+        <footer *ngIf="userService.me != null && userService.me.id == user.id" class="content-footer"><a routerLink="/stages/new" class="btn btn-default btn-lg">{{ "STAGE_LIST.NEW_STAGE" | translate }}</a></footer>
     </div>
 </div>

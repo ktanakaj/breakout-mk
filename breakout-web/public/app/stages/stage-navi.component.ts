@@ -11,44 +11,44 @@ const NOW = new Date();
 /** ナビひな型 */
 const NAVI: ReadonlyArray<{ title: string, href: string, auth?: string }[]> = Object.freeze([
 	[{
-		title: "LATEST",
+		title: "STAGE_NAVI.LATEST",
 		href: "/stages",
 	}],
 	[{
-		title: "TOP_ACCESS_TOTAL",
+		title: "STAGE_NAVI.TOP_ACCESS_TOTAL",
 		href: "/rankings/play",
 	}, {
-		title: "TOP_ACCESS_LAST_MONTH",
+		title: "STAGE_NAVI.TOP_ACCESS_LAST_MONTH",
 		href: "/rankings/play/" + NOW.getFullYear() + "/" + (NOW.getMonth() + 1),
 	}],
 	[{
-		title: "TOP_RATING",
+		title: "STAGE_NAVI.TOP_RATING",
 		href: "/rankings/rating",
 	}, {
-		title: "TOP_FAVORITE",
+		title: "STAGE_NAVI.TOP_FAVORITE",
 		href: "/rankings/favorite",
 	}],
 	[{
-		title: "TOP_ACTIVE",
+		title: "STAGE_NAVI.TOP_ACTIVE",
 		href: "/rankings/player/" + NOW.getFullYear() + "/" + (NOW.getMonth() + 1),
 	}, {
-		title: "TOP_CREATORS",
+		title: "STAGE_NAVI.TOP_CREATORS",
 		href: "/rankings/creator",
 	}],
 	[{
-		title: "FAVORITE_STAGES",
+		title: "STAGE_NAVI.FAVORITE",
 		href: "/users/me/favorites",
 		auth: "user",
 	}, {
-		title: "FAVORITE_STAGES",
+		title: "STAGE_NAVI.FAVORITE",
 		href: "/users/me/favorites",
 		auth: "admin",
 	}, {
-		title: "MY_STAGES",
+		title: "STAGE_NAVI.MY_STAGES",
 		href: "/users/me/stages",
 		auth: "user",
 	}, {
-		title: "MY_STAGES",
+		title: "STAGE_NAVI.MY_STAGES",
 		href: "/users/me/stages",
 		auth: "admin",
 	}],

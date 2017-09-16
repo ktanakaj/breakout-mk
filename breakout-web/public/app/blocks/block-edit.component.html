@@ -22,10 +22,10 @@
         </div>
     </fieldset>
     <fieldset class="form-group">
-        <label for="block.key" class="control-label col-xs-2">{{ "STATUS" | translate }}:</label>
+        <label for="block.key" class="control-label col-xs-2">{{ "BLOCK.STATUS" | translate }}:</label>
         <div class="col-xs-5">
-            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="enable">{{ "STATUS_ENABLE" | translate }}</label>
-            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="disable">{{ "STATUS_DISABLE" | translate }}</label>
+            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="enable">{{ "BLOCK.STATUS_ENABLE" | translate }}</label>
+            <label class="radio-inline"><input type="radio" name="status" [(ngModel)]="block.status" value="disable">{{ "BLOCK.STATUS_DISABLE" | translate }}</label>
         </div>
     </fieldset>
     <fieldset class="form-group">
@@ -86,7 +86,7 @@
         </div>
     </fieldset>
     <fieldset *ngIf="block.createdAt">
-        {{ "CREATED_DATE" | translate }}: {{ block.createdAt | date: "short" }}<br> {{ "UPDATED_DATE" | translate }}: {{ block.updatedAt | date: "short" }}
+        {{ "BLOCK.CREATED_DATE" | translate }}: {{ block.createdAt | date: "short" }}<br> {{ "BLOCK.UPDATED_DATE" | translate }}: {{ block.updatedAt | date: "short" }}
     </fieldset>
     <div>
         <button type="submit" class="btn btn-primary btn-lg" [disabled]="!f.form.valid">{{ "SUBMIT" | translate }}</button>

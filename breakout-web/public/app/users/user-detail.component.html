@@ -8,30 +8,30 @@
 
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ "USER_INFO" | translate }}</h2>
+                <h2 class="panel-title">{{ "USER_DETAIL.USER_INFO" | translate }}</h2>
             </div>
             <div class="panel-body">
-                <div>{{ "STATUS" | translate }}:
+                <div>{{ "USER.STATUS" | translate }}:
                     <user-status status="{{ user.status }}"></user-status>
                 </div>
-                <div>{{ "CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}</div>
-                <div>{{ "UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}</div>
+                <div>{{ "USER.CREATED_DATE" | translate }}: {{ user.createdAt | date: "short" }}</div>
+                <div>{{ "USER.UPDATED_DATE" | translate }}: {{ user.updatedAt | date: "short" }}</div>
                 <div>
                     <hr>
                 </div>
-                <div>{{ "CREATED_COUNT" | translate }}: {{ user.info.created || 0 }}</div>
-                <div>{{ "AVERAGE_RATING" | translate }}:
+                <div>{{ "RANKING.CREATED_COUNT" | translate }}: {{ user.info.created || 0 }}</div>
+                <div>{{ "RANKING.AVERAGE_RATING" | translate }}:
                     <user-rating rating="{{ user.info.rating }}"></user-rating>
                 </div>
-                <div>{{ "TOTAL_TRIED_COUNT" | translate }}: {{ user.info.tried || 0 }}</div>
-                <div>{{ "TOTAL_CLEARED_COUNT" | translate }}: {{ user.info.cleared || 0 }}</div>
-                <div>{{ "MAX_SCORE" | translate }}: {{ user.info.score || 0 }}</div>
+                <div>{{ "RANKING.TOTAL_TRIED_COUNT" | translate }}: {{ user.info.tried || 0 }}</div>
+                <div>{{ "RANKING.TOTAL_CLEARED_COUNT" | translate }}: {{ user.info.cleared || 0 }}</div>
+                <div>{{ "RANKING.MAX_SCORE" | translate }}: {{ user.info.score || 0 }}</div>
             </div>
         </div>
 
         <div>
-            <a routerLink="/users/{{ user.id }}/stages" class="btn btn-primary btn-lg">{{ "USER_STAGES" | translate }}</a>
-            <a *ngIf="userService.me && userService.me.id == user.id" routerLink="/users/me/playlogs" class="btn btn-info btn-lg">{{ "PLAY_LOGS" | translate }}</a>
+            <a routerLink="/users/{{ user.id }}/stages" class="btn btn-primary btn-lg">{{ "USER_DETAIL.USER_STAGES" | translate }}</a>
+            <a *ngIf="userService.me && userService.me.id == user.id" routerLink="/users/me/playlogs" class="btn btn-info btn-lg">{{ "PLAYLOG_LIST.TITLE" | translate }}</a>
             <a *ngIf="userService.me && (userService.me.status =='admin' || userService.me.id == user.id)" routerLink="/users/{{ user.id }}/edit" class="btn btn-info btn-lg">{{ "EDIT" | translate }}</a>
         </div>
     </div>

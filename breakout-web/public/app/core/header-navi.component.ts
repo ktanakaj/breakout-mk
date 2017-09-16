@@ -59,7 +59,7 @@ export class HeaderNaviComponent {
 		return [
 			// 未認証
 			{
-				title: "STAGES",
+				title: "HEADER_NAVI.STAGES",
 				href: "/stages",
 				auth: "nouser",
 			},
@@ -75,17 +75,17 @@ export class HeaderNaviComponent {
 			},
 			// 認証済
 			{
-				title: "STAGES_USER",
+				title: "HEADER_NAVI.STAGES_USER",
 				href: "/stages",
 				auth: "user",
 			},
 			{
-				title: "BLOCKS",
+				title: "HEADER_NAVI.BLOCKS",
 				href: "/blocks",
 				auth: "user",
 			},
 			{
-				title: "USER_ME",
+				title: "HEADER_NAVI.USER_ME",
 				option: "(" + user.name + ")",
 				href: "/users/me",
 				auth: "user",
@@ -97,22 +97,22 @@ export class HeaderNaviComponent {
 			},
 			// 管理者
 			{
-				title: "STAGES_ADMIN",
+				title: "HEADER_NAVI.STAGES_ADMIN",
 				href: "/stages",
 				auth: "admin",
 			},
 			{
-				title: "BLOCKS_ADMIN",
+				title: "HEADER_NAVI.BLOCKS_ADMIN",
 				href: "/blocks",
 				auth: "admin",
 			},
 			{
-				title: "USERS_ADMIN",
+				title: "HEADER_NAVI.USERS_ADMIN",
 				href: "/users",
 				auth: "admin",
 			},
 			{
-				title: "USER_ME",
+				title: "HEADER_NAVI.USER_ME",
 				option: "(" + user.name + ")",
 				href: "/users/me",
 				auth: "admin",
