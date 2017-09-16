@@ -57,7 +57,7 @@
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
 2. `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
-3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout_web/app/webgl` フォルダを出力先でビルドを行う。
+3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/public/webgl` フォルダを出力先でビルドを行う。
 
 ※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
 ※ どうしても `npm install` に失敗する場合は、飛ばして以降を手動で実行してください…。
@@ -111,8 +111,6 @@ VMの初期状態では、サンプルデータとともに以下の初期アカ
 ## その他
 各種ログは `/var/log/local/breakout-mk` 下に出力されます。
 アクセスログ、デバッグログ、エラーログを出力します。
-
-iPhone/Android等でのWebGLの警告の削除は、Unityのビルド後に生成される `webgl/index.html` を直接編集して、`compatibilitycheck` に `function(){}` 等の何もしない処理を指定することで可能です。
 
 VMのDBを参照する場合は、MySQL Workbench等でMySQLの標準ポートに接続してください（接続情報は `default.yaml` 参照）。
 
