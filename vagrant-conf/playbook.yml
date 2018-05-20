@@ -2,9 +2,9 @@
 - hosts: default
   vars:
     timezone: "Asia/Tokyo"
-    nodesource: https://rpm.nodesource.com/setup_8.x
-    swaggeruisource: https://github.com/swagger-api/swagger-ui/archive/v3.0.18.tar.gz
-    swaggeruidest: /var/www/swagger
+    nodesource: "https://rpm.nodesource.com/setup_10.x"
+    swaggeruisource: "https://github.com/swagger-api/swagger-ui/archive/v3.13.0.tar.gz"
+    swaggeruidest: "/var/www/swagger"
     app_nginx_conf_src: "/vagrant/vagrant-conf/nginx.conf"
     app_nginx_conf_dest: /etc/nginx/default.d/vagrant.conf
     app_svr_dir: "/vagrant/breakout-svr"
@@ -31,7 +31,7 @@
           when: timedatectl_timezone.stdout == ""
       - block:
         - name: Check Node.js repository version
-          shell: yum info nodejs | grep -e "Version\s*:\s*[8-9].*$"
+          shell: yum info nodejs | grep -e "Version\s*:\s*1[0-9].*$"
           register: nodejs_repository_version
           check_mode: no
           changed_when: false
@@ -62,6 +62,8 @@
           npm: name=pm2 global=yes
         - name: Install "webpack" node.js package globally
           npm: name=webpack global=yes
+        - name: Install "webpack-cli" node.js package globally
+          npm: name=webpack-cli global=yes
         - name: Install "typescript" node.js package globally
           npm: name=typescript global=yes
         - name: Install "typedoc" node.js package globally

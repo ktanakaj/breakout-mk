@@ -19,26 +19,26 @@
 
 ## 環境
 * CentOS 7
-* Node.js v8.x
+* Node.js v10.x
 * MariaDB 5.x
 * Redis 3.x
 * nginx 1.10.x
 * Express 4.x
-    * Sequelize 3.x
-    * Sequelize-typescript 0.3.x
-    * Passport 0.3.x
+    * Sequelize 4.x
+    * Sequelize-typescript 0.6.x
+    * Passport 0.4.x
     * Node-config 1.x
     * Log4js 1.x
-* Angular 4.x
+* Angular 6.x
 
 ### 対応ブラウザ
-* &gt;= Google Chrome Ver61.0.3163.91
-* &gt;= Microsoft Edge Ver40.15063.0.0
-* &gt;= Firefox Ver55.3
+* &gt;= Google Chrome Ver66.0.3359.181
+* &gt;= Microsoft Edge Ver41.16299.402.0
+* &gt;= Firefox Ver60.1
 
 ### 開発環境
-* Vagrant 1.9.x - 仮想環境管理
-    * VirtualBox 5.1.x - 仮想環境
+* Vagrant 2.1.x - 仮想環境管理
+    * VirtualBox 5.2.x - 仮想環境
     * vagrant-vbguest - Vagrantプラグイン
 * Visual Studio Code - アプリ開発用エディター
 * Unity 2017.1.0f3 - WebGLゲーム開発用IDE
