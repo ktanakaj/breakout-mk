@@ -4,7 +4,7 @@
  */
 import { EventEmitter } from 'events';
 import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { throwErrorByResponse, UnauthorizedError } from '../core/http-error';
 import { User, UserWithInfo } from './user.model';
 import { Playlog } from './playlog.model';
@@ -26,7 +26,7 @@ export class UserService extends EventEmitter {
 	 * モジュールをDIしてコンポーネントを生成する。
 	 * @param http HTTPモジュール。
 	 */
-	constructor(private http: Http) {
+	constructor(private http: HttpClient) {
 		super();
 		// 認証状態を復元
 		this.checkSession();
@@ -37,10 +37,9 @@ export class UserService extends EventEmitter {
 	 * @returns 検索結果。
 	 */
 	findAll(): Promise<User[]> {
-		return this.http.get('/api/users')
+		return this.http.get<User[]>('/api/users')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -50,10 +49,9 @@ export class UserService extends EventEmitter {
 	 * @returns 検索結果。
 	 */
 	findById(id: number): Promise<User> {
-		return this.http.get('/api/users/' + id)
+		return this.http.get<User>('/api/users/' + id)
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -64,12 +62,11 @@ export class UserService extends EventEmitter {
 	 */
 	findByIdWithAllInfo(id: number): Promise<UserWithInfo> {
 		// ※ 関連情報も一緒に取得
-		const params = new URLSearchParams();
-		params.set('fields', 'all');
-		return this.http.get('/api/users/' + id, { search: params })
+		const params = new HttpParams()
+			.set('fields', 'all');
+		return this.http.get<UserWithInfo>('/api/users/' + id, { params })
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -79,9 +76,8 @@ export class UserService extends EventEmitter {
 	 * @throws 未認証状態、または通信エラーの場合。
 	 */
 	findMe(): Promise<User> {
-		return this.http.get('/api/users/me')
+		return this.http.get<User>('/api/users/me')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -92,9 +88,8 @@ export class UserService extends EventEmitter {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	update(user: User): Promise<User> {
-		return this.http.put("/api/users/" + user.id, user)
+		return this.http.put<User>("/api/users/" + user.id, user)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -106,11 +101,11 @@ export class UserService extends EventEmitter {
 	 */
 	signup(user: User): Promise<User> {
 		// ※ 登録成功時はセッションが開始される
-		return this.http.post('/api/users', user)
+		return this.http.post<User>('/api/users', user)
 			.toPromise()
-			.then((res) => {
+			.then((me) => {
 				// プロパティに認証情報を持たせる
-				this.me = res.json();
+				this.me = me;
 				this.emit('login', this.me);
 				return this.me;
 			})
@@ -126,11 +121,11 @@ export class UserService extends EventEmitter {
 	 */
 	login(name: string, password: string): Promise<User> {
 		// ※ 認証成功時はセッションが開始される
-		return this.http.post('/api/authenticate', { name, password })
+		return this.http.post<User>('/api/authenticate', { name, password })
 			.toPromise()
-			.then((res) => {
+			.then((me) => {
 				// プロパティに認証情報を持たせる
-				this.me = res.json();
+				this.me = me;
 				this.emit('login', this.me);
 				return this.me;
 			})
@@ -179,10 +174,9 @@ export class UserService extends EventEmitter {
 	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findPlaylogs(): Promise<Playlog[]> {
-		return this.http.get('/api/users/me/playlogs')
+		return this.http.get<Playlog[]>('/api/users/me/playlogs')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 

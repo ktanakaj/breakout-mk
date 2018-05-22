@@ -30,7 +30,7 @@ function makeKey(base: string, ...options: string[]): string {
  * @param idKey DBモデルのIDが入っているプロパティ名。
  * @returns 読み込み結果。
  */
-async function bulkLoadDbModels(redisModels: { member: string }[], dbClass: typeof Model, objKey: string, idKey: string = "id"): Promise<Object[]> {
+async function bulkLoadDbModels(redisModels: { member: string }[], dbClass: any/*typeof Model*/, objKey: string, idKey: string = "id"): Promise<Object[]> {
 	if (redisModels.length <= 0) {
 		return [];
 	}

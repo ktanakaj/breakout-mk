@@ -73,7 +73,7 @@
 const DUMMY = 0;
 
 import * as express from 'express';
-import * as expressPromiseRouter from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';

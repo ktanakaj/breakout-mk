@@ -2,7 +2,7 @@
  * HTTPエラー用例外クラス群。
  * @module ./app/core/http-error
  */
-import { Response } from '@angular/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * HTTPのエラーを格納する例外クラス。
@@ -133,20 +133,22 @@ export class ServiceUnavailableError extends HttpError {
 }
 
 /**
- * HTTPレスポンスから例外を投げる。
- * @param response HTTPレスポンス。
+ * HTTP通信時のエラーから例外を投げる。
+ * @param err HTTP通信時のエラー。
  * @throws 生成した例外。
  */
-export function throwErrorByResponse(response: Response | any): never {
-	// レスポンスの場合、HTTPエラーに変換して投げる
-	if (response instanceof Response) {
+export function throwErrorByResponse(err: HttpErrorResponse | any): never {
+	// レスポンスエラーの場合、HTTPエラーに変換して投げる
+	// ※ Angular4以前のエラーがレスポンスで返ってきたHTTPモジュールのために作った処理。
+	//    Angular5以降は例外になったので要らないかも。
+	if (err instanceof HttpErrorResponse) {
 		// レスポンスが文字列の場合エラーメッセージと判断
 		let message = '';
-		if (response.headers.has('content-type') && response.headers.get('content-type').startsWith('text/plain')) {
-			message = response.text();
+		if (err.headers.has('content-type') && err.headers.get('content-type').startsWith('text/plain')) {
+			message = err.error.message;
 		}
-		throw HttpError.create(response.status, message);
+		throw HttpError.create(err.status, message);
 	}
 	// それ以外はそのまま投げる
-	throw response;
+	throw err;
 }

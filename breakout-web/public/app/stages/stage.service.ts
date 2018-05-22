@@ -3,7 +3,7 @@
  * @module ./app/stages/stage.service
  */
 import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { throwErrorByResponse } from '../core/http-error';
 import { Block } from '../blocks/block.model';
 import { Stage, StageComment, StageFavorite, StageRating, StageWithInfo } from './stage.model';
@@ -20,17 +20,16 @@ export class StageService {
 	 * モジュールをDIしてコンポーネントを生成する。
 	 * @param http HTTPモジュール。
 	 */
-	constructor(private http: Http) { }
+	constructor(private http: HttpClient) { }
 
 	/**
 	 * ユーザーがプレイ可能なステージの検索。
 	 * @returns 検索結果。
 	 */
 	findAll(): Promise<Stage[]> {
-		return this.http.get('/api/stages')
+		return this.http.get<Stage[]>('/api/stages')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -40,10 +39,9 @@ export class StageService {
 	 * @returns 検索結果。
 	 */
 	findById(id: number): Promise<Stage> {
-		return this.http.get('/api/stages/' + id)
+		return this.http.get<Stage>('/api/stages/' + id)
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -54,12 +52,11 @@ export class StageService {
 	 */
 	findByIdWithAllInfo(id: number): Promise<StageWithInfo> {
 		// ※ 関連情報も一緒に取得
-		const params = new URLSearchParams();
-		params.set('fields', 'all');
-		return this.http.get('/api/stages/' + id, { search: params })
+		const params = new HttpParams()
+			.set('fields', 'all');
+		return this.http.get<StageWithInfo>('/api/stages/' + id, { params })
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -72,14 +69,13 @@ export class StageService {
 	save(stage: Stage): Promise<Stage> {
 		// IDがない場合は新規
 		let observable;
-		if (stage.id == undefined) {
-			observable = this.http.post('/api/stages/', stage)
+		if (stage.id === undefined) {
+			observable = this.http.post<Stage>('/api/stages/', stage);
 		} else {
-			observable = this.http.put('/api/stages/' + stage.id, stage)
+			observable = this.http.put<Stage>('/api/stages/' + stage.id, stage);
 		}
 		return observable
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -90,9 +86,8 @@ export class StageService {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	deleteById(id: number): Promise<Stage> {
-		return this.http.delete("/api/stages/" + id)
+		return this.http.delete<Stage>("/api/stages/" + id)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -102,10 +97,9 @@ export class StageService {
 	 * @returns 検索結果。
 	 */
 	findByUser(userId: number): Promise<Stage[]> {
-		return this.http.get('/api/users/' + userId + '/stages')
+		return this.http.get<Stage[]>('/api/users/' + userId + '/stages')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -115,9 +109,8 @@ export class StageService {
 	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findByMe(): Promise<Stage[]> {
-		return this.http.get('/api/users/me/stages')
+		return this.http.get<Stage[]>('/api/users/me/stages')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -127,9 +120,8 @@ export class StageService {
 	 * @throws 未認証、または通信エラーの場合。
 	 */
 	findFavoriteByMe(): Promise<Stage[]> {
-		return this.http.get('/api/users/me/favorites')
+		return this.http.get<Stage[]>('/api/users/me/favorites')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -138,10 +130,9 @@ export class StageService {
 	 * @returns 検索結果。
 	 */
 	findLatest(): Promise<Stage[]> {
-		return this.http.get('/api/stages/latest')
+		return this.http.get<Stage[]>('/api/stages/latest')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -155,14 +146,13 @@ export class StageService {
 	saveComment(stageId: number, comment: StageComment): Promise<StageComment> {
 		// IDがない場合は新規
 		let observable;
-		if (comment.id == undefined) {
-			observable = this.http.post("/api/stages/" + stageId + "/comments", comment);
+		if (comment.id === undefined) {
+			observable = this.http.post<StageComment>("/api/stages/" + stageId + "/comments", comment);
 		} else {
-			observable = this.http.put("/api/stages/" + stageId + "/comments/" + comment.id, comment);
+			observable = this.http.put<StageComment>("/api/stages/" + stageId + "/comments/" + comment.id, comment);
 		}
 		return observable
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -174,9 +164,8 @@ export class StageService {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	deleteCommentById(stageId: number, commentId: number): Promise<StageComment> {
-		return this.http.delete("/api/stages/" + stageId + "/comments/" + commentId)
+		return this.http.delete<StageComment>("/api/stages/" + stageId + "/comments/" + commentId)
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -188,9 +177,8 @@ export class StageService {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	rate(stageId: number, rating: number): Promise<StageRating> {
-		return this.http.post("/api/stages/" + stageId + "/rating", { rating })
+		return this.http.post<StageRating>("/api/stages/" + stageId + "/rating", { rating })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -201,9 +189,8 @@ export class StageService {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	addFavorite(stageId: number): Promise<StageFavorite> {
-		return this.http.post("/api/stages/" + stageId + "/favorite", {})
+		return this.http.post<StageFavorite>("/api/stages/" + stageId + "/favorite", {})
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -214,9 +201,8 @@ export class StageService {
 	 * @throws 権限がない、または通信エラーの場合。
 	 */
 	removeFavorite(stageId: number): Promise<StageFavorite> {
-		return this.http.delete("/api/stages/" + stageId + "/favorite")
+		return this.http.delete<StageFavorite>("/api/stages/" + stageId + "/favorite")
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -234,11 +220,11 @@ export class StageService {
 		let match;
 		while ((match = regex.exec(map)) !== null) {
 			let command = match[0];
-			if (command == "\n") {
+			if (command === "\n") {
 				// 改行は、次のラインに切り替え
 				table.push(row);
 				row = [];
-			} else if (command == " ") {
+			} else if (command === " ") {
 				// 空白の場合、1要素スキップ
 				row.push(null);
 			} else {

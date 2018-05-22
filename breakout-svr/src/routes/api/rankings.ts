@@ -6,7 +6,7 @@
  * @module ./routes/api/rankings
  */
 import * as express from 'express';
-import * as expressPromiseRouter from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import StagePlayRanking from '../../models/rankings/stage-play-ranking';
 import StageRatingRanking from '../../models/rankings/stage-rating-ranking';
 import StageFavoriteRanking from '../../models/rankings/stage-favorite-ranking';

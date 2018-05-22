@@ -4,7 +4,7 @@
  * ゲームの各ステージのプレイログ1件に対応する。
  * @module ./models/playlog
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, ForeignKey, BelongsTo, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, ForeignKey, BelongsTo, BeforeValidate, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
@@ -29,42 +29,6 @@ import Stage from './stage';
 	}, {
 		fields: ['stageId', 'userId']
 	}],
-	hooks: {
-		/**
-		 * 型を合わせる。
-		 * @param playlog バリデーションされるプレイログ。
-		 * @param options バリデーション処理のオプション。
-		 */
-		beforeValidate: function (playlog: Playlog, options: {}): void {
-			// clearedに文字列が入ってきた場合booleanに変換
-			// （sequelizeがそのまま渡してしまい、MySQLが暗黙の型変換で失敗するため）
-			if (playlog.cleared !== undefined && playlog.cleared !== null) {
-				playlog.cleared = playlog.isClear();
-			}
-		},
-		/**
-		 * ランキングへの登録。
-		 * @param playlog 登録されたプレイログ。
-		 * @param options 登録処理のオプション。
-		 */
-		afterCreate: function (playlog: Playlog, options: {}): void {
-			StagePlayRanking.addByLog(playlog)
-				.then(() => UserPlayRanking.addByLog(playlog))
-				.catch(console.error);
-		},
-		/**
-		 * スコアランキングの更新。
-		 * @param playlog 更新されたプレイログ。
-		 * @param options 更新処理のオプション。
-		 */
-		afterUpdate: function (playlog: Playlog, options: {}): void {
-			// スコアが設定された場合、ランキングを更新
-			if (playlog.score != undefined && playlog.score != playlog.previous("score")) {
-				StageScoreRanking.updateByLog(playlog)
-					.catch(console.error);
-			}
-		},
-	},
 	scopes: {
 		playing: {
 			where: {
@@ -158,6 +122,46 @@ export default class Playlog extends Model<Playlog> {
 	/** ステージ */
 	@BelongsTo(() => Stage)
 	stage: Stage;
+
+	/**
+	 * 型を合わせる。
+	 * @param playlog バリデーションされるプレイログ。
+	 * @param options バリデーション処理のオプション。
+	 */
+	@BeforeValidate
+	static convertParameters(playlog: Playlog, options: {}): void {
+		// clearedに文字列が入ってきた場合booleanに変換
+		// （sequelizeがそのまま渡してしまい、MySQLが暗黙の型変換で失敗するため）
+		if (playlog.cleared !== undefined && playlog.cleared !== null) {
+			playlog.cleared = playlog.isClear();
+		}
+	}
+
+	/**
+	 * ランキングへの登録。
+	 * @param playlog 登録されたプレイログ。
+	 * @param options 登録処理のオプション。
+	 */
+	@AfterCreate
+	static addRanking(playlog: Playlog, options: {}): void {
+		StagePlayRanking.addByLog(playlog)
+			.then(() => UserPlayRanking.addByLog(playlog))
+			.catch(console.error);
+	}
+
+	/**
+	 * スコアランキングの更新。
+	 * @param playlog 更新されたプレイログ。
+	 * @param options 更新処理のオプション。
+	 */
+	@AfterUpdate
+	static updateRanking(playlog: Playlog, options: {}): void {
+		// スコアが設定された場合、ランキングを更新
+		if (playlog.score !== undefined && playlog.score !== playlog.previous("score")) {
+			StageScoreRanking.updateByLog(playlog)
+				.catch(console.error);
+		}
+	}
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。

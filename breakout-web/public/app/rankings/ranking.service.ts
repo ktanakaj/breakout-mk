@@ -3,7 +3,7 @@
  * @module ./app/blocks/block.service
  */
 import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { throwErrorByResponse } from '../core/http-error';
 import { PlayRankingEntry, RatingRankingEntry, FavoriteRankingEntry, ScoreRankingEntry, PlayerRankingEntry, CreatorRankingEntry } from './ranking.model';
 
@@ -16,7 +16,7 @@ export class RankingService {
 	 * モジュールをDIしてコンポーネントを生成する。
 	 * @param http HTTPモジュール。
 	 */
-	constructor(private http: Http) { }
+	constructor(private http: HttpClient) { }
 
 	/**
 	 * ページング用のクエリーを生成する。
@@ -24,13 +24,13 @@ export class RankingService {
 	 * @param limit 検索件数。
 	 * @returns get絞り込み用のパラメータ。
 	 */
-	private makePagingQuery(offset: number, limit: number): URLSearchParams {
-		const params = new URLSearchParams();
+	private makePagingQuery(offset: number, limit: number): HttpParams {
+		let params = new HttpParams();
 		if (offset !== undefined) {
-			params.set('offset', String(offset));
+			params = params.set('offset', String(offset));
 		}
 		if (limit !== undefined) {
-			params.set('limit', String(limit));
+			params = params.set('limit', String(limit));
 		}
 		return params;
 	}
@@ -52,9 +52,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStagePlayRanking(keys: string[], offset: number, limit: number): Promise<PlayRankingEntry[]> {
-		return this.http.get('/api/rankings/play/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<PlayRankingEntry[]>('/api/rankings/play/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -63,9 +62,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStagePlayRankingKeys(): Promise<string[][]> {
-		return this.http.get('/api/rankings/play/keys')
+		return this.http.get<string[][]>('/api/rankings/play/keys')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -78,9 +76,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStageScoreRanking(id: number, keys: string[], offset: number, limit: number): Promise<ScoreRankingEntry[]> {
-		return this.http.get('/api/stages/' + id + '/rankings/score/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<ScoreRankingEntry[]>('/api/stages/' + id + '/rankings/score/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -90,9 +87,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStageScoreRankingKeys(id: number): Promise<string[][]> {
-		return this.http.get('/api/stages/' + id + '/rankings/score/keys')
+		return this.http.get<string[][]>('/api/stages/' + id + '/rankings/score/keys')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -103,9 +99,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStageRatingRanking(offset: number, limit: number): Promise<RatingRankingEntry[]> {
-		return this.http.get('/api/rankings/rating/', { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<RatingRankingEntry[]>('/api/rankings/rating/', { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -116,9 +111,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findStageFavoriteRanking(offset: number, limit: number): Promise<FavoriteRankingEntry[]> {
-		return this.http.get('/api/rankings/favorite/', { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<FavoriteRankingEntry[]>('/api/rankings/favorite/', { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -130,9 +124,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findUserPlayRanking(keys: string[], offset: number, limit: number): Promise<PlayerRankingEntry[]> {
-		return this.http.get('/api/rankings/player/' + this.makeKeysToPath(keys), { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<PlayerRankingEntry[]>('/api/rankings/player/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -141,9 +134,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findUserPlayRankingKeys(): Promise<string[][]> {
-		return this.http.get('/api/rankings/player/keys')
+		return this.http.get<string[][]>('/api/rankings/player/keys')
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
@@ -154,9 +146,8 @@ export class RankingService {
 	 * @returns 検索結果。
 	 */
 	findUserRatingRanking(offset: number, limit: number): Promise<CreatorRankingEntry[]> {
-		return this.http.get('/api/rankings/creator/', { search: this.makePagingQuery(offset, limit) })
+		return this.http.get<CreatorRankingEntry[]>('/api/rankings/creator/', { params: this.makePagingQuery(offset, limit) })
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 }

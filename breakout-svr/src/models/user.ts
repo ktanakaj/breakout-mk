@@ -4,7 +4,7 @@
  * ブロックくずしのユーザー一人一人に対応する。
  * @module ./models/user
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
@@ -36,10 +36,6 @@ const random = new Random();
 	indexes: [{
 		fields: ['name']
 	}],
-	hooks: {
-		beforeCreate: beforeSave,
-		beforeUpdate: beforeSave,
-	},
 	scopes: {
 		login: {
 			where: {
@@ -108,6 +104,20 @@ export default class User extends Model<User> {
 	/** ステージレーティング */
 	@HasMany(() => StageRating)
 	ratings: StageRating[];
+
+	/**
+	 * パスワードをハッシュ化する。
+	 * @param user 更新されるユーザー。
+	 * @param options 更新処理のオプション。
+	 */
+	@BeforeCreate
+	@BeforeUpdate
+	static hashPasswordIfChanged(user: User, options: Object): void {
+		// 新しいパスワードが設定されている場合、自動でハッシュ化する
+		if (user.password !== undefined && user.password !== "" && user.password !== user.previous("password")) {
+			user.hashPassword();
+		}
+	}
 
 	/**
 	 * 渡されたパスワードをハッシュ化された値と比較する。
@@ -197,17 +207,5 @@ export default class User extends Model<User> {
 		const score = await (new UserRatingRanking()).getAsync(String(userId));
 		result.info.rating = score;
 		return result;
-	}
-}
-
-/**
- * パスワードをハッシュ化する。
- * @param user 更新されるユーザー。
- * @param options 更新処理のオプション。
- */
-function beforeSave(user: User, options: Object): void {
-	// 新しいパスワードが設定されている場合、自動でハッシュ化する
-	if (user.password != undefined && user.password != "" && user.password != user.previous("password")) {
-		user.hashPassword();
 	}
 }

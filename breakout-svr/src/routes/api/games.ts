@@ -12,7 +12,7 @@
  *   description: ゲーム関連API
  */
 import * as express from 'express';
-import * as expressPromiseRouter from 'express-promise-router';
+import expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
 import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';

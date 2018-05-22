@@ -3,7 +3,7 @@
  * @module ./app/blocks/block.service
  */
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { throwErrorByResponse } from '../core/http-error';
 import { Block } from './block.model';
 
@@ -19,20 +19,19 @@ export class BlockService {
 	 * モジュールをDIしてコンポーネントを生成する。
 	 * @param http HTTPモジュール。
 	 */
-	constructor(private http: Http) { }
+	constructor(private http: HttpClient) { }
 
 	/**
 	 * 全ブロックの参照。
 	 * @returns 検索結果。
 	 */
 	findAll(): Promise<Block[]> {
-		return this.http.get('/api/blocks')
+		return this.http.get<Block[]>('/api/blocks')
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => {
-				const blocks = res.json();
+			.then((blocks) => {
 				blocks.forEach((b) => {
-					b.color = BlockService.hexColor(b.color);
+					b.color = BlockService.hexColor(<any>b.color);
 				});
 				return blocks;
 			})
@@ -45,12 +44,11 @@ export class BlockService {
 	 * @returns 検索結果。
 	 */
 	findById(key: string): Promise<Block> {
-		return this.http.get('/api/blocks/' + key)
+		return this.http.get<Block>('/api/blocks/' + key)
 			.retry(MAX_RETRY)
 			.toPromise()
-			.then((res) => {
-				const block = res.json();
-				block.color = BlockService.hexColor(block.color);
+			.then((block) => {
+				block.color = BlockService.hexColor(<any>block.color);
 				return block;
 			})
 			.catch(throwErrorByResponse);
@@ -66,14 +64,13 @@ export class BlockService {
 		// 日時がない場合は新規
 		block.color = BlockService.decColor(String(block.color));
 		let observable;
-		if (block.createdAt == undefined) {
-			observable = this.http.post('/api/blocks/', block)
+		if (block.createdAt === undefined) {
+			observable = this.http.post('/api/blocks/', block);
 		} else {
-			observable = this.http.put('/api/blocks/' + block.key, block)
+			observable = this.http.put('/api/blocks/' + block.key, block);
 		}
 		return observable
 			.toPromise()
-			.then((res) => res.json())
 			.catch(throwErrorByResponse);
 	}
 
