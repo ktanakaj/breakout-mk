@@ -60,7 +60,7 @@ export class BlockEditComponent implements OnInit {
 		if (key) {
 			this.block = await this.blockService.findById(key);
 		}
-	};
+	}
 
 	/**
 	 * 新規作成／更新処理。
@@ -76,5 +76,5 @@ export class BlockEditComponent implements OnInit {
 			}
 			throw e;
 		}
-	};
+	}
 }

@@ -33,7 +33,7 @@ const router = expressPromiseRouter();
  *         $ref: '#/responses/RankingKeys'
  */
 router.get('/play/keys', async function (req: express.Request, res: express.Response): Promise<void> {
-	const rankings = await StagePlayRanking.yearAndMonthsAsync()
+	const rankings = await StagePlayRanking.yearAndMonthsAsync();
 	res.json(rankings);
 });
 
@@ -84,7 +84,7 @@ router.get('/play/keys', async function (req: express.Request, res: express.Resp
  *                     description: クリアされた回数
  */
 router.get(/\/play\/([0-9]*)\/?([0-9]*)/, async function (req: express.Request, res: express.Response): Promise<void> {
-	const rankings = await new StagePlayRanking(req.params[0], req.params[1]).findRankingAsync()
+	const rankings = await new StagePlayRanking(req.params[0], req.params[1]).findRankingAsync();
 	res.json(rankings);
 });
 
@@ -167,7 +167,7 @@ router.get('/favorite/', async function (req: express.Request, res: express.Resp
  *         $ref: '#/responses/RankingKeys'
  */
 router.get('/player/keys', async function (req: express.Request, res: express.Response): Promise<void> {
-	const keys = await UserPlayRanking.yearAndMonthsAsync()
+	const keys = await UserPlayRanking.yearAndMonthsAsync();
 	res.json(keys);
 });
 

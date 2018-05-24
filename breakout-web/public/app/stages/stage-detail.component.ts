@@ -103,7 +103,7 @@ export class StageDetailComponent implements OnInit {
 		} catch (e) {
 			this.error = e;
 		}
-	};
+	}
 
 	/**
 	 * コメント削除確認処理。
@@ -112,7 +112,7 @@ export class StageDetailComponent implements OnInit {
 	confirmDeleteComment(comment: StageComment) {
 		this.selectedComment = comment;
 		this.confirmModal.show();
-	};
+	}
 
 	/**
 	 * コメント削除処理。
@@ -127,7 +127,7 @@ export class StageDetailComponent implements OnInit {
 		} catch (e) {
 			this.error = e;
 		}
-	};
+	}
 
 	/**
 	 * レーティング設定。
@@ -141,7 +141,7 @@ export class StageDetailComponent implements OnInit {
 				this.error = e;
 			}
 		}
-	};
+	}
 
 	/**
 	 * レーティング表示更新。
@@ -149,7 +149,7 @@ export class StageDetailComponent implements OnInit {
 	 */
 	hoveringOver(value: number): void {
 		this.stage.info.user.rating = value;
-	};
+	}
 
 	/**
 	 * お気に入り登録。
@@ -162,7 +162,7 @@ export class StageDetailComponent implements OnInit {
 		} catch (e) {
 			this.error = e;
 		}
-	};
+	}
 
 	/**
 	 * お気に入り削除。
@@ -175,5 +175,5 @@ export class StageDetailComponent implements OnInit {
 		} catch (e) {
 			this.error = e;
 		}
-	};
+	}
 }

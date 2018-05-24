@@ -105,7 +105,7 @@ export default class StageScoreRanking extends SortedSet {
 	 */
 	static keysAsync(stageId: number | string = "*"): Promise<string[]> {
 		let base = StageScoreRanking.makeKey(<any>stageId);
-		if (stageId != "*") {
+		if (stageId !== "*") {
 			// ※ ステージIDの前方一致で他のステージがヒットしてしまうため、
 			//   stageScoreRankings:2:* 形式で検索
 			//   ただしそれだけだと累計が取れなくなるので、2回実行して混ぜる
@@ -125,7 +125,7 @@ export default class StageScoreRanking extends SortedSet {
 	 * @returns 検索結果。
 	 */
 	static async yearAndMonthsAsync(stageId: number): Promise<string[][]> {
-		const keys = await StageScoreRanking.keysAsync(stageId)
+		const keys = await StageScoreRanking.keysAsync(stageId);
 		return redisHelper.keysToYearAndMonths(keys, StageScoreRanking.makeKey(stageId));
 	}
 

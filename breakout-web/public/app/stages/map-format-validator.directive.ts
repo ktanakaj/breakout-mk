@@ -70,7 +70,7 @@ export class MapFormatValidator implements Validator {
 					// サイズY MAX以上の位置にオブジェクト有
 					return {
 						validateMapFormat: true
-					}
+					};
 				}
 			}
 		}
@@ -80,7 +80,7 @@ export class MapFormatValidator implements Validator {
 					// サイズX MAX以上の位置にオブジェクト有
 					return {
 						validateMapFormat: true
-					}
+					};
 				}
 			}
 		}
@@ -96,6 +96,6 @@ export class MapFormatValidator implements Validator {
 		}
 		return {
 			validateMapFormat: true
-		}
+		};
 	}
 }

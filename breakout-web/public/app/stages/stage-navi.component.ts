@@ -105,7 +105,7 @@ export class StageNaviComponent implements OnInit {
 	makeNavi(auth: string): { title: string, href: string }[][] {
 		let navi: { title: string, href: string }[][] = [];
 		for (let i = 0; i < NAVI.length; i++) {
-			navi[i] = (<any>NAVI[i]).filter((v) => !v.auth || v.auth == auth);
+			navi[i] = (<any>NAVI[i]).filter((v) => !v.auth || v.auth === auth);
 		}
 		return navi.filter((sub) => sub.length > 0);
 	}
@@ -121,7 +121,7 @@ export class StageNaviComponent implements OnInit {
 		}
 		for (let i = 0; i < this.stageNavi.length; i++) {
 			for (let j = 0; j < this.stageNavi[i].length; j++) {
-				this.stageNavi[i][j].active = this.stageNavi[i][j].href == path;
+				this.stageNavi[i][j].active = this.stageNavi[i][j].href === path;
 			}
 		}
 	}

@@ -297,7 +297,7 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
 	let stageId = validationUtils.toNumber(req.params.id);
 	let userId = req.user ? req.user.id : null;
 	let stage;
-	if (req.query.fields == "all") {
+	if (req.query.fields === "all") {
 		stage = await Stage.findByIdWithAccessibleAllInfo(stageId, userId);
 	} else {
 		stage = await Stage.scope({ method: ['accessible', userId] }).findById(stageId);

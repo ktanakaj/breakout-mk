@@ -219,7 +219,7 @@ export default class Playlog extends Model<Playlog> {
 		}
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = makeStartAndEndDate(date);
-		if (between.length == 2) {
+		if (between.length === 2) {
 			where['createdAt'] = { $between: between };
 		}
 		return await Playlog.findAll<any>({
@@ -248,7 +248,7 @@ export default class Playlog extends Model<Playlog> {
 		}
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = makeStartAndEndDate(date);
-		if (between.length == 2) {
+		if (between.length === 2) {
 			where['createdAt'] = { $between: between };
 		}
 		return await Playlog.findAll<any>({

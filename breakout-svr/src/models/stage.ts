@@ -182,7 +182,7 @@ export default class Stage extends Model<Stage> {
 		 */
 		const saveWithNewVersion = async (options) => {
 			// 新規またはマップが変わっていない場合、普通にsave
-			if (this.isNewRecord || this.map == this.previous("map")) {
+			if (this.isNewRecord || this.map === this.previous("map")) {
 				return await this.save(options);
 			}
 			// マップが変わった場合は、旧レコードを updated にして新レコードを登録
@@ -191,7 +191,7 @@ export default class Stage extends Model<Stage> {
 
 			const oldRecord = await Stage.findById<Stage>(this.id);
 			oldRecord.status = "updated";
-			await oldRecord.save(options)
+			await oldRecord.save(options);
 			return await newRecord.save(options);
 		};
 
@@ -316,7 +316,7 @@ export default class Stage extends Model<Stage> {
 	 * @param options findAllオプション。
 	 * @returns 検索結果。
 	 */
-	//TODO: 戻り値の型修正
+	// TODO: 戻り値の型修正
 	static async findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options: {} = undefined): Promise<Stage[]> {
 		const ranking = new StageRatingRanking();
 		let results = [];
@@ -333,7 +333,7 @@ export default class Stage extends Model<Stage> {
 		}
 
 		// ステージの挑まれた回数・クリアされた回数・ハイスコア
-		const reports = await Playlog.reportByStageIds(results.map((stage) => stage.id))
+		const reports = await Playlog.reportByStageIds(results.map((stage) => stage.id));
 		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
 
 		// ステージの平均評価

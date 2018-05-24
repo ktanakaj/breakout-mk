@@ -98,7 +98,7 @@ export class StageEditComponent implements OnInit {
 	 */
 	async delete(): Promise<void> {
 		// IDがある場合のみ
-		if (this.stage.id == undefined) {
+		if (this.stage.id === undefined) {
 			this.router.navigate(['/stages']);
 		}
 		try {

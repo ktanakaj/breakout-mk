@@ -89,7 +89,7 @@ export class SortedSet {
 	 */
 	async getAsync(member: string): Promise<number> {
 		// スコアは通常数値なので変換
-		const score = await this.client.zscoreAsync(this.key, member)
+		const score = await this.client.zscoreAsync(this.key, member);
 		return Number(score);
 	}
 
@@ -173,7 +173,7 @@ export class SortedSet {
 	 * @returns 登録有無。
 	 */
 	async setIfGreater(member: string, score: number): Promise<boolean> {
-		const s = await this.client.zscoreAsync(this.key, member)
+		const s = await this.client.zscoreAsync(this.key, member);
 		if (!s || +score > +s) {
 			this.set(member, score);
 			return true;

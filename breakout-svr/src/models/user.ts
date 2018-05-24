@@ -9,7 +9,7 @@ import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
 import objectUtils from '../core/utils/object-utils';
-import UserRatingRanking from './rankings/user-rating-ranking'
+import UserRatingRanking from './rankings/user-rating-ranking';
 import Playlog from './playlog';
 import StageHeader from './stage-header';
 import StageRating from './stage-rating';
@@ -130,7 +130,7 @@ export default class User extends Model<User> {
 			throw new Error("this.password is unloaded");
 		}
 		// salt;ハッシュ値 のデータからsaltを取り出し、そのsaltで計算した結果と比較
-		return this.password == User.passwordToHash(password, this.password.split(";")[0]);
+		return this.password === User.passwordToHash(password, this.password.split(";")[0]);
 	}
 
 	/**
@@ -165,7 +165,7 @@ export default class User extends Model<User> {
 	 * @returns saltとハッシュ値を結合した文字列。
 	 */
 	static passwordToHash(password: string, salt: string = undefined): string {
-		if (salt == undefined) {
+		if (salt === undefined) {
 			salt = random.string(<any>4, <any>'0123456789ABCDEF');
 		}
 		const hashGenerator = crypto.createHash(config['password']['algorithm']);
@@ -179,7 +179,7 @@ export default class User extends Model<User> {
 	 * @param userId 参照するユーザーのID。
 	 * @returns 検索結果。
 	 */
-	//TODO: 戻り値の型修正
+	// TODO: 戻り値の型修正
 	static async findByIdWithAllInfo(userId: number): Promise<User> {
 		const user = await User.findById<User>(userId);
 		if (!user) return user;

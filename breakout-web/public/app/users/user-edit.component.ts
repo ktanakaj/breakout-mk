@@ -45,7 +45,7 @@ export class UserEditComponent implements OnInit {
 	async reset(): Promise<void> {
 		let userId = this.route.snapshot.params['id'];
 		this.user = await this.userService.findById(userId);
-	};
+	}
 
 	/**
 	 * 更新処理。
@@ -61,5 +61,5 @@ export class UserEditComponent implements OnInit {
 			}
 			throw e;
 		}
-	};
+	}
 }

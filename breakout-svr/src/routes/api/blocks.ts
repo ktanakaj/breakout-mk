@@ -129,7 +129,7 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *         $ref: '#/responses/Forbidden'
  */
 router.post('/', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
-	const block = await Block.create<Block>(req.body)
+	const block = await Block.create<Block>(req.body);
 	res.json(block);
 });
 
@@ -152,7 +152,7 @@ router.post('/', passportManager.authorize('admin'), async function (req: expres
  *         $ref: '#/responses/NotFound'
  */
 router.get('/:key', async function (req: express.Request, res: express.Response): Promise<void> {
-	const block = await Block.findById<Block>(req.params.key)
+	const block = await Block.findById<Block>(req.params.key);
 	validationUtils.notFound(block);
 	res.json(block);
 });

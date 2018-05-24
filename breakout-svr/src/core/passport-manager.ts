@@ -72,7 +72,7 @@ function authorize(status: string = null): express.RequestHandler {
  * @throws 検証NG。
  */
 function validateUserIdOrAdmin(req: express.Request, id: number): void {
-	if (!req.user || (req.user.id != id && req.user.status != "admin")) {
+	if (!req.user || (req.user.id !== id && req.user.status !== "admin")) {
 		throw new HttpError(403);
 	}
 }

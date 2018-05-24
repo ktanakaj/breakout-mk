@@ -125,7 +125,7 @@ router.get('/', passportManager.authorize('admin'), async function (req: express
 router.post('/', async function (req: express.Request, res: express.Response): Promise<void> {
 	let user = User.build<User>();
 	user.merge(req.body);
-	user = await user.save()
+	user = await user.save();
 	// 認証状態にする
 	await new Promise((resolve, reject) => {
 		req.login(user, (err) => {
@@ -301,7 +301,7 @@ router.get('/me/favorites', passportManager.authorize(), async function (req: ex
 router.get('/:id', async function (req: express.Request, res: express.Response): Promise<void> {
 	let userId = validationUtils.toNumber(req.params.id);
 	let user: User;
-	if (req.query.fields == "all") {
+	if (req.query.fields === "all") {
 		user = await User.findByIdWithAllInfo(userId);
 	} else {
 		user = await User.findById<User>(userId);
@@ -362,7 +362,7 @@ router.put('/:id', passportManager.authorize(), async function (req: express.Req
 	validationUtils.notFound(user);
 
 	// 管理者は全ての項目が変更可能
-	user.merge(req.body, req.user.status == "admin");
+	user.merge(req.body, req.user.status === "admin");
 	user = await user.save();
 
 	// パスワードは隠す
@@ -393,7 +393,8 @@ router.put('/:id', passportManager.authorize(), async function (req: express.Req
  *         $ref: '#/responses/BadRequest'
  */
 router.get('/:id/stages', async function (req: express.Request, res: express.Response): Promise<void> {
-	const stages = await Stage.findUserStagesWithAccessibleAllInfo(validationUtils.toNumber(req.params.id), req.user && req.params.id == req.user.id);
+	const userId = validationUtils.toNumber(req.params.id);
+	const stages = await Stage.findUserStagesWithAccessibleAllInfo(userId, req.user && userId === req.user.id);
 	res.json(stages);
 });
 

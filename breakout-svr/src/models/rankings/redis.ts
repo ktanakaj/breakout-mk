@@ -38,4 +38,4 @@ function getClient(): IRedisClientAsync {
 export default {
 	createClient,
 	getClient,
-}
+};

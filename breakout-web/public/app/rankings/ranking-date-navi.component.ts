@@ -84,7 +84,7 @@ export class RankingDateNaviComponent {
 			let key: string = "TIME_SPAN.TOTAL";
 			let params: Object = {};
 			if (yearAndMonth) {
-				if (yearAndMonth.length == 1) {
+				if (yearAndMonth.length === 1) {
 					key = "TIME_SPAN.YEAR";
 					params = { year: yearAndMonth[0] };
 				} else if (yearAndMonth.length > 1) {

@@ -122,6 +122,6 @@ export class HeaderNaviComponent {
 				href: "/users/logout",
 				auth: "admin",
 			},
-		].filter((v) => !v.auth || v.auth == user.status);
+		].filter((v) => !v.auth || v.auth === user.status);
 	}
 }

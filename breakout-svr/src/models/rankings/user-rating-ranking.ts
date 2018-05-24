@@ -57,7 +57,7 @@ export default class UserRatingRanking extends SortedSet {
 	 */
 	async findRankingAsync(start: number = undefined, end: number = undefined): Promise<RankingEntry[]> {
 		const rankings = await this.entriesAsync(start, end, true);
-		if (rankings.length == 0) {
+		if (rankings.length === 0) {
 			return rankings;
 		}
 		await redisHelper.bulkLoadDbModels(rankings, User, "user");

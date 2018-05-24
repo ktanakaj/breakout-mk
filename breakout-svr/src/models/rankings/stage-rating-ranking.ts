@@ -33,7 +33,7 @@ export default class StageRatingRanking extends SortedSet {
 	 * @returns 更新結果。
 	 */
 	async refreshAsync(headerId: number): Promise<any> {
-		const [row] = await StageRating.averageByHeaderIds(headerId)
+		const [row] = await StageRating.averageByHeaderIds(headerId);
 		await this.setAsync(String(headerId), row ? row.rating : 0);
 	}
 
@@ -44,7 +44,7 @@ export default class StageRatingRanking extends SortedSet {
 	 * @returns 検索結果。スコアの降順。
 	 */
 	async findRankingAsync(start: number = undefined, end: number = undefined): Promise<RankingEntry[]> {
-		const rankings = await this.entriesAsync(start, end, true)
+		const rankings = await this.entriesAsync(start, end, true);
 		return <RankingEntry[]>await redisHelper.bulkLoadDbModels(rankings, Stage.scope(["latest", "withuser"]), "stage", "headerId");
 	}
 }

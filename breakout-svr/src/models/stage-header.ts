@@ -6,11 +6,11 @@
  */
 import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
-import redis from './rankings/redis'
-import StagePlayRanking from './rankings/stage-play-ranking'
-import StageRatingRanking from './rankings/stage-rating-ranking'
-import UserRatingRanking from './rankings/user-rating-ranking'
-import StageFavoriteRanking from './rankings/stage-favorite-ranking'
+import redis from './rankings/redis';
+import StagePlayRanking from './rankings/stage-play-ranking';
+import StageRatingRanking from './rankings/stage-rating-ranking';
+import UserRatingRanking from './rankings/user-rating-ranking';
+import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';
 import Stage from './stage';
 import StageRating from './stage-rating';
@@ -204,7 +204,7 @@ export default class StageHeader extends Model<StageHeader> {
 	async getCommentsByUserId(userId: number): Promise<StageComment[]> {
 		// ステージ作者は全て、それ以外はpublicか、自分の投稿のみ
 		let where = {};
-		if (this.userId != userId) {
+		if (this.userId !== userId) {
 			where = { status: "public" };
 			if (userId) {
 				where = { $or: [where, { userId: userId }] };
