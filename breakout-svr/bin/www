@@ -7,7 +7,7 @@
  * Module dependencies.
  */
 const app = require('../lib/app');
-const debug = require('debug')('anoima:server');
+const debug = require('debug')('breakout-svr');
 const http = require('http');
 
 /**
