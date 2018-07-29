@@ -10,7 +10,7 @@
     "clean": "npm run clean-app & npm run clean-doc",
     "clean-app": "rm -f ./public/bundle.js ./public/bundle.js.map",
     "clean-doc": "rm -rf ./out",
-    "tslint": "tslint \"./public/app/**/*.ts\" \"./test/**/*.ts\""
+    "lint": "tslint \"./public/app/**/*.ts\" \"./test/**/*.ts\""
   },
   "license": "MIT",
   "dependencies": {

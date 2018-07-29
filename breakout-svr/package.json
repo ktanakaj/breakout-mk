@@ -14,7 +14,7 @@
     "clean": "npm run clean-app & npm run clean-doc",
     "clean-app": "rm -rf ./dist",
     "clean-doc": "rm -rf ./out",
-    "tslint": "tslint \"./src/**/*.ts\""
+    "lint": "tslint \"./src/**/*.ts\""
   },
   "license": "MIT",
   "engines": {
