@@ -56,10 +56,11 @@
 
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
-2. `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
+2. コマンドプロンプトを「管理者として実行」で開き、初回の `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
 3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/public/webgl` フォルダを出力先でビルドを行う。
 
 ※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
+※ VMの共有フォルダでシンボリックリンクを有効にするため、初回の `vagrant up` や `npm install` 時は、実行元のコマンドラインを管理者権限で起動するなどの必要があります。詳細は[こちら](https://tokibito.hatenablog.com/entry/2018/02/28/012014)等を参照ください。  
 ※ どうしても `npm install` に失敗する場合は、飛ばして以降を手動で実行してください…。
 
 ## 起動方法
@@ -109,12 +110,12 @@ VMの初期状態では、サンプルデータとともに以下の初期アカ
 管理者を追加する場合は、普通にユーザー登録を行った後、いずれかの管理者アカウントでログインして、該当ユーザーの権限を管理者に変更してください。
 
 ## その他
-各種ログは `/var/log/local/breakout-mk` 下に出力されます。
+各種ログは `/var/log/local/breakout-svr` 下に出力されます。
 アクセスログ、デバッグログ、エラーログを出力します。
 
 VMのDBを参照する場合は、MySQL Workbench等でMySQLの標準ポートに接続してください（接続情報は `default.yaml` 参照）。
 
-またVMにはSwaggerのAPIデバッグページがあります。 http://[DHCPで振られたIP]/swagger/?url=/api-docs.json でアクセス可能です。
+またVMにはSwaggerのAPIデバッグページがあります。 http://localhost/swagger/?url=/api-docs.json でアクセス可能です。
 
 ## ライセンス
 [MIT](https://github.com/ktanakaj/breakout-mk/blob/master/LICENSE)
