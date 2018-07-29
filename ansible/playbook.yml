@@ -5,7 +5,7 @@
     nodesource: "https://rpm.nodesource.com/setup_10.x"
     swaggeruisource: "https://github.com/swagger-api/swagger-ui/archive/v3.13.0.tar.gz"
     swaggeruidest: "/var/www/swagger"
-    app_nginx_conf_src: "/vagrant/vagrant-conf/nginx.conf"
+    app_nginx_conf_src: "/vagrant/ansible/nginx.conf"
     app_nginx_conf_dest: "/etc/nginx/default.d/vagrant.conf"
     app_svr_dir: "/vagrant/breakout-svr"
     app_web_dir: "/vagrant/breakout-web"

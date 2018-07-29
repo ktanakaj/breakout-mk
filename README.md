@@ -52,7 +52,7 @@
     * breakout-svr - Node.js Webアプリサーバーソース
         * config - アプリ設定
     * breakout-web - Angular Webアプリクライアントソース
-    * vagrant-conf - Vagrant関連ファイル
+    * ansible - Ansible関連ファイル
 
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
