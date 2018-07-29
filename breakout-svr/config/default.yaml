@@ -36,28 +36,43 @@
       algorithm: "sha1"
       secret: "yt7u9rtv095wo6w9;hit6yw9"
   log4js:
+    pm2: true
     appenders:
-      - type: "datefile"
-        category: "access" # アクセスログ
+      out: # 標準出力
+        type: 'console'
+      stderr: # 標準エラー出力
+        type: 'stderr'
+      access: # アクセスログ
+        type: "dateFile"
         filename: "/var/log/local/breakout-svr/access.log"
         pattern: "-yyyy-MM-dd"
         backups: 10
-      - type: "datefile"
-        category: "error" # エラーログ
+      error: # エラーログ
+        type: "dateFile"
         filename: "/var/log/local/breakout-svr/error.log"
         pattern: "-yyyy-MM-dd"
         maxLogSize: 107374182400 # 100MB
-      - type: "file"
-        category: "debug" # デバッグログ
+      debug: # デバッグログ
+        type: "file"
         filename: "/var/log/local/breakout-svr/debug.log"
         backups: 10
         maxLogSize: 10737418240 # 10MB
-      - type: "console" # コンソール
-    levels:
-      access: "INFO"
-      error: "INFO"
-      debug: "DEBUG"
-    replaceConsole: true
+    categories:
+      default:
+        appenders:
+          - 'out'
+          - 'debug'
+        level: 'debug'
+      access:
+        appenders:
+          - 'out'
+          - 'access'
+        level: 'info'
+      error:
+        appenders:
+          - 'stderr'
+          - 'error'
+        level: 'info'
   noaccesslog:
     - \.css
     - \.js

@@ -28,7 +28,7 @@
     * Sequelize-typescript 0.6.x
     * Passport 0.4.x
     * Node-config 1.x
-    * Log4js 1.x
+    * Log4js 3.x
 * Angular 6.x
 
 ### 対応ブラウザ
