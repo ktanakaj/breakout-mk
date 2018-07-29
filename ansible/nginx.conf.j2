@@ -27,7 +27,7 @@ location = / {
 }
 
 location ~ /(i18n|styles|views|webgl|.+?\..+?)($|/) {
-    root /vagrant/breakout-web/public;
+    root {{ app_web_dir }}/public;
     proxy_no_cache 1;
     proxy_cache_bypass 1;
     sendfile off;
