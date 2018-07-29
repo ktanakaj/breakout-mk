@@ -6,7 +6,7 @@
 /**
  * Module dependencies.
  */
-const app = require('../lib/app');
+const app = require('../dist/app');
 const debug = require('debug')('breakout-svr');
 const http = require('http');
 

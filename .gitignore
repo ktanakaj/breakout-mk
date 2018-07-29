@@ -16,7 +16,7 @@ Temp
 Obj
 doc/*.mwb.*
 StyleCop.Cache
-breakout-svr/lib
+breakout-svr/dist
 breakout-svr/out
 breakout-svr/config/local.yaml
 breakout-web/public/bundle.js
