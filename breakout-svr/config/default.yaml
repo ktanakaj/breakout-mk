@@ -38,7 +38,7 @@
   log4js:
     pm2: true
     appenders:
-      out: # 標準出力
+      stdout: # 標準出力
         type: 'console'
       stderr: # 標準エラー出力
         type: 'stderr'
@@ -60,12 +60,12 @@
     categories:
       default:
         appenders:
-          - 'out'
+          - 'stdout'
           - 'debug'
         level: 'debug'
       access:
         appenders:
-          - 'out'
+          - 'stdout'
           - 'access'
         level: 'info'
       error:
