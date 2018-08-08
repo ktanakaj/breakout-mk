@@ -80,7 +80,7 @@ app.use(swaggerExpressValidator({
 		throw new HttpError(400, errors[0].message);
 	},
 	responseValidationFn: (req: express.Request, data: any, errors: any) => {
-		throw new HttpError(500, errors[0].message);
+		throw new Error(errors[0].message);
 	},
 }));
 
