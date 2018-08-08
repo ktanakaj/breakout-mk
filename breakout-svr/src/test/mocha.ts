@@ -4,33 +4,19 @@
  */
 import * as config from 'config';
 import * as log4js from 'log4js';
-
-// import { global, shardable } from '../models';
+import { Sequelize } from 'sequelize-typescript';
 
 // ここにフックを入れると全テストの前に自動実行される
 before(async function () {
+	// ※ 初期化に時間がかかる場合は伸ばす
+	this.timeout(10000);
+
 	// 全テストの実行前に一度だけ必要な処理
 	log4js.configure(config['log4js']);
 
-	// ※ 何故か初回のsqliteアクセスがエラーになるので、ここで一回実行しておく
-	// await global.sequelize.sync({ force: true });
-	// for (let db of shardable) {
-	// 	await db.sequelize.sync({ force: true });
-	// }
+	const sequelize = new Sequelize(Object.assign({
+		modelPaths: [__dirname + '/../models'],
+		logging: (log) => log4js.getLogger('debug').debug(log),
+	}, config['database']));
+	await sequelize.sync();
 });
-
-/*
-const redisHelper = require('../libs/redis-helper');
-
-beforeEach(() => {
-	// redisのモック化
-	redisHelper.client = {
-		multi: () => {
-			return {
-				zincrby: () => {},
-				execAsync: () => Promise.resolve(),
-			};
-		},
-	};
-});
-*/

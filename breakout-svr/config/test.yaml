@@ -1,4 +1,7 @@
 ---
+  database:
+      dialect: "sqlite"
+      storage: ':memory:'
   log4js:
     appenders:
       stdout: # 標準出力
@@ -9,7 +12,7 @@
       default:
         appenders:
           - 'stdout'
-        level: 'debug'
+        level: 'info'
       access:
         appenders:
           - 'stdout'
