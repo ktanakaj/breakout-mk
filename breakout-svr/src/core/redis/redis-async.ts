@@ -3,14 +3,8 @@
  * @module ./core/redis/redis-async
  */
 import * as redis from 'redis';
-import * as Bluebird from 'bluebird';
 
-// bluebird を使って、Redisに非同期メソッド追加
-Bluebird.promisifyAll(redis.RedisClient.prototype);
-Bluebird.promisifyAll(redis.Multi.prototype);
-
-// 一応別名でエクスポート
-export const redisAsync = redis;
+export const redisAsync = require('redis-promisify');
 
 export interface IRedisClientAsync extends redis.RedisClient {
 	multi(): IRedisMultiAsync;
