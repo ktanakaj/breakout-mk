@@ -4,7 +4,7 @@
  */
 import * as log4js from 'log4js';
 import * as config from 'config';
-import { redisAsync, IRedisClientAsync, IRedisMultiAsync } from '../../core/redis/redis-async';
+import { redisAsync, IRedisClientAsync } from '../../core/redis/redis-async';
 const redisconfig = config['redis']['ranking'];
 const logger = log4js.getLogger('debug');
 

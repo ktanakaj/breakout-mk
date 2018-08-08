@@ -4,7 +4,7 @@
  * ブロックくずしのユーザー一人一人に対応する。
  * @module ./models/user
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';

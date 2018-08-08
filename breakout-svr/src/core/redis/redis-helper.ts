@@ -4,7 +4,6 @@
  */
 import * as path from 'path';
 import * as S from 'string';
-import { Model } from 'sequelize-typescript';
 import objectUtils from '../utils/object-utils';
 
 /**

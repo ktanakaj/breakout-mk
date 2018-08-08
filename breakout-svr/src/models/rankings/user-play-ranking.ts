@@ -2,7 +2,6 @@
  * ユーザープレイ回数ランキングモデルクラスのNode.jsモジュール。
  * @module ./models/redis/user-play-ranking
  */
-import { IRedisMultiAsync } from '../../core/redis/redis-async';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';

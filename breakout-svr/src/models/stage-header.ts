@@ -4,7 +4,7 @@
  * ブロックくずしのステージの各種情報を扱う。
  * @module ./models/stage-header
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope, ForeignKey, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import redis from './rankings/redis';
 import StagePlayRanking from './rankings/stage-play-ranking';

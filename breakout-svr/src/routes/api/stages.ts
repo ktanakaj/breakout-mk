@@ -109,7 +109,6 @@
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
-import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
 import Stage from '../../models/stage';
 import StageComment from '../../models/stage-comment';
@@ -702,4 +701,4 @@ router.post('/:id/rating', passportManager.authorize(), async function (req: exp
 	res.json(result);
 });
 
-module.exports = router;
+export default router;

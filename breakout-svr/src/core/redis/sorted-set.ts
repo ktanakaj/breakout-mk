@@ -3,7 +3,6 @@
  * @module ./core/redis/sorted-set
  */
 import { IRedisClientAsync, IRedisMultiAsync } from './redis-async';
-import redisHelper from './redis-helper';
 
 export interface Entry {
 	no: number;

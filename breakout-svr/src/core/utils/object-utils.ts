@@ -127,10 +127,10 @@ function isPromise(obj: any): boolean {
 }
 
 export default {
-	get: get,
-	set: set,
-	copy: copy,
-	mergeArray: mergeArray,
-	mergePushArray: mergePushArray,
-	isPromise: isPromise,
+	get,
+	set,
+	copy,
+	mergeArray,
+	mergePushArray,
+	isPromise,
 };

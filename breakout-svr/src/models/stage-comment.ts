@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するコメントを扱う。
  * @module ./models/stage-comment
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';

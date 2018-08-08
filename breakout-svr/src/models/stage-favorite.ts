@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するお気に入りを扱う。
  * @module ./models/stage-favorite
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';

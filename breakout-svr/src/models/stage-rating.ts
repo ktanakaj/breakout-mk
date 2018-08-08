@@ -4,8 +4,7 @@
  * ブロックくずしのステージに対する評価を扱う。
  * @module ./models/stage-rating
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
-import objectUtils from '../core/utils/object-utils';
+import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import User from './user';
 import StageHeader from './stage-header';
 

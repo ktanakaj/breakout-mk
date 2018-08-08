@@ -4,7 +4,7 @@
  * ブロックくずしの一つのブロックのマスタに対応する。
  * @module ./models/block
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, DefaultScope } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, DefaultScope } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 
 /**

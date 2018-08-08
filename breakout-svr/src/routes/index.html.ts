@@ -30,4 +30,4 @@ router.get('/', function (req: express.Request, res: express.Response): void {
 	});
 });
 
-module.exports = router;
+export default router;

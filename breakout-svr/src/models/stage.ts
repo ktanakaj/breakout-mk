@@ -4,7 +4,7 @@
  * ブロックくずしの一つの面に対応する。
  * @module ./models/stage
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, BelongsTo, HasMany, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, BelongsTo, HasMany, ForeignKey } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';

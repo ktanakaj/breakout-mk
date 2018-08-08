@@ -4,7 +4,7 @@
  * ゲームの各ステージのプレイログ1件に対応する。
  * @module ./models/playlog
  */
-import { Table, Column, Model, DataType, AllowNull, Unique, CreatedAt, ForeignKey, BelongsTo, BeforeValidate, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo, BeforeValidate, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';

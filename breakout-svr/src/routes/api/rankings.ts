@@ -264,4 +264,4 @@ router.get('/creator/', async function (req: express.Request, res: express.Respo
 	res.json(rankings);
 });
 
-module.exports = router;
+export default router;

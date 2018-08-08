@@ -60,8 +60,8 @@ function doFunctionWithLog(func: Function, name: string, start: string = "開始
 }
 
 export default {
-	dump: dump,
-	dumpAll: dumpAll,
-	printProperties: printProperties,
-	doFunctionWithLog: doFunctionWithLog,
+	dump,
+	dumpAll,
+	printProperties,
+	doFunctionWithLog,
 };

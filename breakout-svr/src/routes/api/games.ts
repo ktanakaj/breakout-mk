@@ -14,7 +14,6 @@
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
-import passportManager from '../../core/passport-manager';
 import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
 import Stage from '../../models/stage';
@@ -123,4 +122,4 @@ router.post('/end', async function (req: express.Request, res: express.Response)
 	res.json(playlog);
 });
 
-module.exports = router;
+export default router;

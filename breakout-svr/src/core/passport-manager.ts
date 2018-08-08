@@ -5,11 +5,8 @@
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as express from 'express';
-import * as config from 'config';
-import * as log4js from 'log4js';
 import { HttpError } from './http-error';
 import User from '../models/user';
-const logger = log4js.getLogger('debug');
 
 /**
  * Passportの初期化を行う。
@@ -78,7 +75,7 @@ function validateUserIdOrAdmin(req: express.Request, id: number): void {
 }
 
 export default {
-	initialize: initialize,
-	authorize: authorize,
-	validateUserIdOrAdmin: validateUserIdOrAdmin,
+	initialize,
+	authorize,
+	validateUserIdOrAdmin,
 };

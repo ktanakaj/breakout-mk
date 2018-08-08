@@ -53,7 +53,6 @@ const DUMMY = 0;
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
-import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
 import User from '../../models/user';
 import Stage from '../../models/stage';
@@ -398,4 +397,4 @@ router.get('/:id/stages', async function (req: express.Request, res: express.Res
 	res.json(stages);
 });
 
-module.exports = router;
+export default router;
