@@ -2,6 +2,7 @@
  * @file ブロックくずしメーカーサーバ側共通定義部。
  */
 import "reflect-metadata";
+import 'source-map-support/register';
 import * as express from 'express';
 import * as path from 'path';
 import * as config from 'config';
@@ -10,9 +11,11 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as session from 'express-session';
 import * as connectRedis from 'connect-redis';
-import 'source-map-support/register';
+import swaggerJSDoc = require('swagger-jsdoc');
+import * as swaggerExpressValidator from 'swagger-express-validator';
 import { Sequelize } from 'sequelize-typescript';
 import fileUtils from './core/utils/file-utils';
+import { HttpError } from './core/http-error';
 
 // Sequelizeの初期化
 const sequelize = new Sequelize(Object.assign({
@@ -42,7 +45,7 @@ app.set('view engine', 'ejs');
 app.set('trust proxy', 'loopback');
 
 // クロスドメインでの参照を許可
-app.use(function (req, res, next) {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
@@ -52,29 +55,45 @@ app.use(function (req, res, next) {
 import passportManager from './core/passport-manager';
 passportManager.initialize(app);
 
-// ルーティング設定。routesフォルダの全ファイルをapp.use()可能な形式として読み込み
-const baseDir = path.join(__dirname, "routes");
+// routesフォルダの全ファイルをAPI定義としてリストアップ
+const baseDir = path.join(__dirname, "./routes");
 let routes = [];
-fileUtils.directoryWalkRecursiveSync(
-	baseDir,
-	function (realpath) {
-		if (/\.js$/.test(realpath)) {
-			routes.push(realpath);
-			app.use(path.join("/", realpath.replace(baseDir, "").replace(/\.[jt]s$/, "")), require(realpath));
-		}
-	});
+fileUtils.directoryWalkRecursiveSync(baseDir, (realpath) => {
+	if (/\.[jt]s$/.test(realpath)) {
+		routes.push(realpath);
+	}
+});
 
-// API検証用のswagger設定
-import swaggerJSDoc = require('swagger-jsdoc');
-if (app.get('env') === 'development') {
-	const swaggerSpec = swaggerJSDoc({
-		swaggerDefinition: config['swagger'],
-		apis: routes,
-	});
+// API定義のソースコメントからSwagger定義を読み込み
+const swaggerSpec = swaggerJSDoc({
+	swaggerDefinition: config['swagger'],
+	apis: routes,
+});
 
-	app.get('/api-docs.json', (req, res) => {
-		res.setHeader('Content-Type', 'application/json');
-		res.send(swaggerSpec);
+// Swagger定義を元にJSONスキーマのバリデーションを実施
+// ※ レスポンスのバリデーションは開発環境等でのみ実施
+app.use(swaggerExpressValidator({
+	schema: swaggerSpec,
+	validateRequest: true,
+	validateResponse: config['debug']['responseValidation'],
+	requestValidationFn: (req: express.Request, data: any, errors: any) => {
+		throw new HttpError(400, errors[0].message);
+	},
+	responseValidationFn: (req: express.Request, data: any, errors: any) => {
+		throw new HttpError(500, errors[0].message);
+	},
+}));
+
+// APIを登録
+for (let route of routes) {
+	const router = require(route);
+	app.use(path.join("/", route.replace(baseDir, "").replace(/\.[jt]s$/, "")), router['default'] || router);
+}
+
+// 本番環境等以外では、Swagger-UI用のJSONも出力
+if (config['debug']['apidocs']) {
+	app.get('/api-docs.json', (req: express.Request, res: express.Response) => {
+		res.json(swaggerSpec);
 	});
 }
 
