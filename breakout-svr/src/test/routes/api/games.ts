@@ -2,8 +2,8 @@
  * @file games.tsのテスト。
  */
 import * as assert from 'power-assert';
-import { EventEmitter } from 'events';
 import * as httpMocks from "node-mocks-http";
+import testHelper from '../../test-helper';
 import User from '../../../models/user';
 import StageHeader from '../../../models/stage-header';
 import Stage from '../../../models/stage';
@@ -18,22 +18,16 @@ describe('/api/games', () => {
 	});
 
 	describe('/start', () => {
-		it('should start game', (done) => {
+		it('should start game', async () => {
 			const req = httpMocks.createRequest({
 				method: 'POST',
 				url: '/start',
 				body: { stageId: 5 },
 			});
-			const res = httpMocks.createResponse({
-				eventEmitter: EventEmitter,
-			});
-			router(req, res, done);
-			res.on('end', () => {
-				const playlog = JSON.parse(res._getData());
-				assert.strictEqual(playlog.stageId, 5);
-				assert.strictEqual(playlog.userId, null);
-				done();
-			});
+			const res = await testHelper.callRequestHandler(router, req);
+			const playlog = res._getJson();
+			assert.strictEqual(playlog.stageId, 5);
+			assert.strictEqual(playlog.userId, null);
 		});
 	});
 });
