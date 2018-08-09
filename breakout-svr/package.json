@@ -9,7 +9,7 @@
     "stop": "pm2 stop process.json",
     "build": "npm run clean-app && tsc --outDir ./dist",
     "watch": "npm run clean-app && tsc --watch --outDir ./dist",
-    "test": "NODE_ENV=test mocha --require espower-typescript/guess \"./src/test/**/*.ts\"",
+    "test": "NODE_ENV=test mocha --require espower-typescript/guess \"./src/test/**/*.ts\" --exit",
     "doc": "npm run clean-doc && typedoc ./src --exclude /**/test/**/*.ts --out ./out --mode file",
     "clean": "npm run clean-app & npm run clean-doc",
     "clean-app": "rm -rf ./dist",
