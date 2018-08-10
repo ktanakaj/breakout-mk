@@ -100,6 +100,10 @@
           when: pm2_service_loaded.stdout == ""
         - name: Action to enable service pm2
           service: name=pm2-vagrant state=started enabled=yes
+        - name: Install "pm2-intercom" module to pm2
+          shell: pm2 install pm2-intercom
+          when: pm2_service_loaded.stdout == ""
+          become: false
       - block:
         - name: Create Swagger-UI directory
           file: path={{ swaggeruidest }} state=directory owner=root group=root mode=0755
