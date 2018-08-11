@@ -92,20 +92,23 @@ namespace Honememo.BreakoutMk.Commons
         /// POST APIコール。
         /// </summary>
         /// <param name="path">APIのパス。</param>
-        /// <param name="form">POSTで渡すデータ。</param>
+        /// <param name="json">POSTで渡すJSON文字列。</param>
         /// <param name="success">成功時に実行する処理。</param>
         /// <param name="error">失敗時に実行する処理。</param>
         /// <returns>子ルーチンの実行状態。</returns>
-        public IEnumerator Post(string path, WWWForm form, FinishedDelegate<WWW> success = null, FinishedDelegate<WWW> error = null)
+        public IEnumerator Post(string path, string json, FinishedDelegate<WWW> success = null, FinishedDelegate<WWW> error = null)
         {
-            Dictionary<string, string> headers = form.headers;
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers["Content-Type"] = "application/json";
             this.MergeHeaders(headers);
 
+            var formData = System.Text.Encoding.UTF8.GetBytes(json);
+
             yield return this.DoRequestWithRetry(
-                () => new WWW(this.ApiRoot + path, form.data, headers),
+                () => new WWW(this.ApiRoot + path, formData, headers),
                 success,
                 error,
-                "POST " + this.ApiRoot + path + " " + form.data);
+                "POST " + this.ApiRoot + path + " " + json);
         }
 
         #endregion

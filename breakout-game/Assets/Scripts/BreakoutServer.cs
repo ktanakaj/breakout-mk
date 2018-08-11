@@ -168,12 +168,11 @@ namespace Honememo.BreakoutMk.Commons
         /// <exception cref="IOException">保存失敗時。</exception>
         public IEnumerator SaveStageStart(int stageId, FinishedDelegate<Playlog> func)
         {
-            WWWForm form = new WWWForm();
-            form.AddField("stageId", stageId);
+            var param = new StartParam{ stageId = stageId };
 
             yield return this.Post(
                 "/games/start",
-                form,
+                JsonUtility.ToJson(param),
                 (www) => func(JsonUtility.FromJson<Playlog>(www.text)),
                 (www) =>
                 {
@@ -199,13 +198,15 @@ namespace Honememo.BreakoutMk.Commons
         /// <exception cref="IOException">保存失敗時。</exception>
         public IEnumerator SaveStageResult(Playlog playlog)
         {
-            WWWForm form = new WWWForm();
-            form.AddField("id", playlog.Id);
-            form.AddField("score", playlog.Score);
-            form.AddField("cleared", playlog.Cleared.ToString());
-            form.AddField("hash", playlog.Hash(this.Secret));
+            var param = new EndParam
+            {
+                id = playlog.Id,
+                score = playlog.Score,
+                cleared = playlog.Cleared,
+                hash = playlog.Hash(this.Secret),
+            };
 
-            yield return this.Post("/games/end", form);
+            yield return this.Post("/games/end", JsonUtility.ToJson(param));
         }
 
         #endregion
@@ -239,6 +240,45 @@ namespace Honememo.BreakoutMk.Commons
 
             // 初期化済みを記録
             this.Initialized = true;
+        }
+
+        #endregion
+
+        #region 内部クラス
+
+        /// <summary>
+        /// /games/start API引数パラメータ。
+        /// </summary>
+        [Serializable]
+        private class StartParam {
+            /// <summary>
+            /// ステージID。
+            /// </summary>
+            public int stageId;
+        }
+
+        /// <summary>
+        /// /games/end API引数パラメータ。
+        /// </summary>
+        [Serializable]
+        private class EndParam
+        {
+            /// <summary>
+            /// プレイログID。
+            /// </summary>
+            public int id;
+            /// <summary>
+            /// 獲得スコア。
+            /// </summary>
+            public int score;
+            /// <summary>
+            /// クリアしたか？
+            /// </summary>
+            public bool cleared;
+            /// <summary>
+            /// 整合性チェック用のハッシュ。
+            /// </summary>
+            public string hash;
         }
 
         #endregion
