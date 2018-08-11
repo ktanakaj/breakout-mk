@@ -280,3 +280,4 @@
     errorMessage: true # エラーメッセージを出力する場合true
     responseValidation: false # レスポンスもバリデーションを行う場合true
     apidocs: true # api-docs.json を有効にするか
+    bodyLog: true # ログにリクエスト/レスポンスボディを出力する場合true

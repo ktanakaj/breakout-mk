@@ -16,6 +16,7 @@ import * as swaggerExpressValidator from 'swagger-express-validator';
 import { Sequelize } from 'sequelize-typescript';
 import fileUtils from './core/utils/file-utils';
 import { HttpError } from './core/http-error';
+import responseBodyCollector from './core/response-body-collector';
 
 // Sequelizeの初期化
 const sequelize = new Sequelize(Object.assign({
@@ -28,12 +29,25 @@ sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
 const app = express();
 const RedisStore = connectRedis(session);
 
-// 各種ライブラリ登録
+// log4jsの初期化とアクセスログの設定
 log4js.configure(config['log4js']);
-app.use(log4js.connectLogger(log4js.getLogger('access'), {
+const accessLogOption = {
 	level: 'auto',
 	nolog: config['noaccesslog'],
-}));
+};
+if (config['debug']['bodyLog']) {
+	// bodyログが有効な場合、リクエスト/レスポンスボディも出力
+	// ※ bodyParserが挟まる都合上、JSONが壊れているリクエストボディは出力されません
+	accessLogOption['format'] = (req: express.Request, res: express.Response, format: (str: string) => string) => {
+		let reqBody = JSON.stringify(req.body);
+		let resBody = (<any>res)._getData();
+		return format(':remote-addr - - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent" req=') + reqBody + ' res=' + resBody;
+	};
+	app.use(responseBodyCollector);
+}
+app.use(log4js.connectLogger(log4js.getLogger('access'), accessLogOption));
+
+// その他各種ライブラリの登録
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
