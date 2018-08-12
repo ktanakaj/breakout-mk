@@ -5,7 +5,7 @@
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as express from 'express';
-import { HttpError } from './http-error';
+import { UnauthorizedError, ForbiddenError } from './http-error';
 import User from '../models/user';
 
 /**
@@ -33,6 +33,8 @@ function initialize(app: express.Express): void {
 			if (!user || !user.comparePassword(password)) {
 				return done(null, false, { message: 'user name or password is incorrect' });
 			}
+			// パスワードは見せない
+			user.password = undefined;
 			return done(null, user);
 		}
 	));
@@ -49,13 +51,13 @@ function initialize(app: express.Express): void {
  * @param status 権限までチェックする場合、'admin'などユーザーの権限。
  * @returns チェック関数。
  */
-function authorize(status: string = null): express.RequestHandler {
+function isAuthenticated(status: string = null): express.RequestHandler {
 	return (req: express.Request, res: express.Response, next: express.NextFunction) => {
 		let error = null;
 		if (!req.isAuthenticated()) {
-			error = new HttpError(401);
+			error = new UnauthorizedError();
 		} else if (status && req.user.status !== status) {
-			error = new HttpError(403);
+			error = new ForbiddenError();
 		}
 		return next(error);
 	};
@@ -70,12 +72,12 @@ function authorize(status: string = null): express.RequestHandler {
  */
 function validateUserIdOrAdmin(req: express.Request, id: number): void {
 	if (!req.user || (req.user.id !== id && req.user.status !== "admin")) {
-		throw new HttpError(403);
+		throw new ForbiddenError();
 	}
 }
 
 export default {
 	initialize,
-	authorize,
+	isAuthenticated,
 	validateUserIdOrAdmin,
 };

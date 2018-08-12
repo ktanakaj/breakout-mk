@@ -105,6 +105,8 @@
  *         description: レーティング
  *         format: int32
  */
+// ↓なぜか↑のswaggerコメントがコンパイル時に消されるので対策
+const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
@@ -163,9 +165,11 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *             name:
  *               type: string
  *               description: ステージ名
+ *               minLength: 1
  *             map:
  *               type: string
  *               description: ステージデータ
+ *               minLength: 1
  *             comment:
  *               type: string
  *               description: ステージコメント
@@ -177,6 +181,9 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *                 status:
  *                   type: string
  *                   description: ステータス (private/public)
+ *                   enum:
+ *                     - private
+ *                     - public
  *     responses:
  *       200:
  *         description: 登録成功
@@ -187,7 +194,7 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.post('/', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	const stage = Stage.buildAll(req.body);
 	stage.header.userId = req.user.id;
 	const result = await stage.saveAll();
@@ -331,9 +338,11 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *             name:
  *               type: string
  *               description: ステージ名
+ *               minLength: 1
  *             map:
  *               type: string
  *               description: ステージデータ
+ *               minLength: 1
  *             comment:
  *               type: string
  *               description: ステージコメント
@@ -345,6 +354,9 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *                 status:
  *                   type: string
  *                   description: ステータス (private/public)
+ *                   enum:
+ *                     - private
+ *                     - public
  *     responses:
  *       200:
  *         description: 更新成功
@@ -359,7 +371,7 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:id', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ変更可
 	const stage = await Stage.scope(["latest", "withuser"]).findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
@@ -395,7 +407,7 @@ router.put('/:id', passportManager.authorize(), async function (req: express.Req
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:id', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.delete('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ削除可
 	const stage = await Stage.scope("withuser").findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
@@ -487,9 +499,13 @@ router.get(/\/([0-9]+)\/rankings\/score\/([0-9]*)\/?([0-9]*)/, async function (r
  *             comment:
  *               type: string
  *               description: コメント
+ *               minLength: 1
  *             status:
  *               type: string
  *               description: ステータス (private/public)
+ *               enum:
+ *                 - private
+ *                 - public
  *     responses:
  *       200:
  *         description: 投稿成功
@@ -539,9 +555,13 @@ router.post('/:id/comments/', async function (req: express.Request, res: express
  *             comment:
  *               type: string
  *               description: コメント
+ *               minLength: 1
  *             status:
  *               type: string
  *               description: ステータス (private/public)
+ *               enum:
+ *                 - private
+ *                 - public
  *     responses:
  *       200:
  *         description: 更新成功
@@ -554,7 +574,7 @@ router.post('/:id/comments/', async function (req: express.Request, res: express
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:stageId/comments/:commentId', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:stageId/comments/:commentId', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは管理者のみ変更可
 	const comment = await StageComment.findById<StageComment>(validationUtils.toNumber(req.params.commentId));
 	validationUtils.notFound(comment);
@@ -591,7 +611,7 @@ router.put('/:stageId/comments/:commentId', passportManager.authorize(), async f
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:stageId/comments/:commentId', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.delete('/:stageId/comments/:commentId', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは自分のステージまたは管理者のみ削除可
 	const comment = await StageComment.findById<StageComment>(validationUtils.toNumber(req.params.commentId));
 	validationUtils.notFound(comment);
@@ -622,7 +642,7 @@ router.delete('/:stageId/comments/:commentId', passportManager.authorize(), asyn
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/:id/favorite', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/:id/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
 	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
@@ -652,7 +672,7 @@ router.post('/:id/favorite', passportManager.authorize(), async function (req: e
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:id/favorite', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.delete('/:id/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	const stage = await Stage.scope("withuser").findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
 	const result = await stage.header.removeFavoriteByUserId(req.user.id);
@@ -693,7 +713,7 @@ router.delete('/:id/favorite', passportManager.authorize(), async function (req:
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/:id/rating', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/:id/rating', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
 	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);

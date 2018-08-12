@@ -36,10 +36,12 @@ const router = express.Router();
  *             name:
  *               type: string
  *               description: ユーザー名
+ *               minLength: 1
  *             password:
  *               type: string
  *               format: password
  *               description: パスワード
+ *               minLength: 1
  *     responses:
  *       200:
  *         description: 認証OK
@@ -51,8 +53,6 @@ const router = express.Router();
  *           type: string
  */
 router.post('/', passport.authenticate('local'), function (req: express.Request, res: express.Response): void {
-	// パスワードは返さない（deleteで何故か消せないのでnullで上書き）
-	req.user.password = null;
 	res.json(req.user);
 });
 
@@ -72,7 +72,7 @@ router.post('/', passport.authenticate('local'), function (req: express.Request,
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.post('/logout', passportManager.authorize(), function (req: express.Request, res: express.Response): void {
+router.post('/logout', passportManager.isAuthenticated(), function (req: express.Request, res: express.Response): void {
 	req.logout();
 	res.end();
 });

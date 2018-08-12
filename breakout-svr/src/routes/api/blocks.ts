@@ -35,12 +35,17 @@
  *       key:
  *         type: string
  *         description: ブロックキー
+ *         minLength: 1
  *       name:
  *         type: string
  *         description: ブロック名
+ *         minLength: 1
  *       status:
  *         type: string
  *         description: ステータス (enable/disable)
+ *         enum:
+ *           - enable
+ *           - disable
  *       hp:
  *         type: integer
  *         description: HP
@@ -127,7 +132,7 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.post('/', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
 	const block = await Block.create<Block>(req.body);
 	res.json(block);
 });
@@ -186,7 +191,7 @@ router.get('/:key', async function (req: express.Request, res: express.Response)
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:key', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:key', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
 	let block = await Block.findById<Block>(req.params.key);
 	validationUtils.notFound(block);
 	block.merge(req.body);

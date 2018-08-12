@@ -14,8 +14,8 @@
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
-import { HttpError } from '../../core/http-error';
 import validationUtils from '../../core/utils/validation-utils';
+import { BadRequestError } from '../../core/http-error';
 import Stage from '../../models/stage';
 import Playlog from '../../models/playlog';
 const logger = log4js.getLogger('debug');
@@ -56,7 +56,7 @@ const router = expressPromiseRouter();
 router.post('/start', async function (req: express.Request, res: express.Response): Promise<void> {
 	// ステージのアクセス可否チェック、ゲーム開始ログを保存
 	const userId = req.user ? req.user.id : null;
-	const stage = await Stage.scope({ method: ['accessible', userId] }).findById(validationUtils.toNumber(req.body.stageId));
+	const stage = await Stage.scope({ method: ['accessible', userId] }).findById(req.body.stageId);
 	validationUtils.notFound(stage);
 	const playlog = await Playlog.create({ stageId: stage.id, userId: userId });
 	res.json(playlog);
@@ -111,12 +111,12 @@ router.post('/start', async function (req: express.Request, res: express.Respons
  */
 router.post('/end', async function (req: express.Request, res: express.Response): Promise<void> {
 	// プレイログの整合性をチェック。OKなら保存
-	const playlog = await Playlog.scope("playing").findById<Playlog>(validationUtils.toNumber(req.body.id));
+	const playlog = await Playlog.scope("playing").findById<Playlog>(req.body.id);
 	validationUtils.notFound(playlog);
 	playlog.merge(req.body);
 	if (playlog.hash() !== req.body.hash) {
 		logger.info(playlog.hash() + " !== " + req.body.hash);
-		throw new HttpError(400);
+		throw new BadRequestError(`hash=${req.body.hash} is not valid`);
 	}
 	await playlog.save();
 	res.json(playlog);

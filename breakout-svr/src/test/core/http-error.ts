@@ -1,5 +1,5 @@
 /**
- * @file http-error.jsのテスト。
+ * @file http-error.tsのテスト。
  */
 import * as assert from 'power-assert';
 import { HttpError } from '../../core/http-error';
@@ -10,7 +10,6 @@ describe('http-error', () => {
 			let e = new HttpError();
 			assert.equal(e.status, 500);
 			assert.equal(e.message, "Internal Server Error");
-			assert.equal(e.contentType, "text");
 
 			e = new HttpError(400);
 			assert.equal(e.status, 400);
@@ -47,11 +46,6 @@ describe('http-error', () => {
 			e = new HttpError(404, "id=1 is not found");
 			assert.equal(e.status, 404);
 			assert.equal(e.message, "id=1 is not found");
-
-			e = new HttpError(404, '{"msg":"id=1 is not found"}', "json");
-			assert.equal(e.status, 404);
-			assert.equal(e.message, '{"msg":"id=1 is not found"}');
-			assert.equal(e.contentType, "json");
 		});
 	});
 });

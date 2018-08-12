@@ -82,7 +82,7 @@ const router = expressPromiseRouter();
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.get('/', passportManager.authorize('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
+router.get('/', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
 	const users = await User.findAll();
 	res.json(users);
 });
@@ -109,10 +109,12 @@ router.get('/', passportManager.authorize('admin'), async function (req: express
  *             name:
  *               type: string
  *               description: ユーザー名
+ *               minLength: 1
  *             password:
  *               type: string
  *               format: password
  *               description: パスワード
+ *               minLength: 1
  *     responses:
  *       200:
  *         description: 登録成功
@@ -155,7 +157,7 @@ router.post('/', async function (req: express.Request, res: express.Response): P
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me', passportManager.authorize(), function (req: express.Request, res: express.Response): void {
+router.get('/me', passportManager.isAuthenticated(), function (req: express.Request, res: express.Response): void {
 	res.json(req.user);
 });
 
@@ -179,7 +181,7 @@ router.get('/me', passportManager.authorize(), function (req: express.Request, r
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me/stages', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.get('/me/stages', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	const stages = await Stage.findUserStagesWithAccessibleAllInfo(req.user.id, true);
 	res.json(stages);
 });
@@ -206,7 +208,7 @@ router.get('/me/stages', passportManager.authorize(), async function (req: expre
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.get('/me/playlogs', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.get('/me/playlogs', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	const playlogs = await Playlog.scope(<any>[{ method: ['user', req.user.id] }, "withstage"]).findAll<Playlog>();
 	res.json(playlogs);
 });
@@ -248,7 +250,7 @@ router.get('/me/playlogs', passportManager.authorize(), async function (req: exp
  *       401:
  *         $ref: '#/responses/Unauthorized'
  */
-router.get('/me/favorites', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.get('/me/favorites', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	const stages = await StageFavorite.findStagesWithAccessibleAllInfo(req.user.id);
 	res.json(stages);
 });
@@ -331,13 +333,19 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *             name:
  *               type: string
  *               description: ユーザー名
+ *               minLength: 1
  *             password:
  *               type: string
  *               format: password
  *               description: パスワード
+ *               minLength: 1
  *             status:
  *               type: string
  *               description: ステータス (user/admin/disable)
+ *               enum:
+ *                 - user
+ *                 - admin
+ *                 - disable
  *             comment:
  *               type: string
  *               description: コメント
@@ -353,7 +361,7 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.put('/:id', passportManager.authorize(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分または管理者のみ更新可
 	passportManager.validateUserIdOrAdmin(req, req.params.id);
 

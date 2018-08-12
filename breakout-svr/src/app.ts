@@ -4,6 +4,7 @@
 import "reflect-metadata";
 import 'source-map-support/register';
 import * as express from 'express';
+import * as http from 'http';
 import * as path from 'path';
 import * as config from 'config';
 import * as log4js from 'log4js';
@@ -15,7 +16,7 @@ import swaggerJSDoc = require('swagger-jsdoc');
 import * as swaggerExpressValidator from 'swagger-express-validator';
 import { Sequelize } from 'sequelize-typescript';
 import fileUtils from './core/utils/file-utils';
-import { HttpError } from './core/http-error';
+import { HttpError, BadRequestError, NotFoundError, InternalServerError } from './core/http-error';
 import responseBodyCollector from './core/response-body-collector';
 
 // Sequelizeの初期化
@@ -91,10 +92,10 @@ app.use(swaggerExpressValidator({
 	validateRequest: true,
 	validateResponse: config['debug']['responseValidation'],
 	requestValidationFn: (req: express.Request, data: any, errors: any) => {
-		throw new HttpError(400, errors[0].message);
+		throw new BadRequestError(errors[0].message, errors);
 	},
 	responseValidationFn: (req: express.Request, data: any, errors: any) => {
-		throw new Error(errors[0].message);
+		throw new InternalServerError(errors[0].message, errors);
 	},
 }));
 
@@ -111,10 +112,63 @@ if (config['debug']['apidocs']) {
 	});
 }
 
+// ルートが存在しない場合、404エラー
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+	next(new NotFoundError());
+});
+
 // エラーハンドラー登録
-import errorHandlers from './core/error-handlers';
-for (let handler in errorHandlers) {
-	app.use(errorHandlers[handler]);
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	// エラーをHttpErrorに変換
+	const cause = err;
+	if (!(err instanceof HttpError)) {
+		switch (err.name) {
+			case 'SequelizeUniqueConstraintError':
+				err = new BadRequestError(joinSequelizeErrorMessages(err), err);
+				break;
+			case 'SequelizeValidationError':
+				err = new BadRequestError(joinSequelizeErrorMessages(err), err);
+				break;
+			default:
+				err = new InternalServerError(err.message || err, err);
+		}
+	}
+
+	// エラーの種類に応じてログレベルを調整（ログには元のエラーを出す）
+	const logger = log4js.getLogger('error');
+	if (err.status >= 500) {
+		logger.error(cause);
+	} else {
+		logger.debug(cause);
+	}
+
+	// エラーレスポンスを出力
+	if (res.headersSent) {
+		return;
+	}
+
+	res.status(err.status);
+	res.type('text');
+
+	// 運用中の環境ではエラーメッセージを隠す
+	let message = http.STATUS_CODES[err.status];
+	if (config['debug']['errorMessage']) {
+		message = err.message;
+	}
+	res.send(message);
+});
+
+/**
+ * Sequelizeで複数返るエラーメッセージを結合する。
+ * @param err Sequelizeの例外。
+ * @returns エラーメッセージ文字列。
+ */
+function joinSequelizeErrorMessages(err: any): string {
+	if (Array.isArray(err.errors)) {
+		return err.errors.map((e) => e.message || "").join(", ");
+	} else {
+		return "";
+	}
 }
 
 module.exports = app;

@@ -1,5 +1,5 @@
 /**
- * @file redis-helper.jsのテスト。
+ * @file redis-helper.tsのテスト。
  */
 import * as assert from 'power-assert';
 import redisHelper from '../../../core/redis/redis-helper';
