@@ -2,7 +2,7 @@
  * バリデーションユーティリティモジュール。
  * @module ./core/utils/validation-utils
  */
-import { BadRequestError, NotFoundError } from '../http-error';
+import { BadRequestError, NotFoundError } from './http-error';
 
 /**
  * バリデートエラーのメッセージを生成する。

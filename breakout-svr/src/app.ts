@@ -16,7 +16,7 @@ import swaggerJSDoc = require('swagger-jsdoc');
 import * as swaggerExpressValidator from 'swagger-express-validator';
 import { Sequelize } from 'sequelize-typescript';
 import fileUtils from './core/utils/file-utils';
-import { HttpError, BadRequestError, NotFoundError, InternalServerError } from './core/http-error';
+import { HttpError, BadRequestError, NotFoundError, InternalServerError } from './core/utils/http-error';
 import responseBodyCollector from './core/response-body-collector';
 
 // Sequelizeの初期化

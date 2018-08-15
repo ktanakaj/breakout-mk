@@ -5,7 +5,7 @@
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as express from 'express';
-import { UnauthorizedError, ForbiddenError } from './http-error';
+import { UnauthorizedError, ForbiddenError } from './utils/http-error';
 import User from '../models/user';
 
 /**

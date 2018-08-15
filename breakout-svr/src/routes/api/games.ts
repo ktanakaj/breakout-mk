@@ -15,7 +15,7 @@ import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
 import validationUtils from '../../core/utils/validation-utils';
-import { BadRequestError } from '../../core/http-error';
+import { BadRequestError } from '../../core/utils/http-error';
 import Stage from '../../models/stage';
 import Playlog from '../../models/playlog';
 const logger = log4js.getLogger('debug');

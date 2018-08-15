@@ -1,6 +1,6 @@
 /**
  * HTTPエラーの例外クラスのNode.jsモジュール。
- * @module ./core/http-error
+ * @module ./core/utils/http-error
  */
 import * as http from 'http';
 

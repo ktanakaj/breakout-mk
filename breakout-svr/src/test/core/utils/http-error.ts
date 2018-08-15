@@ -2,7 +2,7 @@
  * @file http-error.tsのテスト。
  */
 import * as assert from 'power-assert';
-import { HttpError } from '../../core/http-error';
+import { HttpError } from '../../../core/utils/http-error';
 
 describe('http-error', () => {
 	describe('#constructor()', () => {
