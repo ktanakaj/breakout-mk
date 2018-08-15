@@ -17,15 +17,19 @@ export default function responseBodyCollector(req: express.Request, res: express
 
 	// 通常の write や end にフックする
 	function callWithPushChunk(org: Function) {
-		return function (chunk) {
+		return function (chunk: string | Buffer, encoding?: string) {
 			if (chunk !== undefined && chunk !== null && chunk !== '') {
-				chunks.push(chunk);
+				if (typeof chunk === 'string') {
+					chunks.push(Buffer.from(chunk, encoding));
+				} else {
+					chunks.push(chunk);
+				}
 			}
 			org.apply(this, arguments);
 		};
 	}
 	res.write = <any>callWithPushChunk(res.write);
-	res.end = callWithPushChunk(res.end);
+	res.end = <any>callWithPushChunk(res.end);
 
 	// 動的にメソッドを追加
 	res['_getData'] = function () { return Buffer.concat(chunks).toString('utf8'); };
