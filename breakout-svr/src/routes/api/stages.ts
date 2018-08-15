@@ -56,6 +56,9 @@
  *       status:
  *         type: string
  *         description: ステータス (private/public)
+ *         enum:
+ *           - private
+ *           - public
  *       comment:
  *         type: string
  *         description: コメント

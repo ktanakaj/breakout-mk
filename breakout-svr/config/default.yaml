@@ -114,6 +114,10 @@
           status:
             type: string
             description: ステータス (user/admin/disable)
+            enum:
+              - user
+              - admin
+              - disable
           comment:
             type: string
             description: ユーザーコメント
@@ -143,6 +147,9 @@
           status:
             type: string
             description: ステータス (private/public)
+            enum:
+              - private
+              - public
           createdAt:
             type: string
             format: date-time
@@ -152,7 +159,9 @@
             format: date-time
             description: 更新日時
           deletedAt:
-            type: string
+            type:
+              - "string"
+              - "null"
             format: date-time
             description: 削除日時
           user:
@@ -181,6 +190,9 @@
           status:
             type: string
             description: ステータス (latest/updated)
+            enum:
+              - latest
+              - updated
           map:
             type: string
             description: ステージデータ
@@ -278,6 +290,6 @@
         description: セッションID
   debug:
     errorMessage: true # エラーメッセージを出力する場合true
-    responseValidation: false # レスポンスもバリデーションを行う場合true
+    responseValidation: true # レスポンスもバリデーションを行う場合true
     apidocs: true # api-docs.json を有効にするか
     bodyLog: true # ログにリクエスト/レスポンスボディを出力する場合true
