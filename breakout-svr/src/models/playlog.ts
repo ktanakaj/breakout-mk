@@ -124,20 +124,6 @@ export default class Playlog extends Model<Playlog> {
 	stage: Stage;
 
 	/**
-	 * 型を合わせる。
-	 * @param playlog バリデーションされるプレイログ。
-	 * @param options バリデーション処理のオプション。
-	 */
-	@BeforeValidate
-	static convertParameters(playlog: Playlog, options: {}): void {
-		// clearedに文字列が入ってきた場合booleanに変換
-		// （sequelizeがそのまま渡してしまい、MySQLが暗黙の型変換で失敗するため）
-		if (playlog.cleared !== undefined && playlog.cleared !== null) {
-			playlog.cleared = playlog.isClear();
-		}
-	}
-
-	/**
 	 * ランキングへの登録。
 	 * @param playlog 登録されたプレイログ。
 	 * @param options 登録処理のオプション。
@@ -173,20 +159,6 @@ export default class Playlog extends Model<Playlog> {
 	}
 
 	/**
-	 * クリアしたか？
-	 * @returns クリアした場合true。
-	 */
-	isClear(): boolean {
-		// 文字列が入ってくることがあるので、その場合もうまく判定
-		if (<any>this.cleared === 'TRUE' || <any>this.cleared === 'True' || <any>this.cleared === 'true') {
-			return true;
-		} else if (<any>this.cleared === 'FALSE' || <any>this.cleared === 'False' || <any>this.cleared === 'false') {
-			return false;
-		}
-		return Boolean(this.cleared);
-	}
-
-	/**
 	 * 各値から整合性チェック用のハッシュを計算する。
 	 * @returns 計算したハッシュ値。
 	 */
@@ -198,7 +170,7 @@ export default class Playlog extends Model<Playlog> {
 		// ユーザーID=nullは0で代用
 		hashGenerator.update(String(this.userId || 0));
 		hashGenerator.update(String(this.score));
-		hashGenerator.update(String(this.isClear()));
+		hashGenerator.update(String(this.cleared));
 		// 更新時刻も入れることで、再送信を防ぐ
 		hashGenerator.update(this.createdAt.toISOString());
 		hashGenerator.update(this.updatedAt.toISOString());

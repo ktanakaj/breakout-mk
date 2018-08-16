@@ -226,7 +226,9 @@
             description: ステージID
             format: int32
           userId:
-            type: integer
+            type:
+              - "integer"
+              - "null"
             description: ユーザーID
             format: int32
           score:
