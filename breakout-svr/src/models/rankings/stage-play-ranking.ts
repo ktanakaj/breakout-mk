@@ -77,7 +77,7 @@ export default class StagePlayRanking extends SortedSet {
 	 * ランキングデータを取得する。
 	 * @param start 取得開始位置。デフォルトは先頭。
 	 * @param end 取得終了位置。デフォルトは末尾。
-	 * @returns  検索結果。スコアの降順。
+	 * @returns 検索結果。スコアの降順。
 	 */
 	async findRankingAsync(start: number = undefined, end: number = undefined): Promise<RankingEntry[]> {
 		const rankings = await this.entriesAsync(start, end, true);
