@@ -4,7 +4,7 @@
  * ブロックくずしのステージの各種情報を扱う。
  * @module ./models/stage-header
  */
-import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import redis from './rankings/redis';
 import StagePlayRanking from './rankings/stage-play-ranking';
@@ -33,21 +33,19 @@ import StageComment from './stage-comment';
 })
 export default class StageHeader extends Model<StageHeader> {
 	/** ユーザーID */
+	@Comment('ユーザーID')
 	@AllowNull(false)
 	@ForeignKey(() => User)
-	@Column({
-		comment: 'ユーザーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	userId: number;
 
 	/** ステータス */
+	@Comment('ステータス')
 	@AllowNull(false)
+	@Default('private')
 	@Column({
-		comment: 'ステータス',
 		type: DataType.ENUM,
 		values: ['private', 'public'],
-		defaultValue: 'private',
 	})
 	status: string;
 
@@ -75,22 +73,20 @@ export default class StageHeader extends Model<StageHeader> {
 	 * 関連ランキングの掲載可否更新。
 	 * @param header 更新されたヘッダー。
 	 * @param options 更新処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterUpdate
-	static updateRankingStatus(header: StageHeader, options: {}): void {
+	static async updateRankingStatus(header: StageHeader, options: {}): Promise<void> {
 		// 公開/非公開が変わった場合、評価ランキングに登録/削除
 		// ※ 評価以外は非公開でも載せているのでとりあえずOK
 		if (header.status !== undefined && header.status !== header.previous("status")) {
 			const stageRanking = new StageRatingRanking();
-			let promise;
 			if (header.status === "public") {
-				promise = stageRanking.refreshAsync(header.id);
+				await stageRanking.refreshAsync(header.id);
 			} else {
-				promise = stageRanking.deleteAsync(header.id);
+				await stageRanking.deleteAsync(header.id);
 			}
-			promise
-				.then(() => new UserRatingRanking().refreshAsync(header.userId))
-				.catch(console.error);
+			await new UserRatingRanking().refreshAsync(header.userId);
 		}
 	}
 
@@ -98,32 +94,26 @@ export default class StageHeader extends Model<StageHeader> {
 	 * 関連ランキングの削除。
 	 * @param header 削除されたヘッダー。
 	 * @param options 削除処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterDestroy
-	static removeRankings(header: StageHeader, options: {}): void {
+	static async removeRankings(header: StageHeader, options: {}): Promise<void> {
 		const multi = redis.getClient().multi();
 
 		// ※ ステージ別ランキングなど、残っていても導線がないものはそのまま
 		const favoriteRanking = new StageFavoriteRanking(multi);
 		favoriteRanking.delete(header.id);
-		const ratingRanking = new StageRatingRanking(multi);
-		ratingRanking.delete(header.id);
+		const stageRatingRanking = new StageRatingRanking(multi);
+		stageRatingRanking.delete(header.id);
 
 		// プレイ回数ランキングはステージに紐づくので過去バージョンも含めて消す
-		header.$get('stages')
-			.then((stages) => {
-				let promises = [];
-				for (let stage of <Stage[]>stages) {
-					promises.push(StagePlayRanking.deleteAll(multi, stage.id));
-				}
-				return Promise.all(promises);
-			})
-			.then(() => {
-				const ratingRanking = new UserRatingRanking(multi);
-				return ratingRanking.refresh(header.userId);
-			})
-			.then(() => multi.execAsync())
-			.catch(console.error);
+		const stages = await header.$get('stages');
+		for (let stage of <Stage[]>stages) {
+			await StagePlayRanking.deleteAll(multi, stage.id);
+		}
+		const userRatingRanking = new UserRatingRanking(multi);
+		await userRatingRanking.refresh(header.userId);
+		await multi.execAsync();
 	}
 
 	/**

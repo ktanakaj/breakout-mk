@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するコメントを扱う。
  * @module ./models/stage-comment
  */
-import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Comment, Default, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -35,47 +35,39 @@ import StageHeader from './stage-header';
 })
 export default class StageComment extends Model<StageComment> {
 	/** ステージヘッダーID */
+	@Comment('ステージヘッダーID')
 	@AllowNull(false)
 	@ForeignKey(() => StageHeader)
-	@Column({
-		comment: 'ステージヘッダーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	headerId: number;
 
 	/** ユーザーID */
 	// 未認証ユーザーはnull
+	@Comment('ユーザーID')
 	@ForeignKey(() => User)
-	@Column({
-		comment: 'ユーザーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	userId: number;
 
 	/** IPアドレス */
+	@Comment('IPアドレス')
 	@AllowNull(false)
-	@Column({
-		comment: 'IPアドレス',
-		defaultValue: 0, // 未認証ユーザーは0
-	})
+	@Column
 	ipAddress: string;
 
 	/** ステータス */
+	@Comment('ステータス')
 	@AllowNull(false)
+	@Default('public')
 	@Column({
-		comment: 'ステータス',
 		type: DataType.ENUM,
 		values: ['private', 'public'],
-		defaultValue: 'public',
 	})
 	status: string;
 
 	/** ステージコメント */
+	@Comment('ステージコメント')
 	@AllowNull(false)
-	@Column({
-		comment: 'ステージコメント',
-		type: DataType.TEXT,
-	})
+	@Column(DataType.TEXT)
 	comment: string;
 
 	/** ユーザー */

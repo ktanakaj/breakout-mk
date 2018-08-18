@@ -4,7 +4,7 @@
  * ブロックくずしの一つの面に対応する。
  * @module ./models/stage
  */
-import { Table, Column, Model, DataType, AllowNull, BelongsTo, HasMany, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Default, Comment, BelongsTo, HasMany, ForeignKey } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';
@@ -52,14 +52,14 @@ import Playlog from './playlog';
 			let where = { status: "public" };
 			if (userId) {
 				where = <any>{
-					$or: [where, { userId: userId }]
+					$or: [where, { userId }]
 				};
 			}
 			return {
 				include: [{
 					model: StageHeader,
 					as: 'header',
-					where: where,
+					where,
 					required: true,
 					include: [{
 						model: User,
@@ -82,7 +82,7 @@ import Playlog from './playlog';
 					model: StageHeader,
 					as: 'header',
 					required: true,
-					where: where,
+					where,
 					include: [{
 						model: User,
 						as: 'user',
@@ -95,44 +95,39 @@ import Playlog from './playlog';
 })
 export default class Stage extends Model<Stage> {
 	/** ステージヘッダーID */
+	@Comment('ステージヘッダーID')
 	@AllowNull(false)
 	@ForeignKey(() => StageHeader)
-	@Column({
-		comment: "ステージヘッダーID",
-		type: DataType.INTEGER,
-	})
+	@Column
 	headerId: number;
 
 	/** ステージ名 */
+	@Comment('ステージ名')
 	@AllowNull(false)
-	@Column({
-		comment: 'ステージ名',
-	})
+	@Column
 	name: string;
 
 	/** ステータス */
+	@Comment('ステータス')
 	@AllowNull(false)
+	@Default('latest')
 	@Column({
-		comment: 'ステータス',
 		type: DataType.ENUM,
 		values: ['latest', 'updated'],
-		defaultValue: 'latest',
 	})
 	status: string;
 
 	/** ステージデータ */
+	@Comment('ステージデータ')
 	@AllowNull(false)
-	@Column({
-		comment: 'ステージデータ',
-		type: DataType.TEXT,
-	})
+	@Column(DataType.TEXT)
 	map: string;
 
 	/** ステージコメント */
-	@Column({
-		comment: 'ステージコメント',
-		type: DataType.TEXT,
-	})
+	@Comment('ステージコメント')
+	@AllowNull(false)
+	@Default('')
+	@Column(DataType.TEXT)
 	comment: string;
 
 	/** ステージヘッダー */

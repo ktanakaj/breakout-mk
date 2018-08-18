@@ -78,7 +78,7 @@ export default class StageScoreRanking extends SortedSet {
 		for (let i = 1; i <= 3; i++) {
 			let ranking = new (<any>StageScoreRanking)(...keys.slice(0, i));
 			ranking.multi = multi;
-			promises.push(ranking.setIfGreater(playlog.userId, playlog.score));
+			promises.push(ranking.setIfGreater(playlog.userId || 0, playlog.score));
 		}
 		return Promise.all(promises)
 			.then((results) => {

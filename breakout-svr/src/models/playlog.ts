@@ -4,7 +4,7 @@
  * ゲームの各ステージのプレイログ1件に対応する。
  * @module ./models/playlog
  */
-import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo, BeforeValidate, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
@@ -37,9 +37,7 @@ import Stage from './stage';
 		},
 		user: (userId) => {
 			return {
-				where: {
-					userId: userId,
-				},
+				where: { userId },
 				order: [
 					['createdAt', 'DESC']
 				],
@@ -65,54 +63,42 @@ import Stage from './stage';
 })
 export default class Playlog extends Model<Playlog> {
 	/** ステージID */
+	@Comment('ステージID')
 	@AllowNull(false)
 	@ForeignKey(() => Stage)
-	@Column({
-		comment: 'ステージID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	stageId: number;
 
 	/** ユーザーID */
-	// 未認証ユーザーはnull
+	// 未認証ユーザーはnull（ただしRedisと連携する部分では0扱い）
+	@Comment('ユーザーID')
 	@ForeignKey(() => User)
-	@Column({
-		comment: 'ユーザーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	userId: number;
 
 	/** 獲得スコア */
-	@Column({
-		comment: '獲得スコア',
-		type: DataType.INTEGER,
-	})
+	@Comment('獲得スコア')
+	@Column
 	score: number;
 
 	/** クリアしたか？ */
+	@Comment('クリアしたか？')
 	@AllowNull(false)
-	@Column({
-		comment: 'クリアしたか？',
-		type: DataType.BOOLEAN,
-		defaultValue: false,
-	})
+	@Default(false)
+	@Column
 	cleared: boolean;
 
-	// ※ createdAt,updatedAtは桁数を指定するため明示的に指定
+	// ※ createdAt,updatedAtは通常自動生成だが、桁数を指定するためここでは明示的に指定
 	/** 作成日時 */
+	@Comment('作成日時')
 	@AllowNull(false)
-	@Column({
-		comment: '作成日時',
-		type: DataType.DATE(3),
-	})
+	@Column(DataType.DATE(3))
 	createdAt: Date;
 
 	/** 更新日時 */
+	@Comment('更新日時')
 	@AllowNull(false)
-	@Column({
-		comment: '更新日時',
-		type: DataType.DATE(3),
-	})
+	@Column(DataType.DATE(3))
 	updatedAt: Date;
 
 	/** ユーザー */
@@ -127,25 +113,25 @@ export default class Playlog extends Model<Playlog> {
 	 * ランキングへの登録。
 	 * @param playlog 登録されたプレイログ。
 	 * @param options 登録処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterCreate
-	static addRanking(playlog: Playlog, options: {}): void {
-		StagePlayRanking.addByLog(playlog)
-			.then(() => UserPlayRanking.addByLog(playlog))
-			.catch(console.error);
+	static async addRanking(playlog: Playlog, options: {}): Promise<void> {
+		await StagePlayRanking.addByLog(playlog);
+		await UserPlayRanking.addByLog(playlog);
 	}
 
 	/**
 	 * スコアランキングの更新。
 	 * @param playlog 更新されたプレイログ。
 	 * @param options 更新処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterUpdate
-	static updateRanking(playlog: Playlog, options: {}): void {
+	static async updateRanking(playlog: Playlog, options: {}): Promise<void> {
 		// スコアが設定された場合、ランキングを更新
 		if (playlog.score !== undefined && playlog.score !== playlog.previous("score")) {
-			StageScoreRanking.updateByLog(playlog)
-				.catch(console.error);
+			await StageScoreRanking.updateByLog(playlog);
 		}
 	}
 
@@ -200,7 +186,7 @@ export default class Playlog extends Model<Playlog> {
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
 				[Sequelize.fn('SUM', Sequelize.col('cleared')), 'cleared'],
 			],
-			where: where,
+			where,
 			group: ["stageId"],
 			raw: true
 		});
@@ -229,7 +215,7 @@ export default class Playlog extends Model<Playlog> {
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
 				[Sequelize.fn('SUM', Sequelize.col('cleared')), 'cleared'],
 			],
-			where: where,
+			where,
 			group: ["userId"],
 			raw: true
 		});
@@ -252,7 +238,7 @@ export default class Playlog extends Model<Playlog> {
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
 				[Sequelize.fn('SUM', Sequelize.col('cleared')), 'cleared'],
 			],
-			where: where,
+			where,
 			group: ["stageId"],
 			raw: true
 		});

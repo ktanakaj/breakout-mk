@@ -32,9 +32,9 @@ export default class UserRatingRanking extends SortedSet {
 	/**
 	 * 指定されたユーザーが作成したステージの合計レーティングを再集計する。※要コミット
 	 * @param userId ユーザーID。
-	 * @returns 更新結果。
+	 * @returns 処理状態。
 	 */
-	async refresh(userId: number): Promise<any> {
+	async refresh(userId: number): Promise<void> {
 		const [row] = await StageRating.averageByUserIds(userId);
 		this.set(String(userId), row ? row.rating : 0);
 	}
@@ -42,7 +42,7 @@ export default class UserRatingRanking extends SortedSet {
 	/**
 	 * 指定されたユーザーが作成したステージの合計レーティングを再集計する。
 	 * @param userId ユーザーID。
-	 * @returns 更新結果。
+	 * @returns 処理状態。
 	 */
 	async refreshAsync(userId: number): Promise<void> {
 		const [row] = await StageRating.averageByUserIds(userId);

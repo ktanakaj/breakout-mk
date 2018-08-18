@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するお気に入りを扱う。
  * @module ./models/stage-favorite
  */
-import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Comment, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';
@@ -30,17 +30,12 @@ import Playlog from './playlog';
 	scopes: {
 		one: (userId, headerId) => {
 			return {
-				where: {
-					userId: userId,
-					headerId: headerId,
-				},
+				where: { userId, headerId },
 			};
 		},
 		user: (userId) => {
 			return {
-				where: {
-					userId: userId,
-				},
+				where: { userId },
 			};
 		},
 		withheader: () => {
@@ -56,21 +51,17 @@ import Playlog from './playlog';
 })
 export default class StageFavorite extends Model<StageFavorite> {
 	/** ステージヘッダーID */
+	@Comment('ステージヘッダーID')
 	@AllowNull(false)
 	@ForeignKey(() => StageHeader)
-	@Column({
-		comment: 'ステージヘッダーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	headerId: number;
 
 	/** ユーザーID */
+	@Comment('ユーザーID')
 	@AllowNull(false)
 	@ForeignKey(() => User)
-	@Column({
-		comment: 'ユーザーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	userId: number;
 
 	/** ユーザー */
@@ -85,22 +76,22 @@ export default class StageFavorite extends Model<StageFavorite> {
 	 * ランキングのお気に入り数加算。
 	 * @param favorite 登録されたお気に入り。
 	 * @param options 更新処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterCreate
-	static incrementRanking(favorite: StageFavorite, options: {}): void {
-		new StageFavoriteRanking().incrementAsync(String(favorite.headerId))
-			.catch(console.error);
+	static async incrementRanking(favorite: StageFavorite, options: {}): Promise<void> {
+		await new StageFavoriteRanking().incrementAsync(String(favorite.headerId));
 	}
 
 	/**
 	 * ランキングのお気に入り数削減。
 	 * @param favorite 削除されたお気に入り。
 	 * @param options 削除処理のオプション。
+	 * @returns 処理状態。
 	 */
 	@AfterDestroy
-	static decrementRanking(favorite: StageFavorite, options: {}): void {
-		new StageFavoriteRanking().incrementAsync(String(favorite.headerId), -1)
-			.catch(console.error);
+	static async decrementRanking(favorite: StageFavorite, options: {}): Promise<void> {
+		await new StageFavoriteRanking().incrementAsync(String(favorite.headerId), -1);
 	}
 
 	/**

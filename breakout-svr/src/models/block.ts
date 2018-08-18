@@ -4,7 +4,7 @@
  * ブロックくずしの一つのブロックのマスタに対応する。
  * @module ./models/block
  */
-import { Table, Column, Model, DataType, AllowNull, DefaultScope } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AllowNull, Default, Comment, Min, DefaultScope } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 
 /**
@@ -26,74 +26,59 @@ import objectUtils from '../core/utils/object-utils';
 })
 export default class Block extends Model<Block> {
 	/** ブロックキー */
+	@Comment('ブロックキー')
+	@PrimaryKey
 	@AllowNull(false)
-	@Column({
-		comment: 'ブロックキー',
-		primaryKey: true,
-		type: DataType.STRING(6),
-	})
+	@Column(DataType.STRING(6))
 	key: string;
 
 	/** ブロック名 */
+	@Comment('ブロック名')
 	@AllowNull(false)
-	@Column({
-		comment: 'ブロック名',
-	})
+	@Column
 	name: string;
 
 	/** ステータス */
+	@Comment('ステータス')
 	@AllowNull(false)
+	@Default('enable')
 	@Column({
-		comment: 'ステータス',
 		type: DataType.ENUM,
 		values: ['enable', 'disable'],
-		defaultValue: 'enable',
 	})
 	status: string;
 
 	/** HP */
+	@Comment('HP')
 	@AllowNull(false)
-	@Column({
-		comment: 'HP',
-		type: DataType.INTEGER(3),
-		defaultValue: 1,
-		validate: { min: 0 },
-	})
+	@Default(1)
+	@Column(DataType.INTEGER(3).UNSIGNED)
 	hp: number;
 
 	/** 得点 */
+	@Comment('得点')
 	@AllowNull(false)
-	@Column({
-		comment: '得点',
-		type: DataType.INTEGER(6),
-	})
+	@Column(DataType.INTEGER(6))
 	score: number;
 
 	/** X方向サイズ */
+	@Comment('X方向サイズ')
 	@AllowNull(false)
-	@Column({
-		comment: 'X方向サイズ',
-		type: DataType.INTEGER(3),
-		validate: { min: 1 },
-	})
+	@Min(1)
+	@Column(DataType.INTEGER(3).UNSIGNED)
 	xsize: number;
 
 	/** Y方向サイズ */
+	@Comment('Y方向サイズ')
 	@AllowNull(false)
-	@Column({
-		comment: 'Y方向サイズ',
-		type: DataType.INTEGER(3),
-		validate: { min: 1 },
-	})
+	@Min(1)
+	@Column(DataType.INTEGER(3).UNSIGNED)
 	ysize: number;
 
 	/** RGB色 */
+	@Comment('RGB色')
 	@AllowNull(false)
-	@Column({
-		comment: 'RGB色',
-		type: DataType.INTEGER,
-		validate: { min: 0 },
-	})
+	@Column(DataType.INTEGER.UNSIGNED)
 	color: number;
 
 	/**

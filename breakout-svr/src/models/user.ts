@@ -4,7 +4,7 @@
  * ブロックくずしのユーザー一人一人に対応する。
  * @module ./models/user
  */
-import { Table, Column, Model, DataType, AllowNull, Default, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, Unique, AllowNull, Default, Comment, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
@@ -54,37 +54,33 @@ const random = new Random();
 })
 export default class User extends Model<User> {
 	/** ユーザー名 */
+	@Comment('ユーザー名')
+	@Unique
 	@AllowNull(false)
-	@Column({
-		comment: 'ユーザー名',
-		unique: true,
-	})
+	@Column
 	name: string;
 
 	/** パスワード */
+	@Comment('パスワード')
 	@AllowNull(false)
-	@Column({
-		comment: 'パスワード',
-	})
+	@Column
 	password: string;
 
 	/** ステータス */
+	@Comment('ステータス')
 	@AllowNull(false)
+	@Default('user')
 	@Column({
-		comment: 'ステータス',
 		type: DataType.ENUM,
 		values: ['user', 'admin', 'disable'],
-		defaultValue: 'user',
 	})
 	status: string;
 
 	/** ユーザーコメント */
+	@Comment('ユーザーコメント')
 	@AllowNull(false)
 	@Default('')
-	@Column({
-		comment: 'ユーザーコメント',
-		type: DataType.TEXT,
-	})
+	@Column(DataType.TEXT)
 	comment: string;
 
 	/** ユーザー作成ステージ */

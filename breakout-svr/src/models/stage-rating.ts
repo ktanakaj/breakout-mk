@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対する評価を扱う。
  * @module ./models/stage-rating
  */
-import { Table, Column, Model, DataType, AllowNull, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Comment, Min, Max, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
 import User from './user';
 import StageHeader from './stage-header';
 
@@ -24,10 +24,7 @@ import StageHeader from './stage-header';
 	scopes: {
 		one: (userId, headerId) => {
 			return {
-				where: {
-					userId: userId,
-					headerId: headerId,
-				},
+				where: { userId, headerId },
 			};
 		},
 		withheader: () => {
@@ -43,30 +40,25 @@ import StageHeader from './stage-header';
 })
 export default class StageRating extends Model<StageRating> {
 	/** ステージヘッダーID */
+	@Comment('ステージヘッダーID')
 	@AllowNull(false)
 	@ForeignKey(() => StageHeader)
-	@Column({
-		comment: 'ステージヘッダーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	headerId: number;
 
 	/** ユーザーID */
+	@Comment('ユーザーID')
 	@AllowNull(false)
 	@ForeignKey(() => User)
-	@Column({
-		comment: 'ユーザーID',
-		type: DataType.INTEGER,
-	})
+	@Column
 	userId: number;
 
 	/** レーティング */
+	@Comment('レーティング')
 	@AllowNull(false)
-	@Column({
-		comment: 'レーティング',
-		type: DataType.INTEGER(2),
-		validate: { min: 0, max: 5 },
-	})
+	@Min(0)
+	@Max(5)
+	@Column(DataType.INTEGER(2))
 	rating: number;
 
 	/** ユーザー */
