@@ -2,6 +2,15 @@
   database:
       dialect: "sqlite"
       storage: ':memory:'
+  redis:
+    ranking:
+      host: "127.0.0.1"
+      port: 6379
+      db: 5
+    session:
+      host: "127.0.0.1"
+      port: 6379
+      db: 6
   log4js:
     appenders:
       stdout: # 標準出力
