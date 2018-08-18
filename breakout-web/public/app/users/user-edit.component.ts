@@ -54,7 +54,12 @@ export class UserEditComponent implements OnInit {
 	async put(): Promise<void> {
 		try {
 			await this.userService.update(this.user);
-			this.router.navigate(['/users']);
+			// 管理者は一覧画面へ、それ以外は自分を変更したはずなので自分の情報へ戻る
+			if (this.userService.me.status === 'admin') {
+				this.router.navigate(['/users']);
+			} else {
+				this.router.navigate(['/users/me']);
+			}
 		} catch (e) {
 			if (e.name === 'BadRequestError') {
 				return this.error = e.message;

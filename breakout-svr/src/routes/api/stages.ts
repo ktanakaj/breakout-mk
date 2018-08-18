@@ -47,7 +47,9 @@
  *         description: ステージヘッダーID
  *         format: int32
  *       userId:
- *         type: integer
+ *         type:
+ *           - "integer"
+ *           - "null"
  *         description: ユーザーID
  *         format: int32
  *       ipAddress:
@@ -201,7 +203,10 @@ router.post('/', passportManager.isAuthenticated(), async function (req: express
 	const stage = Stage.buildAll(req.body);
 	stage.header.userId = req.user.id;
 	const result = await stage.saveAll();
-	res.json(result);
+	// saveAllの戻り値だと何故か値があるのにtoJSONされないので手動で実施
+	const json = result.toJSON();
+	json['header'] = result.header.toJSON();
+	res.json(json);
 });
 
 /**
@@ -381,7 +386,10 @@ router.put('/:id', passportManager.isAuthenticated(), async function (req: expre
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	stage.mergeAll(req.body);
 	const result = await stage.saveAll();
-	res.json(result);
+	// saveAllの戻り値だと何故か値があるのにtoJSONされないので手動で実施
+	const json = result.toJSON();
+	json['header'] = result.header.toJSON();
+	res.json(json);
 });
 
 /**
@@ -415,8 +423,8 @@ router.delete('/:id', passportManager.isAuthenticated(), async function (req: ex
 	const stage = await Stage.scope("withuser").findById<Stage>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(stage);
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
-	const result = await stage.header.destroy();
-	res.json(result);
+	stage.header = <any>await stage.header.destroy();
+	res.json(stage);
 });
 
 /**

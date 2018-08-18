@@ -363,7 +363,7 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  */
 router.put('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分または管理者のみ更新可
-	passportManager.validateUserIdOrAdmin(req, req.params.id);
+	passportManager.validateUserIdOrAdmin(req, validationUtils.toNumber(req.params.id));
 
 	let user = await User.findById<User>(validationUtils.toNumber(req.params.id));
 	validationUtils.notFound(user);

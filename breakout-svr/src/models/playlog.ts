@@ -176,11 +176,11 @@ export default class Playlog extends Model<Playlog> {
 			where['stageId'] = Array.isArray(stageIds) ? { $in: stageIds } : stageIds;
 		}
 		// 期間が指定された場合、その期間のみを対象にする
-		let between = makeStartAndEndDate(date);
+		let between = this.makeStartAndEndDate(date);
 		if (between.length === 2) {
 			where['createdAt'] = { $between: between };
 		}
-		return await Playlog.findAll<any>({
+		const results = await Playlog.findAll<any>({
 			attributes: [
 				'stageId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -190,6 +190,7 @@ export default class Playlog extends Model<Playlog> {
 			group: ["stageId"],
 			raw: true
 		});
+		return this.formatReportResults(results);
 	}
 
 	/**
@@ -205,11 +206,11 @@ export default class Playlog extends Model<Playlog> {
 			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
 		}
 		// 期間が指定された場合、その期間のみを対象にする
-		let between = makeStartAndEndDate(date);
+		let between = this.makeStartAndEndDate(date);
 		if (between.length === 2) {
 			where['createdAt'] = { $between: between };
 		}
-		return await Playlog.findAll<any>({
+		const results = await Playlog.findAll<any>({
 			attributes: [
 				'userId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -219,6 +220,7 @@ export default class Playlog extends Model<Playlog> {
 			group: ["userId"],
 			raw: true
 		});
+		return this.formatReportResults(results);
 	}
 
 	/**
@@ -232,7 +234,7 @@ export default class Playlog extends Model<Playlog> {
 		if (Array.isArray(stageIds)) {
 			where['stageId'] = <any>{ $in: stageIds };
 		}
-		return await Playlog.findAll<any>({
+		const results = await Playlog.findAll<any>({
 			attributes: [
 				'stageId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'tried'],
 				[Sequelize.fn('MAX', Sequelize.col('score')), 'score'],
@@ -242,28 +244,42 @@ export default class Playlog extends Model<Playlog> {
 			group: ["stageId"],
 			raw: true
 		});
+		return this.formatReportResults(results);
 	}
-}
 
-/**
- * 期間を示す文字列から、期間の開始・終了の日時を生成する。
- * @param date 期間。"年" または "年/月" の形式か、年,月の配列。
- * @returns [開始, 終了] の配列。条件なしの場合空。
- */
-function makeStartAndEndDate(date: string | string[]): Date[] {
-	if (!date) {
-		return [];
+	/**
+	 * 期間を示す文字列から、期間の開始・終了の日時を生成する。
+	 * @param date 期間。"年" または "年/月" の形式か、年,月の配列。
+	 * @returns [開始, 終了] の配列。条件なしの場合空。
+	 */
+	private static makeStartAndEndDate(date: string | string[]): Date[] {
+		if (!date) {
+			return [];
+		}
+		if (!Array.isArray(date)) {
+			date = date.split("/");
+		}
+		if (!date[0]) {
+			return [];
+		}
+		// 年間または月間で絞り込み
+		if (!date[1]) {
+			return [new Date(Number(date[0]), 0), new Date(Number(date[0]) + 1, 0)];
+		} else {
+			return [new Date(Number(date[0]), Number(date[1]) - 1), new Date(Number(date[0]), Number(date[1]))];
+		}
 	}
-	if (!Array.isArray(date)) {
-		date = date.split("/");
-	}
-	if (!date[0]) {
-		return [];
-	}
-	// 年間または月間で絞り込み
-	if (!date[1]) {
-		return [new Date(Number(date[0]), 0), new Date(Number(date[0]) + 1, 0)];
-	} else {
-		return [new Date(Number(date[0]), Number(date[1]) - 1), new Date(Number(date[0]), Number(date[1]))];
+
+	/**
+	 * 各種集計結果を成型する。
+	 * @param results 成型する集計結果配列。
+	 * @returns 成型した集計結果配列。
+	 */
+	private static formatReportResults(results: { cleared: any }[]): any[] {
+		// clearedだけ何故かSUMなのにstringでくるようなのでキャスト
+		return results.map((info) => {
+			info.cleared = Number(info.cleared);
+			return info;
+		});
 	}
 }

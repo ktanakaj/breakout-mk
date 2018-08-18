@@ -200,7 +200,9 @@ export default class Stage extends Model<Stage> {
 			// 新規の場合はヘッダーIDが必要なのでヘッダーから保存
 			const header = await this.header.save(options);
 			this.headerId = header.id;
-			return await saveWithNewVersion(options);
+			const stage = await saveWithNewVersion(options);
+			stage.header = header;
+			return stage;
 		});
 	}
 
@@ -284,23 +286,24 @@ export default class Stage extends Model<Stage> {
 		// 普通のオブジェクトに詰め替えて返す
 		for (let stage of stages) {
 			let result = stage.toJSON();
-			result.info = {};
+			result.info = { tried: 0, score: 0, cleared: 0, rating: 0 };
 			results.push(result);
 		}
-
-		if (userId <= 0) {
-			return results;
-		}
-
-		// ユーザーのプレイ回数・クリア回数・ハイスコア
-		const reports = await Playlog.reportForUser(userId, results.map((stage) => stage.id));
-		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
 
 		// ステージの平均評価
 		const scores = await Promise.all(results.map((stage) => ranking.getAsync(stage.headerId)));
 		for (let i = 0; i < scores.length; i++) {
 			results[i].info.rating = scores[i] || 0;
 		}
+
+		// ユーザーのプレイ回数・クリア回数・ハイスコア
+		if (userId <= 0) {
+			return results;
+		}
+
+		const reports = await Playlog.reportForUser(userId, results.map((stage) => stage.id));
+		objectUtils.mergeArray(results, reports, "id", "stageId", "info");
+
 		return results;
 	}
 
