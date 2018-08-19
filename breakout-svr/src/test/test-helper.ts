@@ -39,10 +39,16 @@ async function createRequestForUser(options: httpMocks.RequestOptions): Promise<
 	const req = httpMocks.createRequest(options);
 	req.user = await User.findOne({ where: { name: 'admin' } });
 	// passport認証ありの場合、logIn,isAuthenticatedが無いと言われるので、無理やりモックを詰める
-	req.logIn = <any>function (user, options, done) {
+	req.logIn = <any>function (user, optionsOrDone, done) {
 		this.user = user;
-		done();
+		// ※ 引数2つと3つのバージョンがある？ので調整
+		if (typeof done === 'function') {
+			done();
+		} else {
+			optionsOrDone();
+		}
 	};
+	req.login = req.logIn;
 	req.logout = function () { this.user = null; };
 	req.isAuthenticated = function () { return Boolean(this.user); };
 	return req;

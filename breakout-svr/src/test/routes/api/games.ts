@@ -23,7 +23,7 @@ describe('/api/games', () => {
 		await Stage.create({ id: 6, headerId: 4, name: "private stage", map: "[R] [G] [B]" });
 	});
 
-	describe('/start & /end', () => {
+	describe('POST /start & /end', () => {
 		it('should start & end game without login', async () => {
 			const reqStart = httpMocks.createRequest({
 				method: 'POST',
@@ -171,7 +171,7 @@ describe('/api/games', () => {
 		});
 	});
 
-	describe('/start', () => {
+	describe('POST /start', () => {
 		it('should start private game for owner', async () => {
 			const req = await testHelper.createRequestForUser({
 				method: 'POST',

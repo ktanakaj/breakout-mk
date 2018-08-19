@@ -133,6 +133,8 @@ router.post('/', async function (req: express.Request, res: express.Response): P
 			if (err) {
 				return reject(err);
 			}
+			// パスワードは見せない
+			user.password = undefined;
 			res.json(user);
 			resolve();
 		});

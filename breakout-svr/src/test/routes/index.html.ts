@@ -8,7 +8,7 @@ import router from '../../routes/index.html';
 
 describe('/index.html', () => {
 	it('should render default top page', async () => {
-		const req = await httpMocks.createRequest({
+		const req = httpMocks.createRequest({
 			method: 'GET',
 			url: '/',
 		});
@@ -24,7 +24,7 @@ describe('/index.html', () => {
 	it('should render japanese top page', async () => {
 		const headers = {};
 		headers['accept-language'] = 'ja,en-US;q=0.9,en;q=0.8';
-		const req = await httpMocks.createRequest({
+		const req = httpMocks.createRequest({
 			method: 'GET',
 			url: '/',
 			headers,
@@ -41,7 +41,7 @@ describe('/index.html', () => {
 	it('should render default top page for not japanese users', async () => {
 		const headers = {};
 		headers['accept-language'] = 'de,en-US;q=0.9,en;q=0.8';
-		const req = await httpMocks.createRequest({
+		const req = httpMocks.createRequest({
 			method: 'GET',
 			url: '/',
 			headers,
