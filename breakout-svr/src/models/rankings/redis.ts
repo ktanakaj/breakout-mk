@@ -4,13 +4,15 @@
  */
 import * as log4js from 'log4js';
 import * as config from 'config';
-import { redisAsync, IRedisClientAsync } from '../../core/redis/redis-async';
+import * as redis from 'redis-promisify';
+import { IRedisClientAsync } from '../../core/redis/redis-async-interface';
 const redisconfig = config['redis']['ranking'];
 const logger = log4js.getLogger('debug');
 
 // Redisコマンドログ出力の設定
-if (process.env.NODE_ENV === 'development') {
-	let mclient = redisAsync.createClient(redisconfig);
+// ※ monitorで実行しているため、アプリ外のRedisコマンドのログも全て出力される
+if (config['debug']['redisLog']) {
+	let mclient = redis.createClient(redisconfig);
 	mclient.monitor();
 	mclient.on("monitor", (time, args, raw_reply) => {
 		logger.debug("Executing (redis): " + args.join(" "));
@@ -22,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
  * @returns Redisクライアント。
  */
 function createClient(): IRedisClientAsync {
-	return <any>redisAsync.createClient(redisconfig);
+	return redis.createClient(redisconfig);
 }
 
 let client = createClient();

@@ -295,3 +295,4 @@
     responseValidation: true # レスポンスもバリデーションを行う場合true
     apidocs: true # api-docs.json を有効にするか
     bodyLog: true # ログにリクエスト/レスポンスボディを出力する場合true
+    redisLog: true # Redisのログを出力する場合true

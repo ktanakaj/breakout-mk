@@ -2,7 +2,7 @@
  * RedisのSortedSetを扱うコレクションクラス。
  * @module ./core/redis/sorted-set
  */
-import { IRedisClientAsync, IRedisMultiAsync } from './redis-async';
+import { IRedisClientAsync, IRedisMultiAsync } from './redis-async-interface';
 
 export interface Entry {
 	no: number;

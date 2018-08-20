@@ -2,7 +2,7 @@
  * ユーザー作成ステージ評価ランキングランキングモデルクラスのNode.jsモジュール。
  * @module ./models/redis/user-rating-ranking
  */
-import { IRedisMultiAsync } from '../../core/redis/redis-async';
+import { IRedisMultiAsync } from '../../core/redis/redis-async-interface';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';

@@ -1,17 +1,15 @@
 /**
- * BluebirdでpromisefyAllされたRedisのインタフェース。
- * @module ./core/redis/redis-async
+ * promisefyされたRedisのインタフェース。
+ * （redis-promisifyを使っているが、@typesがないので独自に定義）
+ * @module ./core/redis/redis-async-interface
  */
 import * as redis from 'redis';
 
-export const redisAsync = require('redis-promisify');
-
 export interface IRedisClientAsync extends redis.RedisClient {
+	// TODO: 全部ちゃんと定義する
 	multi(): IRedisMultiAsync;
-	flushallAsync(): Promise<string>;
 	echoAsync(): Promise<string>;
 	keysAsync(pattern: string): Promise<string[]>;
-	// TODO: 全部ちゃんと定義する
 	delAsync;
 	zaddAsync;
 	zremAsync;

@@ -2,7 +2,7 @@
  * ステージお気に入り数ランキングモデルクラスのNode.jsモジュール。
  * @module ./models/redis/stage-favorite-ranking
  */
-import { IRedisMultiAsync } from '../../core/redis/redis-async';
+import { IRedisMultiAsync } from '../../core/redis/redis-async-interface';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import Stage from '../stage';
