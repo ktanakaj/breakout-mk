@@ -6,7 +6,7 @@ import { IRedisMultiAsync } from '../../core/redis/redis-async-interface';
 import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import Stage from '../stage';
-import redis from './redis';
+import { getClient } from './redis';
 
 const BASE_NAME = "stageFavoriteRankings";
 
@@ -23,7 +23,7 @@ export default class StageFavoriteRanking extends SortedSet {
 	 * @param multi 参照するmultiインスタンス。
 	 */
 	constructor(multi: IRedisMultiAsync = null) {
-		super(BASE_NAME, redis.getClient(), multi);
+		super(BASE_NAME, getClient(), multi);
 	}
 
 	/**

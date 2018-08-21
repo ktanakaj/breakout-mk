@@ -99,7 +99,7 @@ export class SortedSet {
 	 * @returns 保存結果。
 	 */
 	async setAsync(member: string, score: number): Promise<void> {
-		await this.client.zaddAsync(this.key, [score, member]);
+		await this.client.zaddAsync(this.key, score, member);
 	}
 
 	/**
@@ -108,7 +108,7 @@ export class SortedSet {
 	 * @returns 削除結果。
 	 */
 	async deleteAsync(member: string): Promise<void> {
-		await this.client.zremAsync(this.key, [member]);
+		await this.client.zremAsync(this.key, member);
 	}
 
 	/**
@@ -139,9 +139,9 @@ export class SortedSet {
 	async entriesAsync(start: number = 0, end: number = -1, desc: boolean = false): Promise<Entry[]> {
 		let results;
 		if (desc) {
-			results = await this.client.zrevrangeAsync(this.key, start, end, "withscores");
+			results = await this.client.zrevrangeAsync(this.key, start, end, "WITHSCORES");
 		} else {
-			results = await this.client.zrangeAsync(this.key, start, end, "withscores");
+			results = await this.client.zrangeAsync(this.key, start, end, "WITHSCORES");
 		}
 		return this.withscoresToObjs(start, results);
 	}

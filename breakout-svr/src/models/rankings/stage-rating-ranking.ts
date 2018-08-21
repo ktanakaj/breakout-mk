@@ -7,7 +7,7 @@ import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import Stage from '../stage';
 import StageRating from '../stage-rating';
-import redis from './redis';
+import { getClient } from './redis';
 
 const BASE_NAME = "stageRatingRankings";
 
@@ -24,7 +24,7 @@ export default class StageRatingRanking extends SortedSet {
 	 * @param multi 参照するmultiインスタンス。
 	 */
 	constructor(multi: IRedisMultiAsync = null) {
-		super(BASE_NAME, redis.getClient(), multi);
+		super(BASE_NAME, getClient(), multi);
 	}
 
 	/**

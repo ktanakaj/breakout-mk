@@ -5,7 +5,7 @@
 import * as config from 'config';
 import * as log4js from 'log4js';
 import { Sequelize } from 'sequelize-typescript';
-import redis from '../models/rankings/redis';
+import { getClient } from '../models/rankings/redis';
 import User from '../models/user';
 import Block from '../models/block';
 
@@ -18,7 +18,7 @@ before(async function () {
 	log4js.configure(config['log4js']);
 
 	// Redis初期化
-	redis.getClient().flushdb();
+	await getClient().flushdbAsync();
 
 	// DB初期化（sqliteのmemoryのため、テーブル定義だけ作成）
 	const sequelize = new Sequelize(Object.assign({

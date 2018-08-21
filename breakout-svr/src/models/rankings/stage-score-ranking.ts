@@ -7,7 +7,7 @@ import redisHelper from '../../core/redis/redis-helper';
 import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import User from '../user';
 import Playlog from '../playlog';
-import redis from './redis';
+import { getClient } from './redis';
 
 const BASE_NAME = "stageScoreRankings";
 
@@ -33,7 +33,7 @@ export default class StageScoreRanking extends SortedSet {
 	 * @param month 月。※月間ランキングの場合
 	 */
 	constructor(stageId: number, year: number = null, month: number = null) {
-		super(StageScoreRanking.makeKey(stageId, year, month), redis.getClient());
+		super(StageScoreRanking.makeKey(stageId, year, month), getClient());
 		this.stageId = stageId;
 		this.year = year;
 		this.month = month;
@@ -71,7 +71,7 @@ export default class StageScoreRanking extends SortedSet {
 
 		// 累計／年間／月間を一度に登録する
 		const date = playlog.createdAt ? new Date(playlog.createdAt) : new Date();
-		const multi = redis.getClient().multi();
+		const multi = getClient().multi();
 
 		const keys = [playlog.stageId, date.getFullYear(), date.getMonth() + 1];
 		let promises = [];
@@ -103,19 +103,17 @@ export default class StageScoreRanking extends SortedSet {
 	 * @param stageId ステージID。未指定時は全ステージID。
 	 * @returns 検索結果。
 	 */
-	static keysAsync(stageId: number | string = "*"): Promise<string[]> {
+	static async keysAsync(stageId: number | string = "*"): Promise<string[]> {
 		let base = StageScoreRanking.makeKey(<any>stageId);
 		if (stageId !== "*") {
 			// ※ ステージIDの前方一致で他のステージがヒットしてしまうため、
 			//   stageScoreRankings:2:* 形式で検索
 			//   ただしそれだけだと累計が取れなくなるので、2回実行して混ぜる
-			return redis.getClient().keysAsync(base)
-				.then((keys1) => {
-					return redis.getClient().keysAsync(redisHelper.makeKey(base, "*"))
-						.then((keys2) => keys1.concat(keys2));
-				});
+			const keys1 = await getClient().keysAsync(base);
+			const keys2 = await getClient().keysAsync(redisHelper.makeKey(base, "*"));
+			return keys1.concat(keys2);
 		} else {
-			return redis.getClient().keysAsync(base);
+			return await getClient().keysAsync(base);
 		}
 	}
 

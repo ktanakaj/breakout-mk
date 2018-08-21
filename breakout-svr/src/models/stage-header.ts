@@ -6,7 +6,7 @@
  */
 import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
-import redis from './rankings/redis';
+import { getClient } from './rankings/redis';
 import StagePlayRanking from './rankings/stage-play-ranking';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import UserRatingRanking from './rankings/user-rating-ranking';
@@ -98,7 +98,7 @@ export default class StageHeader extends Model<StageHeader> {
 	 */
 	@AfterDestroy
 	static async removeRankings(header: StageHeader, options: {}): Promise<void> {
-		const multi = redis.getClient().multi();
+		const multi = getClient().multi();
 
 		// ※ ステージ別ランキングなど、残っていても導線がないものはそのまま
 		const favoriteRanking = new StageFavoriteRanking(multi);

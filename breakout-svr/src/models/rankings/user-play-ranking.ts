@@ -7,7 +7,7 @@ import { SortedSet, Entry } from '../../core/redis/sorted-set';
 import objectUtils from '../../core/utils/object-utils';
 import User from '../user';
 import Playlog from '../playlog';
-import redis from './redis';
+import { getClient } from './redis';
 
 const BASE_NAME = "userPlayRankings";
 
@@ -30,7 +30,7 @@ export default class UserPlayRanking extends SortedSet {
 	 * @param month 月。※月間ランキングの場合
 	 */
 	constructor(year: number = null, month: number = null) {
-		super(UserPlayRanking.makeKey(year, month), redis.getClient());
+		super(UserPlayRanking.makeKey(year, month), getClient());
 		this.year = year;
 		this.month = month;
 	}
@@ -66,7 +66,7 @@ export default class UserPlayRanking extends SortedSet {
 
 		// 累計／年間／月間を一度に登録する
 		const date = playlog.createdAt ? new Date(playlog.createdAt) : new Date();
-		const multi = redis.getClient().multi();
+		const multi = getClient().multi();
 
 		const keys = [date.getFullYear(), date.getMonth() + 1];
 		for (let i = 0; i < 3; i++) {
@@ -98,7 +98,7 @@ export default class UserPlayRanking extends SortedSet {
 	 * @returns 検索結果。
 	 */
 	static async keysAsync(): Promise<string[]> {
-		return await redis.getClient().keysAsync(UserPlayRanking.makeKey() + "*");
+		return await getClient().keysAsync(UserPlayRanking.makeKey() + "*");
 	}
 
 	/**

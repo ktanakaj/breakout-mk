@@ -9,7 +9,7 @@ import objectUtils from '../../core/utils/object-utils';
 import User from '../user';
 import StageHeader from '../stage-header';
 import StageRating from '../stage-rating';
-import redis from './redis';
+import { getClient } from './redis';
 
 const BASE_NAME = "userRatingRankings";
 
@@ -26,7 +26,7 @@ export default class UserRatingRanking extends SortedSet {
 	 * @param multi 参照するmultiインスタンス。
 	 */
 	constructor(multi: IRedisMultiAsync = null) {
-		super(BASE_NAME, redis.getClient(), multi);
+		super(BASE_NAME, getClient(), multi);
 	}
 
 	/**
