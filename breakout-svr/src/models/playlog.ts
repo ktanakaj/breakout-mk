@@ -275,10 +275,12 @@ export default class Playlog extends Model<Playlog> {
 	 * @param results 成型する集計結果配列。
 	 * @returns 成型した集計結果配列。
 	 */
-	private static formatReportResults(results: { cleared: any }[]): any[] {
-		// clearedだけ何故かSUMなのにstringでくるようなのでキャスト
+	private static formatReportResults(results: { cleared: any, score: number }[]): any[] {
+		// clearedが何故かSUMなのにstringでくるようなのでキャスト
+		// また、scoreは全員未クリアの場合NULLになるので変換
 		return results.map((info) => {
 			info.cleared = Number(info.cleared);
+			info.score = info.score || 0;
 			return info;
 		});
 	}
