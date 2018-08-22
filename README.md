@@ -27,7 +27,7 @@
     * Sequelize 4.x
     * Sequelize-typescript 0.6.x
     * Passport 0.4.x
-    * Node-config 1.x
+    * Node-config 2.x
     * Log4js 3.x
 * Angular 6.x
 

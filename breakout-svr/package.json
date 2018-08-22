@@ -1,6 +1,6 @@
 {
   "name": "breakout-svr",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "scripts": {
     "start": "pm2 start process.json",
@@ -28,7 +28,7 @@
     "@types/ejs": "^2.6.0",
     "@types/express": "^4.16.0",
     "@types/express-session": "^1.15.10",
-    "@types/node": "^10.5.7",
+    "@types/node": "^10.7.1",
     "@types/passport": "^0.4.6",
     "@types/passport-local": "^1.0.29",
     "@types/random-js": "^1.0.30",
@@ -50,7 +50,7 @@
     "express-promise-router": "^3.0.3",
     "express-session": "^1.15.4",
     "js-yaml": "^3.12.0",
-    "log4js": "^3.0.4",
+    "log4js": "^3.0.5",
     "mysql2": "^1.6.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
@@ -60,7 +60,7 @@
     "reflect-metadata": "^0.1.12",
     "sequelize": "^4.38.0",
     "sequelize-typescript": "^0.6.6",
-    "source-map-support": "^0.5.6",
+    "source-map-support": "^0.5.9",
     "string": "^3.3.3",
     "swagger-express-validator": "^0.1.0",
     "swagger-jsdoc": "^3.0.2"
@@ -71,12 +71,12 @@
     "espower-typescript": "^9.0.0",
     "mocha": "^5.2.0",
     "node-mocks-http": "^1.5.5",
-    "node-pre-gyp": "^0.10.3",
+    "node-pre-gyp": "^0.11.0",
     "pm2": "^3.0.3",
     "power-assert": "^1.6.0",
     "sqlite3": "^4.0.2",
     "tslint": "^5.11.0",
-    "typedoc": "^0.11.1",
+    "typedoc": "^0.12.0",
     "typescript": "^3.0.1"
   }
 }
