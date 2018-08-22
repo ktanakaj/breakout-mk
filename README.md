@@ -19,7 +19,7 @@
 
 ## 環境
 * CentOS 7
-* Node.js v10.x
+* Node.js v8.x
 * MariaDB 5.x
 * Redis 3.x
 * nginx 1.10.x
