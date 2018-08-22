@@ -122,8 +122,8 @@ describe('/api/stages', () => {
 				url: '/16',
 			});
 			try {
-				const res = await testHelper.callRequestHandler(router, req);
-				assert.fail('Unreachable code');
+				await testHelper.callRequestHandler(router, req);
+				assert.fail('Missing expected exception');
 			} catch (err) {
 				assert(err instanceof NotFoundError);
 			}

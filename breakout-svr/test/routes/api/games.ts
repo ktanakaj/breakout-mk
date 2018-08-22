@@ -163,7 +163,7 @@ describe('/api/games', () => {
 			});
 			try {
 				await testHelper.callRequestHandler(router, reqEnd);
-				assert.fail('Unreachable code');
+				assert.fail('Missing expected exception');
 			} catch (err) {
 				assert(err instanceof BadRequestError);
 				assert(/hash=.+ is not valid/.test(err.message));
@@ -192,8 +192,8 @@ describe('/api/games', () => {
 				body: { stageId: 6 },
 			});
 			try {
-				const res = await testHelper.callRequestHandler(router, req);
-				assert.fail('Unreachable code');
+				await testHelper.callRequestHandler(router, req);
+				assert.fail('Missing expected exception');
 			} catch (err) {
 				assert(err instanceof NotFoundError);
 			}
