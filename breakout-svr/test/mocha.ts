@@ -5,9 +5,9 @@
 import * as config from 'config';
 import * as log4js from 'log4js';
 import { Sequelize } from 'sequelize-typescript';
-import { getClient } from '../models/rankings/redis';
-import User from '../models/user';
-import Block from '../models/block';
+import { getClient } from '../src/models/rankings/redis';
+import User from '../src/models/user';
+import Block from '../src/models/block';
 
 // ここにフックを入れると全テストの前に自動実行される
 before(async function () {
@@ -22,7 +22,7 @@ before(async function () {
 
 	// DB初期化（sqliteのmemoryのため、テーブル定義だけ作成）
 	const sequelize = new Sequelize(Object.assign({
-		modelPaths: [__dirname + '/../models'],
+		modelPaths: [__dirname + '/../src/models'],
 		logging: (log) => log4js.getLogger('debug').debug(log),
 	}, config['database']));
 	await sequelize.sync();

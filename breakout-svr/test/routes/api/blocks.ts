@@ -4,8 +4,8 @@
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
 import testHelper from '../../test-helper';
-import Block from '../../../models/block';
-import router from '../../../routes/api/blocks';
+import Block from '../../../src/models/block';
+import router from '../../../src/routes/api/blocks';
 
 describe('/api/blocks', () => {
 	describe('GET /', () => {

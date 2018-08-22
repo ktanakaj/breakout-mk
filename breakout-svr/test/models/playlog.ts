@@ -2,7 +2,7 @@
  * @file playlog.jsのテスト。
  */
 import * as assert from 'power-assert';
-import Playlog from '../../models/playlog';
+import Playlog from '../../src/models/playlog';
 
 describe('Playlog', () => {
 	describe('#hash()', () => {

@@ -4,7 +4,7 @@
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
 import testHelper from '../test-helper';
-import router from '../../routes/index.html';
+import router from '../../src/routes/index.html';
 
 describe('/index.html', () => {
 	it('should render default top page', async () => {

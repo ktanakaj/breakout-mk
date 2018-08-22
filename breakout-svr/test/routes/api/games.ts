@@ -4,15 +4,15 @@
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
 import testHelper from '../../test-helper';
-import { BadRequestError, NotFoundError } from '../../../core/utils/http-error';
-import User from '../../../models/user';
-import StageHeader from '../../../models/stage-header';
-import Stage from '../../../models/stage';
-import Playlog from '../../../models/playlog';
-import StagePlayRanking from '../../../models/rankings/stage-play-ranking';
-import StageScoreRanking from '../../../models/rankings/stage-score-ranking';
-import UserPlayRanking from '../../../models/rankings/user-play-ranking';
-import router from '../../../routes/api/games';
+import { BadRequestError, NotFoundError } from '../../../src/core/utils/http-error';
+import User from '../../../src/models/user';
+import StageHeader from '../../../src/models/stage-header';
+import Stage from '../../../src/models/stage';
+import Playlog from '../../../src/models/playlog';
+import StagePlayRanking from '../../../src/models/rankings/stage-play-ranking';
+import StageScoreRanking from '../../../src/models/rankings/stage-score-ranking';
+import UserPlayRanking from '../../../src/models/rankings/user-play-ranking';
+import router from '../../../src/routes/api/games';
 
 describe('/api/games', () => {
 	before(async () => {

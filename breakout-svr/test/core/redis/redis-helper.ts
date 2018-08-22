@@ -2,7 +2,7 @@
  * @file redis-helper.tsのテスト。
  */
 import * as assert from 'power-assert';
-import redisHelper from '../../../core/redis/redis-helper';
+import redisHelper from '../../../src/core/redis/redis-helper';
 
 describe('redis-helper', () => {
 	describe('#yearAndMonthKeyToNumber()', () => {

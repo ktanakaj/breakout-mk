@@ -4,7 +4,7 @@
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
 import testHelper from '../../test-helper';
-import router from '../../../routes/api/rankings';
+import router from '../../../src/routes/api/rankings';
 
 describe('/api/rankings', () => {
 	describe('GET /play/([0-9]*)/?([0-9]*)/', () => {

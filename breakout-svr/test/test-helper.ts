@@ -5,7 +5,7 @@
 import { EventEmitter } from 'events';
 import * as express from 'express';
 import * as httpMocks from 'node-mocks-http';
-import User from '../models/user';
+import User from '../src/models/user';
 
 export interface MockResponse extends httpMocks.MockResponse<express.Response> {
 	_getJson(): any;
