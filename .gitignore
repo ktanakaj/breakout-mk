@@ -17,12 +17,12 @@ Obj
 doc/*.mwb.*
 StyleCop.Cache
 breakout-svr/dist
-breakout-svr/out
+breakout-svr/doc
 breakout-svr/config/local.yaml
 breakout-web/public/bundle.js
 breakout-web/public/bundle.js.map
 breakout-web/public/webgl/*
-breakout-web/out
+breakout-web/doc
 breakout-web/obj
 breakout-web/bin
 breakout-game/Library
