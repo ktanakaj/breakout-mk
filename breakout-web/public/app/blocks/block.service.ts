@@ -63,6 +63,10 @@ export class BlockService {
 	save(block: Block): Promise<Block> {
 		// 日時がない場合は新規
 		block.color = BlockService.decColor(String(block.color));
+		// stringになっていることがあるので変換
+		for (let key of ['hp', 'score', 'xsize', 'ysize']) {
+			block[key] = Number(block[key]);
+		}
 		let observable;
 		if (block.createdAt === undefined) {
 			observable = this.http.post('/api/blocks/', block);

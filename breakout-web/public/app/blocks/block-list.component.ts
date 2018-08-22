@@ -27,7 +27,9 @@ export class BlockListComponent implements OnInit {
 	 */
 	constructor(
 		private userService: UserService,
-		private blockService: BlockService) { }
+		private blockService: BlockService) {
+		// ※ userServiceはテンプレート内で参照
+	}
 
 	/**
 	 * コンポーネント起動時の処理。
