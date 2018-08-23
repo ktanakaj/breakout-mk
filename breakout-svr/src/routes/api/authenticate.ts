@@ -1,4 +1,3 @@
-"use strict";
 /**
  * 認証コントローラのNode.jsモジュール。
  * @module ./routes/api/authenticate

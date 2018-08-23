@@ -1,4 +1,3 @@
-"use strict";
 /**
  * ユーザーコントローラのNode.jsモジュール。
  *
@@ -52,8 +51,8 @@ const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
+import { NotFoundError } from '../../core/utils/http-error';
 import passportManager from '../../core/passport-manager';
-import validationUtils from '../../core/utils/validation-utils';
 import User from '../../models/user';
 import Stage from '../../models/stage';
 import StageFavorite from '../../models/stage-favorite';
@@ -309,7 +308,7 @@ router.get('/:id(\\d+)', async function (req: express.Request, res: express.Resp
 	} else {
 		user = await User.findById<User>(userId);
 	}
-	validationUtils.notFound(user);
+	if (!user) throw new NotFoundError(`userId=${userId} is not found`);
 	res.json(user);
 });
 
