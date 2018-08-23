@@ -4,7 +4,8 @@
  * ブロックくずしのステージに対するお気に入りを扱う。
  * @module ./models/stage-favorite
  */
-import { Table, Column, Model, DataType, AllowNull, Comment, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, AllowNull, Comment, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
 import User from './user';
@@ -103,13 +104,13 @@ export default class StageFavorite extends Model<StageFavorite> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
-			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
+			where['headerId'] = Array.isArray(headerIds) ? { [Op.in]: headerIds } : headerIds;
 		}
 		return await StageFavorite.scope("withheader").findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('COUNT', Sequelize.col('StageFavorite.id')), 'cnt'],
 			],
-			where: where,
+			where,
 			group: ["headerId"],
 			raw: true
 		});
@@ -127,7 +128,7 @@ export default class StageFavorite extends Model<StageFavorite> {
 		const favorites = await StageFavorite.scope({ method: ['user', userId] }).findAll<StageFavorite>(options);
 		if (favorites.length <= 0) return results;
 
-		const stages = await Stage.scope(["latest", "withuser"]).findAll<Stage>({ where: { headerId: { $in: favorites.map((f) => f.headerId) } } });
+		const stages = await Stage.scope(["latest", "withuser"]).findAll<Stage>({ where: { headerId: { [Op.in]: favorites.map((f) => f.headerId) } } });
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、

@@ -5,6 +5,7 @@
  * @module ./models/user
  */
 import { Table, Column, Model, DataType, Unique, AllowNull, Default, Comment, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
@@ -39,7 +40,7 @@ const random = new Random();
 	scopes: {
 		login: {
 			where: {
-				status: { $ne: "disable" },
+				status: { [Op.ne]: "disable" },
 			},
 		},
 		auth: {
@@ -47,7 +48,7 @@ const random = new Random();
 				exclude: ['password'],
 			},
 			where: {
-				status: { $ne: "disable" },
+				status: { [Op.ne]: "disable" },
 			},
 		},
 	}

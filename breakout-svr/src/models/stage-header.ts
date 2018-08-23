@@ -5,6 +5,7 @@
  * @module ./models/stage-header
  */
 import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import { getClient } from './rankings/redis';
 import StagePlayRanking from './rankings/stage-play-ranking';
@@ -197,7 +198,7 @@ export default class StageHeader extends Model<StageHeader> {
 		if (this.userId !== userId) {
 			where = { status: "public" };
 			if (userId) {
-				where = { $or: [where, { userId: userId }] };
+				where = { [Op.or]: [where, { userId: userId }] };
 			}
 		}
 		return <StageComment[]>await this.$get('comments', { where: where, scope: ["withuser"] });
@@ -212,13 +213,13 @@ export default class StageHeader extends Model<StageHeader> {
 		let where = {};
 		// ユーザーIDが指定された場合、そのユーザーのみを対象にする
 		if (userIds) {
-			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
+			where['userId'] = Array.isArray(userIds) ? { [Op.in]: userIds } : userIds;
 		}
 		return await StageHeader.findAll<any>({
 			attributes: [
 				'userId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'created'],
 			],
-			where: where,
+			where,
 			group: ["userId"],
 			raw: true
 		});

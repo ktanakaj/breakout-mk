@@ -5,6 +5,7 @@
  * @module ./models/playlog
  */
 import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import objectUtils from '../core/utils/object-utils';
@@ -173,7 +174,7 @@ export default class Playlog extends Model<Playlog> {
 		let where = {};
 		// ステージIDが指定された場合、そのステージのみを対象にする
 		if (stageIds) {
-			where['stageId'] = Array.isArray(stageIds) ? { $in: stageIds } : stageIds;
+			where['stageId'] = Array.isArray(stageIds) ? { [Op.in]: stageIds } : stageIds;
 		}
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = this.makeStartAndEndDate(date);
@@ -203,7 +204,7 @@ export default class Playlog extends Model<Playlog> {
 		let where = {};
 		// ユーザーIDが指定された場合、そのステージのみを対象にする
 		if (userIds) {
-			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
+			where['userId'] = Array.isArray(userIds) ? { [Op.in]: userIds } : userIds;
 		}
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = this.makeStartAndEndDate(date);
@@ -230,9 +231,9 @@ export default class Playlog extends Model<Playlog> {
 	 * @returns 検索結果。
 	 */
 	static async reportForUser(userId: number, stageIds: number | number[]): Promise<{ stageId: number, tried: number, score: number, cleared: number }[]> {
-		let where = { stageId: stageIds, userId: userId };
+		let where = { stageId: stageIds, userId };
 		if (Array.isArray(stageIds)) {
-			where['stageId'] = <any>{ $in: stageIds };
+			where['stageId'] = <any>{ [Op.in]: stageIds };
 		}
 		const results = await Playlog.findAll<any>({
 			attributes: [

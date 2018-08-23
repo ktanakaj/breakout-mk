@@ -5,6 +5,7 @@
  * @module ./models/stage-comment
  */
 import { Table, Column, Model, DataType, AllowNull, Comment, Default, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
 import StageHeader from './stage-header';
@@ -96,13 +97,13 @@ export default class StageComment extends Model<StageComment> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
-			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
+			where['headerId'] = Array.isArray(headerIds) ? { [Op.in]: headerIds } : headerIds;
 		}
 		return await StageComment.findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'cnt'],
 			],
-			where: where,
+			where,
 			group: ["headerId"],
 			raw: true
 		});

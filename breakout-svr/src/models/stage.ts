@@ -5,6 +5,7 @@
  * @module ./models/stage
  */
 import { Table, Column, Model, DataType, AllowNull, Default, Comment, BelongsTo, HasMany, ForeignKey } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';
@@ -52,7 +53,7 @@ import Playlog from './playlog';
 			let where = { status: "public" };
 			if (userId) {
 				where = <any>{
-					$or: [where, { userId }]
+					[Op.or]: [where, { userId }]
 				};
 			}
 			return {
@@ -65,7 +66,7 @@ import Playlog from './playlog';
 						model: User,
 						as: 'user',
 						where: {
-							status: { $ne: "disable" },
+							status: { [Op.ne]: "disable" },
 						},
 						required: true,
 					}],

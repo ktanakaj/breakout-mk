@@ -5,6 +5,7 @@
  * @module ./models/stage-rating
  */
 import { Table, Column, Model, DataType, AllowNull, Comment, Min, Max, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import User from './user';
 import StageHeader from './stage-header';
 
@@ -78,14 +79,14 @@ export default class StageRating extends Model<StageRating> {
 		let where = {};
 		// ステージヘッダーIDが指定された場合、そのステージのみを対象にする
 		if (headerIds) {
-			where['headerId'] = Array.isArray(headerIds) ? { $in: headerIds } : headerIds;
+			where['headerId'] = Array.isArray(headerIds) ? { [Op.in]: headerIds } : headerIds;
 		}
 		// ※ ステージ削除チェックのため、ヘッダーまでJOINする
 		return await StageRating.scope("withheader").findAll<any>({
 			attributes: [
 				'headerId', [Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
 			],
-			where: where,
+			where,
 			group: ["headerId"],
 			raw: true
 		});
@@ -101,7 +102,7 @@ export default class StageRating extends Model<StageRating> {
 		let where = { status: "public" };
 		// ユーザーIDが指定された場合、そのユーザーのステージのみを対象にする
 		if (userIds) {
-			where['userId'] = Array.isArray(userIds) ? { $in: userIds } : userIds;
+			where['userId'] = Array.isArray(userIds) ? { [Op.in]: userIds } : userIds;
 		}
 		return await StageRating.findAll<any>({
 			attributes: [
@@ -112,7 +113,7 @@ export default class StageRating extends Model<StageRating> {
 				as: 'header',
 				attributes: [],
 				required: true,
-				where: where,
+				where,
 			}],
 			group: ["header.userId"],
 			raw: true
