@@ -129,6 +129,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 			case 'SequelizeValidationError':
 				err = new BadRequestError(joinSequelizeErrorMessages(err), err);
 				break;
+			case 'SequelizeEmptyResultError':
+				err = new NotFoundError(joinSequelizeErrorMessages(err), err);
+				break;
 			default:
 				err = new InternalServerError(err.message || err, err);
 		}

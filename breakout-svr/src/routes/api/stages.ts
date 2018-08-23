@@ -307,8 +307,8 @@ router.get('/latest', async function (req: express.Request, res: express.Respons
  *                           type: boolean
  *                           description: お気に入り登録有無
  */
-router.get('/:id', async function (req: express.Request, res: express.Response): Promise<void> {
-	let stageId = validationUtils.toNumber(req.params.id);
+router.get('/:id(\\d+)', async function (req: express.Request, res: express.Response): Promise<void> {
+	let stageId = Number(req.params.id);
 	let userId = req.user ? req.user.id : null;
 	let stage;
 	if (req.query.fields === "all") {
@@ -379,10 +379,9 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:id(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ変更可
-	const stage = await Stage.scope(["latest", "withuser"]).findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+	const stage = await Stage.scope(["latest", "withuser"]).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	stage.mergeAll(req.body);
 	const result = await stage.saveAll();
@@ -418,10 +417,9 @@ router.put('/:id', passportManager.isAuthenticated(), async function (req: expre
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.delete('/:id(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ削除可
-	const stage = await Stage.scope("withuser").findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+	const stage = await Stage.scope("withuser").findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	stage.header = <any>await stage.header.destroy();
 	res.json(stage);
@@ -443,8 +441,8 @@ router.delete('/:id', passportManager.isAuthenticated(), async function (req: ex
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.get('/:id/rankings/score/keys', async function (req: express.Request, res: express.Response): Promise<void> {
-	const keys = await StageScoreRanking.yearAndMonthsAsync(validationUtils.toNumber(req.params.id));
+router.get('/:id(\\d+)/rankings/score/keys', async function (req: express.Request, res: express.Response): Promise<void> {
+	const keys = await StageScoreRanking.yearAndMonthsAsync(Number(req.params.id));
 	res.json(keys);
 });
 
@@ -527,11 +525,10 @@ router.get(/\/([0-9]+)\/rankings\/score\/([0-9]*)\/?([0-9]*)/, async function (r
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/:id/comments/', async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/:id(\\d+)/comments/', async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
 	const userId = req.user ? req.user.id : null;
-	const stage = await Stage.scope({ method: ['accessible', userId] }).findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+	const stage = await Stage.scope({ method: ['accessible', userId] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	const comment = StageComment.build<StageComment>(req.body);
 	comment.headerId = stage.headerId;
 	comment.userId = userId;
@@ -585,10 +582,9 @@ router.post('/:id/comments/', async function (req: express.Request, res: express
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.put('/:stageId/comments/:commentId', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは管理者のみ変更可
-	const comment = await StageComment.findById<StageComment>(validationUtils.toNumber(req.params.commentId));
-	validationUtils.notFound(comment);
+	const comment = await StageComment.findById<StageComment>(Number(req.params.commentId), { rejectOnEmpty: true });
 	passportManager.validateUserIdOrAdmin(req, comment.userId);
 	comment.merge(req.body);
 	const result = await comment.save();
@@ -622,10 +618,9 @@ router.put('/:stageId/comments/:commentId', passportManager.isAuthenticated(), a
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:stageId/comments/:commentId', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.delete('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは自分のステージまたは管理者のみ削除可
-	const comment = await StageComment.findById<StageComment>(validationUtils.toNumber(req.params.commentId));
-	validationUtils.notFound(comment);
+	const comment = await StageComment.findById<StageComment>(Number(req.params.commentId), { rejectOnEmpty: true });
 	passportManager.validateUserIdOrAdmin(req, comment.userId);
 	const result = await comment.destroy();
 	res.json(result);
@@ -653,10 +648,9 @@ router.delete('/:stageId/comments/:commentId', passportManager.isAuthenticated()
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/:id/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
-	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	const result = await stage.header.addFavoriteByUserId(req.user.id);
 	res.json(result);
 });
@@ -683,9 +677,8 @@ router.post('/:id/favorite', passportManager.isAuthenticated(), async function (
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.delete('/:id/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
-	const stage = await Stage.scope("withuser").findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+router.delete('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+	const stage = await Stage.scope("withuser").findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	const result = await stage.header.removeFavoriteByUserId(req.user.id);
 	res.json(result);
 });
@@ -724,10 +717,9 @@ router.delete('/:id/favorite', passportManager.isAuthenticated(), async function
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.post('/:id/rating', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.post('/:id(\\d+)/rating', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
-	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(stage);
+	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
 	const result = await stage.header.setRating(req.user.id, req.body.rating);
 	res.json(result);
 });

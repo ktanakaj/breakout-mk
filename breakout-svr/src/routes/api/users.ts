@@ -301,8 +301,8 @@ router.get('/me/favorites', passportManager.isAuthenticated(), async function (r
  *       404:
  *         $ref: '#/responses/NotFound'
  */
-router.get('/:id', async function (req: express.Request, res: express.Response): Promise<void> {
-	let userId = validationUtils.toNumber(req.params.id);
+router.get('/:id(\\d+)', async function (req: express.Request, res: express.Response): Promise<void> {
+	let userId = Number(req.params.id);
 	let user: User;
 	if (req.query.fields === "all") {
 		user = await User.findByIdWithAllInfo(userId);
@@ -363,12 +363,11 @@ router.get('/:id', async function (req: express.Request, res: express.Response):
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
-router.put('/:id', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
+router.put('/:id(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分または管理者のみ更新可
-	passportManager.validateUserIdOrAdmin(req, validationUtils.toNumber(req.params.id));
+	passportManager.validateUserIdOrAdmin(req, Number(req.params.id));
 
-	let user = await User.findById<User>(validationUtils.toNumber(req.params.id));
-	validationUtils.notFound(user);
+	let user = await User.findById<User>(Number(req.params.id), { rejectOnEmpty: true });
 
 	// 管理者は全ての項目が変更可能
 	user.merge(req.body, req.user.status === "admin");
@@ -401,8 +400,8 @@ router.put('/:id', passportManager.isAuthenticated(), async function (req: expre
  *       400:
  *         $ref: '#/responses/BadRequest'
  */
-router.get('/:id/stages', async function (req: express.Request, res: express.Response): Promise<void> {
-	const userId = validationUtils.toNumber(req.params.id);
+router.get('/:id(\\d+)/stages', async function (req: express.Request, res: express.Response): Promise<void> {
+	const userId = Number(req.params.id);
 	const stages = await Stage.findUserStagesWithAccessibleAllInfo(userId, req.user && userId === req.user.id);
 	res.json(stages);
 });

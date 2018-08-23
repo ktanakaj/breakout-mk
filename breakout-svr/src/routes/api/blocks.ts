@@ -80,7 +80,6 @@ const DUMMY = 0;
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import passportManager from '../../core/passport-manager';
-import validationUtils from '../../core/utils/validation-utils';
 import Block from '../../models/block';
 const router = expressPromiseRouter();
 
@@ -156,8 +155,7 @@ router.post('/', passportManager.isAuthenticated('admin'), async function (req: 
  *         $ref: '#/responses/NotFound'
  */
 router.get('/:key', async function (req: express.Request, res: express.Response): Promise<void> {
-	const block = await Block.findById<Block>(req.params.key);
-	validationUtils.notFound(block);
+	const block = await Block.findById<Block>(req.params.key, { rejectOnEmpty: true });
 	res.json(block);
 });
 
@@ -192,8 +190,7 @@ router.get('/:key', async function (req: express.Request, res: express.Response)
  *         $ref: '#/responses/NotFound'
  */
 router.put('/:key', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
-	let block = await Block.findById<Block>(req.params.key);
-	validationUtils.notFound(block);
+	let block = await Block.findById<Block>(req.params.key, { rejectOnEmpty: true });
 	block.merge(req.body);
 	block = await block.save();
 	res.json(block);

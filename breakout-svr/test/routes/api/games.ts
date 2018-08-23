@@ -195,7 +195,28 @@ describe('/api/games', () => {
 				await testHelper.callRequestHandler(router, req);
 				assert.fail('Missing expected exception');
 			} catch (err) {
-				assert(err instanceof NotFoundError);
+				assert.strictEqual(err.name, 'SequelizeEmptyResultError');
+			}
+		});
+	});
+
+	describe('POST /end', () => {
+		it("should't end game with out start game", async () => {
+			const req = await testHelper.createRequestForUser({
+				method: 'POST',
+				url: '/end',
+				body: {
+					id: 9999,
+					score: 1000,
+					cleared: true,
+					hash: 'cc7e999fbabe24ef92f4e2b0c98c7c22fd7d8eee',
+				},
+			});
+			try {
+				await testHelper.callRequestHandler(router, req);
+				assert.fail('Missing expected exception');
+			} catch (err) {
+				assert.strictEqual(err.name, 'SequelizeEmptyResultError');
 			}
 		});
 	});
