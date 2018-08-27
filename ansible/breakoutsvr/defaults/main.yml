@@ -1,0 +1,14 @@
+app_nginx_conf_src: "nginx.conf.j2"
+app_nginx_conf_dest: "/etc/nginx/default.d/vagrant.conf"
+app_svr_dir: "/vagrant/breakout-svr"
+app_web_dir: "/vagrant/breakout-web"
+app_log_dir: "/var/log/local/breakout-svr"
+app_port: 3000
+app_db:
+  - breakout_db
+app_db_users:
+  - user: breakout_usr
+    password: "breakout001"
+    privilege: "breakout_db.*:ALL"
+app_db_sample: "/vagrant/breakout-db/sample.sql"
+app_db_check_url: http://localhost:{{ app_port }}/api/blocks

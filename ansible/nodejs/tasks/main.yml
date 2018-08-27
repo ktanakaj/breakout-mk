@@ -1,0 +1,13 @@
+---
+- name: Check Node.js repository version
+  shell: yum info nodejs | grep -e "Version\s*:\s*1[0-9].*$"
+  register: nodejs_repository_version
+  check_mode: no
+  changed_when: false
+  failed_when: false
+- name: Register Node.js repository
+  shell: curl --silent --location {{ nodesource }} | bash -
+  when: nodejs_repository_version.stdout == ""
+
+- name: Install the latest version of Node.js
+  yum: name=nodejs state=latest

@@ -1,0 +1,46 @@
+- block:
+  - name: Copy the web app configuration to nginx
+    template:
+      src: "{{ app_nginx_conf_src }}"
+      dest: "{{ app_nginx_conf_dest }}"
+      force: yes
+    notify: Restart nginx
+
+  - name: Create the web application logging directory
+    file: path={{ app_log_dir }} state=directory owner=vagrant group=vagrant mode=0755
+  - name: Create the web application database
+    mysql_db: name={{ item }} encoding=utf8 state=present
+    with_items: "{{ app_db }}"
+  - name: Craete the web application db user
+    mysql_user: name={{ item[1].user }} password={{ item[1].password }} host={{ item[0] }} priv={{ item[1].privilege }} state=present
+    with_nested:
+      - [ 'localhost', '%' ]
+      - "{{ app_db_users }}"
+
+- name: Install "node-pre-gyp" node.js package globally for sqlite3
+  npm: name=node-pre-gyp global=yes
+
+- block:
+  - name: Install node.js package for the server application
+    shell: yarn install chdir={{ app_svr_dir }} --no-bin-links
+  - name: Install node.js package for the client application
+    shell: yarn install chdir={{ app_web_dir }} --no-bin-links
+  - name: Build the server application
+    shell: npm run build chdir={{ app_svr_dir }}
+  - name: Build the client application
+    shell: npm run build chdir={{ app_web_dir }}
+  - name: Register the web application to pm2
+    shell: npm start chdir={{ app_svr_dir }}
+  - name: Save pm2 current processes
+    shell: pm2 save
+  become: false
+
+- block:
+  - wait_for: port={{ app_port }} delay=20
+  - name: Initialize the web application with tables and check a sample db registration
+    uri: url={{ app_db_check_url }}
+    register: app_db_check_result
+  - name: Insert a sample to the web application db
+    shell: mysql --user={{ app_db_users[0].user }} --password={{ app_db_users[0].password }} {{ app_db[0] }} -e 'source {{ app_db_sample }}' -B
+    when: app_db_check_result.json == []
+  become: false
