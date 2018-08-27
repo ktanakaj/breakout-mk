@@ -56,12 +56,11 @@
 
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
-2. コマンドプロンプトを「管理者として実行」で開き、初回の `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
+2. 初回の `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
 3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/public/webgl` フォルダを出力先でビルドを行う。
 
-※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `npm install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
-※ VMの共有フォルダでシンボリックリンクを有効にするため、初回の `vagrant up` や `npm install` 時は、実行元のコマンドラインを管理者権限で起動するなどの必要があります。詳細は[こちら](https://tokibito.hatenablog.com/entry/2018/02/28/012014)等を参照ください。  
-※ どうしても `npm install` に失敗する場合は、飛ばして以降を手動で実行してください…。
+※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `yarn install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
+※ 2018年8月現在、npmコマンドにはvagrant共有フォルダでのインストールが失敗する[不具合](https://github.com/npm/npm/issues/20605)があります。`npm install` の代わりに `yarn install` を使用してください。
 
 ## 起動方法
 Web側アプリはVM起動時に自動的に立ち上がります。

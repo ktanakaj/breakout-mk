@@ -23,8 +23,10 @@
 - block:
   - name: Install node.js package for the server application
     shell: yarn install chdir={{ app_svr_dir }} --no-bin-links
+    retries: 2
   - name: Install node.js package for the client application
     shell: yarn install chdir={{ app_web_dir }} --no-bin-links
+    retries: 2
   - name: Build the server application
     shell: npm run build chdir={{ app_svr_dir }}
   - name: Build the client application
