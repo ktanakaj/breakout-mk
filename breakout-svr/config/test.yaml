@@ -1,7 +1,7 @@
 ---
   database:
       dialect: "sqlite"
-      storage: ':memory:'
+      storage: '/tmp/test_breakout_db.sqlite'
   redis:
     ranking:
       host: "127.0.0.1"
@@ -26,6 +26,10 @@
         appenders:
           - 'stdout'
         level: 'info'
+      batch:
+        appenders:
+          - "stdout"
+        level: "info"
       error:
         appenders:
           - 'stderr'

@@ -1,7 +1,7 @@
 /**
  * @file ブロックくずしメーカーサーバ側共通定義部。
  */
-import "reflect-metadata";
+import 'reflect-metadata';
 import 'source-map-support/register';
 import * as express from 'express';
 import * as http from 'http';
@@ -23,6 +23,7 @@ import responseBodyCollector from './core/response-body-collector';
 const sequelize = new Sequelize(Object.assign({
 	modelPaths: [__dirname + '/models'],
 	logging: (log) => log4js.getLogger('debug').debug(log),
+	// operatorsAliases: false,
 }, config['database']));
 sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
 

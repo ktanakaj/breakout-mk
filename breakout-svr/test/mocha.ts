@@ -20,11 +20,13 @@ before(async function () {
 	// Redis初期化
 	await getClient().flushdbAsync();
 
-	// DB初期化（sqliteのmemoryのため、テーブル定義だけ作成）
+	// DB初期化
 	const sequelize = new Sequelize(Object.assign({
 		modelPaths: [__dirname + '/../src/models'],
 		logging: (log) => log4js.getLogger('debug').debug(log),
+		// operatorsAliases: false,
 	}, config['database']));
+	await sequelize.dropAllSchemas({});
 	await sequelize.sync();
 
 	// DB初期データ生成

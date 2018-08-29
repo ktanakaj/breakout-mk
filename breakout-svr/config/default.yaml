@@ -47,6 +47,11 @@
         filename: "/var/log/local/breakout-svr/access.log"
         pattern: "-yyyy-MM-dd"
         backups: 10
+      batch: # バッチログ
+        type: "dateFile"
+        filename: "/var/log/local/breakout-svr/batch.log"
+        pattern: "-yyyy-MM-dd"
+        maxLogSize: 107374182400 # 100MB
       error: # エラーログ
         type: "dateFile"
         filename: "/var/log/local/breakout-svr/error.log"
@@ -68,6 +73,11 @@
           - 'stdout'
           - 'access'
         level: 'info'
+      batch:
+        appenders:
+          - "stdout"
+          - "batch"
+        level: "info"
       error:
         appenders:
           - 'stderr'
