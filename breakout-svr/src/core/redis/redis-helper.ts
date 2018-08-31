@@ -4,6 +4,7 @@
  */
 import * as path from 'path';
 import * as S from 'string';
+import { Op } from 'sequelize';
 import objectUtils from '../utils/object-utils';
 
 /**
@@ -34,8 +35,8 @@ async function bulkLoadDbModels(redisModels: { member: string }[], dbClass: any/
 		return [];
 	}
 	const where = {};
-	where[idKey] = { in: redisModels.map((rm) => rm.member) };
-	const dbModels = await dbClass.findAll({ where: where });
+	where[idKey] = { [Op.in]: redisModels.map((rm) => rm.member) };
+	const dbModels = await dbClass.findAll({ where });
 	return objectUtils.mergeArray(redisModels, dbModels, "member", idKey, objKey);
 }
 

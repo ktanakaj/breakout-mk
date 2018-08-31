@@ -6,6 +6,7 @@
  */
 import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, HasMany, AfterUpdate, AfterDestroy, Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import * as log4js from 'log4js';
 import objectUtils from '../core/utils/object-utils';
 import { getClient } from './rankings/redis';
 import StagePlayRanking from './rankings/stage-play-ranking';
@@ -73,11 +74,10 @@ export default class StageHeader extends Model<StageHeader> {
 	/**
 	 * 関連ランキングの掲載可否更新。
 	 * @param header 更新されたヘッダー。
-	 * @param options 更新処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterUpdate
-	static async updateRankingStatus(header: StageHeader, options: {}): Promise<void> {
+	static async updateRankingStatus(header: StageHeader): Promise<void> {
 		// 公開/非公開が変わった場合、評価ランキングに登録/削除
 		// ※ 評価以外は非公開でも載せているのでとりあえずOK
 		if (header.status !== undefined && header.status !== header.previous("status")) {
@@ -94,11 +94,10 @@ export default class StageHeader extends Model<StageHeader> {
 	/**
 	 * 関連ランキングの削除。
 	 * @param header 削除されたヘッダー。
-	 * @param options 削除処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterDestroy
-	static async removeRankings(header: StageHeader, options: {}): Promise<void> {
+	static async removeRankings(header: StageHeader): Promise<void> {
 		const multi = getClient().multi();
 
 		// ※ ステージ別ランキングなど、残っていても導線がないものはそのまま
@@ -134,8 +133,7 @@ export default class StageHeader extends Model<StageHeader> {
 	 */
 	async setRating(userId: number, rating: number): Promise<StageRating> {
 		// 既にある場合は上書き、ない場合は新規作成
-		const result = await StageRating.scope({ method: ['one', userId, this.id] }).findOrInitialize<StageRating>({ where: {} });
-		const stageRating = result[0];
+		const [stageRating] = await StageRating.scope({ method: ['one', userId, this.id] }).findOrInitialize({ where: {} });
 		stageRating.headerId = this.id;
 		stageRating.userId = userId;
 		stageRating.rating = rating;
@@ -147,7 +145,7 @@ export default class StageHeader extends Model<StageHeader> {
 				await new StageRatingRanking().refreshAsync(stageRating.headerId);
 				await new UserRatingRanking().refreshAsync(this.userId);
 			} catch (e) {
-				console.error(e);
+				log4js.getLogger('error').warn(e);
 			}
 		}
 		return stageRating;
@@ -159,7 +157,7 @@ export default class StageHeader extends Model<StageHeader> {
 	 * @returns 取得結果。
 	 */
 	async getRating(userId: number): Promise<number> {
-		const stageRating = await StageRating.scope({ method: ['one', userId, this.id] }).findOne<StageRating>();
+		const stageRating = await StageRating.scope({ method: ['one', userId, this.id] }).findOne();
 		return stageRating ? stageRating.rating : 0;
 	}
 
@@ -169,9 +167,9 @@ export default class StageHeader extends Model<StageHeader> {
 	 * @returns 更新結果。
 	 */
 	async addFavoriteByUserId(userId: number): Promise<StageFavorite> {
-		const result = await StageFavorite.scope({ method: ['one', userId, this.id] })
-			.findOrCreate<StageFavorite>(<any>{ where: {}, defaults: { userId: userId, headerId: this.id } });
-		return result[0];
+		const [favorite] = await StageFavorite.scope({ method: ['one', userId, this.id] })
+			.findOrCreate(<any>{ where: {}, defaults: { userId: userId, headerId: this.id } });
+		return favorite;
 	}
 
 	/**
@@ -181,7 +179,7 @@ export default class StageHeader extends Model<StageHeader> {
 	 */
 	async removeFavoriteByUserId(userId: number): Promise<void> {
 		// afterDestroyの処理があるので、オブジェクトを取って消す
-		const favorite = await StageFavorite.scope({ method: ['one', userId, this.id] }).findOne<StageFavorite>();
+		const favorite = await StageFavorite.scope({ method: ['one', userId, this.id] }).findOne();
 		if (favorite) {
 			return await favorite.destroy();
 		}
@@ -198,7 +196,7 @@ export default class StageHeader extends Model<StageHeader> {
 		if (this.userId !== userId) {
 			where = { status: "public" };
 			if (userId) {
-				where = { [Op.or]: [where, { userId: userId }] };
+				where = { [Op.or]: [where, { userId }] };
 			}
 		}
 		return <StageComment[]>await this.$get('comments', { where: where, scope: ["withuser"] });

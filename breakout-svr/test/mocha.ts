@@ -24,7 +24,7 @@ before(async function () {
 	const sequelize = new Sequelize(Object.assign({
 		modelPaths: [__dirname + '/../src/models'],
 		logging: (log) => log4js.getLogger('debug').debug(log),
-		// operatorsAliases: false,
+		operatorsAliases: false,
 	}, config['database']));
 	await sequelize.dropAllSchemas({});
 	await sequelize.sync();

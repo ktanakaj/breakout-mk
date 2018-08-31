@@ -123,7 +123,7 @@ router.get('/', passportManager.isAuthenticated('admin'), async function (req: e
  *         $ref: '#/responses/BadRequest'
  */
 router.post('/', async function (req: express.Request, res: express.Response): Promise<void> {
-	let user = User.build<User>();
+	let user = User.build();
 	user.merge(req.body);
 	user = await user.save();
 	// 認証状態にする
@@ -210,7 +210,7 @@ router.get('/me/stages', passportManager.isAuthenticated(), async function (req:
  *         $ref: '#/responses/BadRequest'
  */
 router.get('/me/playlogs', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
-	const playlogs = await Playlog.scope(<any>[{ method: ['user', req.user.id] }, "withstage"]).findAll<Playlog>();
+	const playlogs = await Playlog.scope(<any>[{ method: ['user', req.user.id] }, "withstage"]).findAll();
 	res.json(playlogs);
 });
 
@@ -306,7 +306,7 @@ router.get('/:id(\\d+)', async function (req: express.Request, res: express.Resp
 	if (req.query.fields === "all") {
 		user = await User.findByIdWithAllInfo(userId);
 	} else {
-		user = await User.findById<User>(userId);
+		user = await User.findById(userId);
 	}
 	if (!user) throw new NotFoundError(`userId=${userId} is not found`);
 	res.json(user);
@@ -366,7 +366,7 @@ router.put('/:id(\\d+)', passportManager.isAuthenticated(), async function (req:
 	// 自分または管理者のみ更新可
 	passportManager.validateUserIdOrAdmin(req, Number(req.params.id));
 
-	let user = await User.findById<User>(Number(req.params.id), { rejectOnEmpty: true });
+	let user = await User.findOrFail(Number(req.params.id));
 
 	// 管理者は全ての項目が変更可能
 	user.merge(req.body, req.user.status === "admin");

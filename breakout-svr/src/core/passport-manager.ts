@@ -26,7 +26,7 @@ function initialize(app: express.Express): void {
 			// ユーザー名の存在とパスワードの一致をチェック
 			let user;
 			try {
-				user = await User.scope("login").findOne<User>({ where: { name } });
+				user = await User.scope("login").findOne({ where: { name } });
 			} catch (e) {
 				return done(e);
 			}

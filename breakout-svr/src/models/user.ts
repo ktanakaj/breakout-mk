@@ -4,7 +4,7 @@
  * ブロックくずしのユーザー一人一人に対応する。
  * @module ./models/user
  */
-import { Table, Column, Model, DataType, Unique, AllowNull, Default, Comment, DefaultScope, HasMany, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, Unique, AllowNull, Default, Comment, DefaultScope, HasMany, BeforeCreate, BeforeUpdate, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
@@ -107,11 +107,10 @@ export default class User extends Model<User> {
 	/**
 	 * パスワードをハッシュ化する。
 	 * @param user 更新されるユーザー。
-	 * @param options 更新処理のオプション。
 	 */
 	@BeforeCreate
 	@BeforeUpdate
-	static hashPasswordIfChanged(user: User, options: Object): void {
+	static hashPasswordIfChanged(user: User): void {
 		// 新しいパスワードが設定されている場合、自動でハッシュ化する
 		if (user.password !== undefined && user.password !== "" && user.password !== user.previous("password")) {
 			user.hashPassword();
@@ -158,6 +157,20 @@ export default class User extends Model<User> {
 	}
 
 	/**
+	 * レコードを主キーで取得する。
+	 * @param id テーブルの主キー。
+	 * @param options 検索オプション。
+	 * @returns レコード。
+	 * @throws SequelizeEmptyResultError レコードが存在しない場合。
+	 */
+	static async findOrFail(id: number, options?: IFindOptions<User>): Promise<User> {
+		// rejectOnEmptyを有効化したfindByIdのエイリアス
+		options = options || {};
+		options.rejectOnEmpty = true;
+		return await (<any>this).findById(id, options);
+	}
+
+	/**
 	 * 渡されたパスワードをハッシュ値に変換する。
 	 * @param password 変換するパスワード。
 	 * @param salt 変換に用いるsalt。未指定時は内部で乱数から生成。
@@ -178,10 +191,9 @@ export default class User extends Model<User> {
 	 * @param userId 参照するユーザーのID。
 	 * @returns 検索結果。
 	 */
-	// TODO: 戻り値の型修正
-	static async findByIdWithAllInfo(userId: number): Promise<User> {
-		const user = await User.findById<User>(userId);
-		if (!user) return user;
+	static async findByIdWithAllInfo(userId: number): Promise<User & { info: { tried: number, score: number, cleared: number, created: number } }> {
+		const user = await User.findById(userId);
+		if (!user) return null;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
 		// 普通のオブジェクトに詰め替えて返す

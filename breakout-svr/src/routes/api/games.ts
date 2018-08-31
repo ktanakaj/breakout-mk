@@ -54,8 +54,8 @@ const router = expressPromiseRouter();
 router.post('/start', async function (req: express.Request, res: express.Response): Promise<void> {
 	// ステージのアクセス可否チェック、ゲーム開始ログを保存
 	const userId = req.user ? req.user.id : null;
-	const stage = await Stage.scope({ method: ['accessible', userId] }).findById(req.body.stageId, { rejectOnEmpty: true });
-	const playlog = await Playlog.create({ stageId: stage.id, userId: userId });
+	const stage = await (<typeof Stage>Stage.scope({ method: ['accessible', userId] })).findOrFail(req.body.stageId);
+	const playlog = await Playlog.create({ stageId: stage.id, userId });
 	res.json(playlog);
 });
 
@@ -108,7 +108,7 @@ router.post('/start', async function (req: express.Request, res: express.Respons
  */
 router.post('/end', async function (req: express.Request, res: express.Response): Promise<void> {
 	// プレイログの整合性をチェック。OKなら保存
-	const playlog = await Playlog.scope("playing").findById<Playlog>(req.body.id, { rejectOnEmpty: true });
+	const playlog = await (<typeof Playlog>Playlog.scope("playing")).findOrFail(req.body.id);
 	playlog.merge(req.body);
 	if (playlog.hash() !== req.body.hash) {
 		logger.info("Invalid Hash: " + req.body.hash + " !== " + playlog.hash());

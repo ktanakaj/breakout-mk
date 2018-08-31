@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するコメントを扱う。
  * @module ./models/stage-comment
  */
-import { Table, Column, Model, DataType, AllowNull, Comment, Default, BelongsTo, ForeignKey, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Comment, Default, BelongsTo, ForeignKey, Sequelize, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import User from './user';
@@ -86,6 +86,20 @@ export default class StageComment extends Model<StageComment> {
 	merge(params: Object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
 		objectUtils.copy(this, params, ["status", "comment"]);
+	}
+
+	/**
+	 * レコードを主キーで取得する。
+	 * @param id テーブルの主キー。
+	 * @param options 検索オプション。
+	 * @returns レコード。
+	 * @throws SequelizeEmptyResultError レコードが存在しない場合。
+	 */
+	static async findOrFail(id: number, options?: IFindOptions<StageComment>): Promise<StageComment> {
+		// rejectOnEmptyを有効化したfindByIdのエイリアス
+		options = options || {};
+		options.rejectOnEmpty = true;
+		return await (<any>this).findById(id, options);
 	}
 
 	/**

@@ -140,7 +140,7 @@ const router = expressPromiseRouter();
  *             $ref: '#/definitions/Stage'
  */
 router.get('/', async function (req: express.Request, res: express.Response): Promise<void> {
-	const stages = await Stage.scope("latest").scope({ method: ['accessible', req.user ? req.user.id : null] }).findAll<Stage>();
+	const stages = await Stage.scope("latest").scope({ method: ['accessible', req.user ? req.user.id : null] }).findAll();
 	res.json(stages);
 });
 
@@ -380,7 +380,7 @@ router.get('/:id(\\d+)', async function (req: express.Request, res: express.Resp
  */
 router.put('/:id(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ変更可
-	const stage = await Stage.scope(["latest", "withuser"]).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
+	const stage = await (<typeof Stage>Stage.scope(["latest", "withuser"])).findOrFail(Number(req.params.id));
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	stage.mergeAll(req.body);
 	const result = await stage.saveAll();
@@ -418,7 +418,7 @@ router.put('/:id(\\d+)', passportManager.isAuthenticated(), async function (req:
  */
 router.delete('/:id(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の登録したステージまたは管理者のみ削除可
-	const stage = await Stage.scope("withuser").findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
+	const stage = await (<typeof Stage>Stage.scope("withuser")).findOrFail(Number(req.params.id));
 	passportManager.validateUserIdOrAdmin(req, stage.header.userId);
 	stage.header = <any>await stage.header.destroy();
 	res.json(stage);
@@ -527,8 +527,8 @@ router.get(/\/([0-9]+)\/rankings\/score\/([0-9]*)\/?([0-9]*)/, async function (r
 router.post('/:id(\\d+)/comments/', async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
 	const userId = req.user ? req.user.id : null;
-	const stage = await Stage.scope({ method: ['accessible', userId] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
-	const comment = StageComment.build<StageComment>(req.body);
+	const stage = await (<typeof Stage>Stage.scope({ method: ['accessible', userId] })).findOrFail(Number(req.params.id));
+	const comment = StageComment.build(req.body);
 	comment.headerId = stage.headerId;
 	comment.userId = userId;
 	comment.ipAddress = req.ip;
@@ -583,7 +583,7 @@ router.post('/:id(\\d+)/comments/', async function (req: express.Request, res: e
  */
 router.put('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは管理者のみ変更可
-	const comment = await StageComment.findById<StageComment>(Number(req.params.commentId), { rejectOnEmpty: true });
+	const comment = await StageComment.findOrFail(Number(req.params.commentId));
 	passportManager.validateUserIdOrAdmin(req, comment.userId);
 	comment.merge(req.body);
 	const result = await comment.save();
@@ -619,7 +619,7 @@ router.put('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAuthen
  */
 router.delete('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 自分の投稿したコメントまたは自分のステージまたは管理者のみ削除可
-	const comment = await StageComment.findById<StageComment>(Number(req.params.commentId), { rejectOnEmpty: true });
+	const comment = await StageComment.findOrFail(Number(req.params.commentId));
 	passportManager.validateUserIdOrAdmin(req, comment.userId);
 	const result = await comment.destroy();
 	res.json(result);
@@ -649,7 +649,7 @@ router.delete('/:stageId(\\d+)/comments/:commentId(\\d+)', passportManager.isAut
  */
 router.post('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
-	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
+	const stage = await (<typeof Stage>Stage.scope({ method: ['accessible', req.user.id] })).findOrFail(Number(req.params.id));
 	const result = await stage.header.addFavoriteByUserId(req.user.id);
 	res.json(result);
 });
@@ -677,7 +677,7 @@ router.post('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async func
  *         $ref: '#/responses/NotFound'
  */
 router.delete('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
-	const stage = await Stage.scope("withuser").findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
+	const stage = await (<typeof Stage>Stage.scope("withuser")).findOrFail(Number(req.params.id));
 	const result = await stage.header.removeFavoriteByUserId(req.user.id);
 	res.json(result);
 });
@@ -718,7 +718,7 @@ router.delete('/:id(\\d+)/favorite', passportManager.isAuthenticated(), async fu
  */
 router.post('/:id(\\d+)/rating', passportManager.isAuthenticated(), async function (req: express.Request, res: express.Response): Promise<void> {
 	// 参照可能なステージにのみ投稿可能
-	const stage = await Stage.scope({ method: ['accessible', req.user.id] }).findById<Stage>(Number(req.params.id), { rejectOnEmpty: true });
+	const stage = await (<typeof Stage>Stage.scope({ method: ['accessible', req.user.id] })).findOrFail(Number(req.params.id));
 	const result = await stage.header.setRating(req.user.id, req.body.rating);
 	res.json(result);
 });

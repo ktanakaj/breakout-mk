@@ -4,7 +4,7 @@
  * ゲームの各ステージのプレイログ1件に対応する。
  * @module ./models/playlog
  */
-import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, AfterCreate, AfterUpdate, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment, BelongsTo, AfterCreate, AfterUpdate, Sequelize, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
@@ -33,7 +33,7 @@ import Stage from './stage';
 	scopes: {
 		playing: {
 			where: {
-				score: { $eq: null },
+				score: { [Op.eq]: null },
 			},
 		},
 		user: (userId) => {
@@ -113,11 +113,10 @@ export default class Playlog extends Model<Playlog> {
 	/**
 	 * ランキングへの登録。
 	 * @param playlog 登録されたプレイログ。
-	 * @param options 登録処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterCreate
-	static async addRanking(playlog: Playlog, options: {}): Promise<void> {
+	static async addRanking(playlog: Playlog): Promise<void> {
 		await StagePlayRanking.addByLog(playlog);
 		await UserPlayRanking.addByLog(playlog);
 	}
@@ -125,11 +124,10 @@ export default class Playlog extends Model<Playlog> {
 	/**
 	 * スコアランキングの更新。
 	 * @param playlog 更新されたプレイログ。
-	 * @param options 更新処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterUpdate
-	static async updateRanking(playlog: Playlog, options: {}): Promise<void> {
+	static async updateRanking(playlog: Playlog): Promise<void> {
 		// スコアが設定された場合、ランキングを更新
 		if (playlog.score !== undefined && playlog.score !== playlog.previous("score")) {
 			await StageScoreRanking.updateByLog(playlog);
@@ -165,6 +163,20 @@ export default class Playlog extends Model<Playlog> {
 	}
 
 	/**
+	 * レコードを主キーで取得する。
+	 * @param id テーブルの主キー。
+	 * @param options 検索オプション。
+	 * @returns レコード。
+	 * @throws SequelizeEmptyResultError レコードが存在しない場合。
+	 */
+	static async findOrFail(id: number, options?: IFindOptions<Playlog>): Promise<Playlog> {
+		// rejectOnEmptyを有効化したfindByIdのエイリアス
+		options = options || {};
+		options.rejectOnEmpty = true;
+		return await (<any>this).findById(id, options);
+	}
+
+	/**
 	 * ステージの統計情報を取得する。
 	 * @param stageIds 参照するステージのID。配列で複数指定可。未指定時は全て。
 	 * @param date 取得する期間。"年" または "年/月" の形式か、年,月の配列。
@@ -179,7 +191,7 @@ export default class Playlog extends Model<Playlog> {
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = this.makeStartAndEndDate(date);
 		if (between.length === 2) {
-			where['createdAt'] = { $between: between };
+			where['createdAt'] = { [Op.between]: between };
 		}
 		const results = await Playlog.findAll<any>({
 			attributes: [
@@ -209,7 +221,7 @@ export default class Playlog extends Model<Playlog> {
 		// 期間が指定された場合、その期間のみを対象にする
 		let between = this.makeStartAndEndDate(date);
 		if (between.length === 2) {
-			where['createdAt'] = { $between: between };
+			where['createdAt'] = { [Op.between]: between };
 		}
 		const results = await Playlog.findAll<any>({
 			attributes: [

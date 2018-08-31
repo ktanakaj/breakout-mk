@@ -4,7 +4,7 @@
  * ブロックくずしの一つのブロックのマスタに対応する。
  * @module ./models/block
  */
-import { Table, Column, Model, DataType, PrimaryKey, AllowNull, Default, Comment, Min, DefaultScope } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AllowNull, Default, Comment, Min, DefaultScope, IFindOptions } from 'sequelize-typescript';
 import objectUtils from '../core/utils/object-utils';
 
 /**
@@ -88,5 +88,19 @@ export default class Block extends Model<Block> {
 	merge(params: Object): void {
 		// keyとか上書きされると困るので必要な値だけコピー
 		objectUtils.copy(this, params, ["name", "status", "hp", "score", "xsize", "ysize", "color"]);
+	}
+
+	/**
+	 * レコードを主キーで取得する。
+	 * @param key テーブルの主キー。
+	 * @param options 検索オプション。
+	 * @returns レコード。
+	 * @throws SequelizeEmptyResultError レコードが存在しない場合。
+	 */
+	static async findOrFail(key: number, options?: IFindOptions<Block>): Promise<Block> {
+		// rejectOnEmptyを有効化したfindByIdのエイリアス
+		options = options || {};
+		options.rejectOnEmpty = true;
+		return await (<any>this).findById(key, options);
 	}
 }

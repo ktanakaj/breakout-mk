@@ -4,7 +4,7 @@
  * ブロックくずしのステージに対するお気に入りを扱う。
  * @module ./models/stage-favorite
  */
-import { Table, Column, Model, AllowNull, Comment, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize } from 'sequelize-typescript';
+import { Table, Column, Model, AllowNull, Comment, BelongsTo, ForeignKey, AfterCreate, AfterDestroy, Sequelize, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import StageFavoriteRanking from './rankings/stage-favorite-ranking';
@@ -76,22 +76,20 @@ export default class StageFavorite extends Model<StageFavorite> {
 	/**
 	 * ランキングのお気に入り数加算。
 	 * @param favorite 登録されたお気に入り。
-	 * @param options 更新処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterCreate
-	static async incrementRanking(favorite: StageFavorite, options: {}): Promise<void> {
+	static async incrementRanking(favorite: StageFavorite): Promise<void> {
 		await new StageFavoriteRanking().incrementAsync(String(favorite.headerId));
 	}
 
 	/**
 	 * ランキングのお気に入り数削減。
 	 * @param favorite 削除されたお気に入り。
-	 * @param options 削除処理のオプション。
 	 * @returns 処理状態。
 	 */
 	@AfterDestroy
-	static async decrementRanking(favorite: StageFavorite, options: {}): Promise<void> {
+	static async decrementRanking(favorite: StageFavorite): Promise<void> {
 		await new StageFavoriteRanking().incrementAsync(String(favorite.headerId), -1);
 	}
 
@@ -119,16 +117,17 @@ export default class StageFavorite extends Model<StageFavorite> {
 	/**
 	 * ユーザーのお気に入りステージ一覧とその関連情報を取得する。
 	 * @param userId アクセス中のユーザーのID。
+	 * @param options 検索条件。
 	 * @returns 検索結果。
 	 */
-	// TODO: 戻り値の型修正
-	static async findStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Promise<Stage[]> {
+	// TODO: 戻り値の型修正（実際にはStageインスタンスじゃない, infoの中身も明記する）
+	static async findStagesWithAccessibleAllInfo(userId: number, options?: IFindOptions<StageFavorite>): Promise<(Stage & { info: {} })[]> {
 		let results = [];
 
-		const favorites = await StageFavorite.scope({ method: ['user', userId] }).findAll<StageFavorite>(options);
+		const favorites = await StageFavorite.scope({ method: ['user', userId] }).findAll(options);
 		if (favorites.length <= 0) return results;
 
-		const stages = await Stage.scope(["latest", "withuser"]).findAll<Stage>({ where: { headerId: { [Op.in]: favorites.map((f) => f.headerId) } } });
+		const stages = await Stage.scope(["latest", "withuser"]).findAll({ where: { headerId: { [Op.in]: favorites.map((f) => f.headerId) } } });
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、

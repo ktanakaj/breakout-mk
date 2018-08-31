@@ -100,7 +100,7 @@ const router = expressPromiseRouter();
  *             $ref: '#/definitions/Block'
  */
 router.get('/', async function (req: express.Request, res: express.Response): Promise<void> {
-	const blocks = await Block.findAll<Block>();
+	const blocks = await Block.findAll();
 	res.json(blocks);
 });
 
@@ -132,7 +132,7 @@ router.get('/', async function (req: express.Request, res: express.Response): Pr
  *         $ref: '#/responses/Forbidden'
  */
 router.post('/', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
-	const block = await Block.create<Block>(req.body);
+	const block = await Block.create(req.body);
 	res.json(block);
 });
 
@@ -155,7 +155,7 @@ router.post('/', passportManager.isAuthenticated('admin'), async function (req: 
  *         $ref: '#/responses/NotFound'
  */
 router.get('/:key', async function (req: express.Request, res: express.Response): Promise<void> {
-	const block = await Block.findById<Block>(req.params.key, { rejectOnEmpty: true });
+	const block = await Block.findOrFail(req.params.key);
 	res.json(block);
 });
 
@@ -190,7 +190,7 @@ router.get('/:key', async function (req: express.Request, res: express.Response)
  *         $ref: '#/responses/NotFound'
  */
 router.put('/:key', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
-	let block = await Block.findById<Block>(req.params.key, { rejectOnEmpty: true });
+	let block = await Block.findOrFail(req.params.key);
 	block.merge(req.body);
 	block = await block.save();
 	res.json(block);

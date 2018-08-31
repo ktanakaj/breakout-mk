@@ -23,7 +23,7 @@ import responseBodyCollector from './core/response-body-collector';
 const sequelize = new Sequelize(Object.assign({
 	modelPaths: [__dirname + '/models'],
 	logging: (log) => log4js.getLogger('debug').debug(log),
-	// operatorsAliases: false,
+	operatorsAliases: false,
 }, config['database']));
 sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
 

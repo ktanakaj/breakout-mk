@@ -4,7 +4,7 @@
  * ブロックくずしの一つの面に対応する。
  * @module ./models/stage
  */
-import { Table, Column, Model, DataType, AllowNull, Default, Comment, BelongsTo, HasMany, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Default, Comment, BelongsTo, HasMany, ForeignKey, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
@@ -173,8 +173,8 @@ export default class Stage extends Model<Stage> {
 		/**
 		 * ステージを必要なら新バージョンの形でsave()する。
 		 * @function saveWithNewVersion
-		 * @param {Object} options saveオプション。
-		 * @returns {Promise.<Stage>} 実行結果。
+		 * @param options saveオプション。
+		 * @returns 実行結果。
 		 */
 		const saveWithNewVersion = async (options) => {
 			// 新規またはマップが変わっていない場合、普通にsave
@@ -205,6 +205,20 @@ export default class Stage extends Model<Stage> {
 			stage.header = header;
 			return stage;
 		});
+	}
+
+	/**
+	 * レコードを主キーで取得する。
+	 * @param id テーブルの主キー。
+	 * @param options 検索オプション。
+	 * @returns レコード。
+	 * @throws SequelizeEmptyResultError レコードが存在しない場合。
+	 */
+	static async findOrFail(id: number, options?: IFindOptions<Stage>): Promise<Stage> {
+		// rejectOnEmptyを有効化したfindByIdのエイリアス
+		options = options || {};
+		options.rejectOnEmpty = true;
+		return await (<any>this).findById(id, options);
 	}
 
 	/**
@@ -276,11 +290,11 @@ export default class Stage extends Model<Stage> {
 	 * @param options findAllオプション。
 	 * @returns 検索結果。
 	 */
-	static async findLatestStagesWithAccessibleAllInfo(userId: number, options: {} = {}): Promise<Stage[]> {
+	static async findLatestStagesWithAccessibleAllInfo(userId: number, options?: IFindOptions<Stage>): Promise<Stage[]> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		const stages = await Stage.scope(<any>["latest", { method: ['accessible', userId] }]).findAll<Stage>(options);
+		const stages = await Stage.scope(<any>["latest", { method: ['accessible', userId] }]).findAll(options);
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
@@ -315,12 +329,12 @@ export default class Stage extends Model<Stage> {
 	 * @param options findAllオプション。
 	 * @returns 検索結果。
 	 */
-	// TODO: 戻り値の型修正
-	static async findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options: {} = undefined): Promise<Stage[]> {
+	// TODO: 戻り値の型修正（実際にはStageインスタンスじゃない, infoの中身も明記する）
+	static async findUserStagesWithAccessibleAllInfo(userId: number, all: boolean = false, options?: IFindOptions<Stage>): Promise<(Stage & { info: {} })[]> {
 		const ranking = new StageRatingRanking();
 		let results = [];
 
-		const stages = await Stage.scope(<any>["latest", { method: ['user', userId, all ? null : "public"] }]).findAll<Stage>(options);
+		const stages = await Stage.scope(<any>["latest", { method: ['user', userId, all ? null : "public"] }]).findAll(options);
 		if (stages.length <= 0) return results;
 
 		// モデルのインスタンスに直接値を詰めるとJSONにしたとき出てこないので、
