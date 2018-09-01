@@ -137,4 +137,34 @@ export default class StageScoreRanking extends SortedSet {
 		const keys = await StageScoreRanking.keysAsync(stageId);
 		keys.forEach((key) => multi.del(key));
 	}
+
+	/**
+	 * 全ランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	static async rebuildAll(): Promise<number> {
+		// 累計と各年／月の集計結果を再作成
+		// TODO: 期間は現状適当に3年前までに決め打ち。Playlogから全期間のキーを取れるようにする
+		const now = new Date();
+		let count = await this.rebuildByTerm();
+		for (let y = 0; y < 3; y++) {
+			const year = now.getFullYear() - y;
+			count += await this.rebuildByTerm(year);
+			for (let m = 1; m <= 12; m++) {
+				count += await this.rebuildByTerm(year, m);
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * 特定期間のランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	private static async rebuildByTerm(year: number = undefined, month: number = undefined): Promise<number> {
+		// DBから集計後に、Redisを一旦削除して再作成
+		// （再作成中の更新分はずれる可能性がある）
+		// TODO: 未実装。その期間の全ステージ分をまとめて取ってきて一気に登録する
+		return 0;
+	}
 }

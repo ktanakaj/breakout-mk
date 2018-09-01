@@ -64,4 +64,20 @@ export default class UserRatingRanking extends SortedSet {
 		const reports = await StageHeader.countByUserIds(rankings.map((r) => Number(r.member)));
 		return <RankingEntry[]>objectUtils.mergeArray(rankings, reports, "member", "userId", "info");
 	}
+
+	/**
+	 * ランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	async rebuild(): Promise<number> {
+		// DBから集計後に、Redisを一旦削除して再作成
+		// （再作成中の更新分はずれる可能性がある）
+		const list = await StageRating.averageByUserIds();
+		this.clear();
+		for (const info of list) {
+			this.set(String(info.userId), info.rating);
+		}
+		this.commit();
+		return list.length;
+	}
 }

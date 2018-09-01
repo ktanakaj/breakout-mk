@@ -47,4 +47,20 @@ export default class StageRatingRanking extends SortedSet {
 		const rankings = await this.entriesAsync(start, end, true);
 		return <RankingEntry[]>await redisHelper.bulkLoadDbModels(rankings, Stage.scope(["latest", "withuser"]), "stage", "headerId");
 	}
+
+	/**
+	 * ランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	async rebuild(): Promise<number> {
+		// DBから集計後に、Redisを一旦削除して再作成
+		// （再作成中の更新分はずれる可能性がある）
+		const list = await StageRating.averageByHeaderIds();
+		this.clear();
+		for (const info of list) {
+			this.set(String(info.headerId), info.rating);
+		}
+		this.commit();
+		return list.length;
+	}
 }

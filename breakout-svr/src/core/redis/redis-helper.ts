@@ -5,6 +5,7 @@
 import * as path from 'path';
 import * as S from 'string';
 import { Op } from 'sequelize';
+import { Model } from 'sequelize-typescript';
 import objectUtils from '../utils/object-utils';
 
 /**
@@ -30,13 +31,13 @@ function makeKey(base: string, ...options: string[]): string {
  * @param idKey DBモデルのIDが入っているプロパティ名。
  * @returns 読み込み結果。
  */
-async function bulkLoadDbModels(redisModels: { member: string }[], dbClass: any/*typeof Model*/, objKey: string, idKey: string = "id"): Promise<Object[]> {
+async function bulkLoadDbModels(redisModels: { member: string }[], dbClass: (new () => Model<any>), objKey: string, idKey: string = "id"): Promise<Object[]> {
 	if (redisModels.length <= 0) {
 		return [];
 	}
 	const where = {};
 	where[idKey] = { [Op.in]: redisModels.map((rm) => rm.member) };
-	const dbModels = await dbClass.findAll({ where });
+	const dbModels = await (<any>dbClass).findAll({ where });
 	return objectUtils.mergeArray(redisModels, dbModels, "member", idKey, objKey);
 }
 

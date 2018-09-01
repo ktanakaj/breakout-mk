@@ -128,4 +128,42 @@ export default class StagePlayRanking extends SortedSet {
 			multi.zrem(key, [member]);
 		}
 	}
+
+	/**
+	 * 全ランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	static async rebuildAll(): Promise<number> {
+		// 累計と各年／月の集計結果を再作成
+		// TODO: 期間は現状適当に3年前までに決め打ち。Playlogから全期間のキーを取れるようにする
+		const now = new Date();
+		let ranking = new StagePlayRanking();
+		let count = await ranking.rebuild();
+		for (let y = 0; y < 3; y++) {
+			const year = now.getFullYear() - y;
+			ranking = new StagePlayRanking(year);
+			count += await ranking.rebuild();
+			for (let m = 1; m <= 12; m++) {
+				ranking = new StagePlayRanking(year, m);
+				count += await ranking.rebuild();
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * ランキングを再作成する。
+	 * @returns 総件数。
+	 */
+	private async rebuild(): Promise<number> {
+		// DBから集計後に、Redisを一旦削除して再作成
+		// （再作成中の更新分はずれる可能性がある）
+		const list = await Playlog.reportByStageIds(null, [this.year, this.month].filter((v) => v).map(String));
+		this.clear();
+		for (const info of list) {
+			this.set(String(info.stageId), info.tried);
+		}
+		this.commit();
+		return list.length;
+	}
 }
