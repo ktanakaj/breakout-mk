@@ -7,6 +7,7 @@ import StageHeader from '../../src/models/stage-header';
 import Stage from '../../src/models/stage';
 import StageRating from '../../src/models/stage-rating';
 import StageFavorite from '../../src/models/stage-favorite';
+import Playlog from '../../src/models/playlog';
 
 describe('rebuild-rankings.ts', function () {
 	// ※ バッチは普通に実行するとexitして終了してしまうので、
@@ -20,6 +21,7 @@ describe('rebuild-rankings.ts', function () {
 		await Stage.create({ id: 25, headerId: 20, name: "public stage", map: "[R] [G]" });
 		await StageRating.create({ headerId: 20, userId: 2, rating: 4 });
 		await StageFavorite.create({ headerId: 20, userId: 2 });
+		await Playlog.create({ stageId: 25, userId: 2, score: 1000, cleared: true });
 	});
 
 	it('バッチ実行', async () => {

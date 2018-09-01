@@ -84,7 +84,8 @@ export default class StageRating extends Model<StageRating> {
 		// ※ ステージ削除チェックのため、ヘッダーまでJOINする
 		return await StageRating.scope("withheader").findAll<any>({
 			attributes: [
-				'headerId', [Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
+				'headerId',
+				[Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
 			],
 			where,
 			group: ["headerId"],
@@ -106,7 +107,8 @@ export default class StageRating extends Model<StageRating> {
 		}
 		return await StageRating.findAll<any>({
 			attributes: [
-				'header.userId', [Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
+				'header.userId',
+				[Sequelize.fn('AVG', Sequelize.col('rating')), 'rating']
 			],
 			include: [{
 				model: StageHeader,

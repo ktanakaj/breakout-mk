@@ -215,7 +215,8 @@ export default class StageHeader extends Model<StageHeader> {
 		}
 		return await StageHeader.findAll<any>({
 			attributes: [
-				'userId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'created'],
+				'userId',
+				[Sequelize.fn('COUNT', Sequelize.col('id')), 'created'],
 			],
 			where,
 			group: ["userId"],

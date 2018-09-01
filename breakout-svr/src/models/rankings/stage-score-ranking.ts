@@ -158,13 +158,30 @@ export default class StageScoreRanking extends SortedSet {
 	}
 
 	/**
-	 * 特定期間のランキングを再作成する。
+	 * 全ステージの特定期間のランキングを再作成する。
+	 * @param year 年。※年間／月間ランキングの場合
+	 * @param month 月。※月間ランキングの場合
 	 * @returns 総件数。
 	 */
 	private static async rebuildByTerm(year: number = undefined, month: number = undefined): Promise<number> {
-		// DBから集計後に、Redisを一旦削除して再作成
+		// ステージID順に返ってくるはずなので、ステージIDが切り替わったらコミットする
 		// （再作成中の更新分はずれる可能性がある）
-		// TODO: 未実装。その期間の全ステージ分をまとめて取ってきて一気に登録する
-		return 0;
+		const list = await Playlog.reportForStagesAndUsers([year, month].filter((v) => v).map(String));
+		let ranking: StageScoreRanking = null;
+		for (let info of list) {
+			if (ranking && ranking.stageId !== info.stageId) {
+				ranking.commit();
+				ranking = null;
+			}
+			if (!ranking) {
+				ranking = new StageScoreRanking(info.stageId, year, month);
+				ranking.clear();
+			}
+			ranking.set(String(info.userId), info.score);
+		}
+		if (ranking) {
+			ranking.commit();
+		}
+		return list.length;
 	}
 }

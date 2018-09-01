@@ -115,7 +115,8 @@ export default class StageComment extends Model<StageComment> {
 		}
 		return await StageComment.findAll<any>({
 			attributes: [
-				'headerId', [Sequelize.fn('COUNT', Sequelize.col('id')), 'cnt'],
+				'headerId',
+				[Sequelize.fn('COUNT', Sequelize.col('id')), 'cnt'],
 			],
 			where,
 			group: ["headerId"],

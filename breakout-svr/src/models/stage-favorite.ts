@@ -106,7 +106,8 @@ export default class StageFavorite extends Model<StageFavorite> {
 		}
 		return await StageFavorite.scope("withheader").findAll<any>({
 			attributes: [
-				'headerId', [Sequelize.fn('COUNT', Sequelize.col('StageFavorite.id')), 'cnt'],
+				'headerId',
+				[Sequelize.fn('COUNT', Sequelize.col('StageFavorite.id')), 'cnt'],
 			],
 			where,
 			group: ["headerId"],
