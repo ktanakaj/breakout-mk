@@ -4,7 +4,6 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { throwErrorByResponse } from '../core/http-error';
 import { PlayRankingEntry, RatingRankingEntry, FavoriteRankingEntry, ScoreRankingEntry, PlayerRankingEntry, CreatorRankingEntry } from './ranking.model';
 
 /**
@@ -53,8 +52,7 @@ export class RankingService {
 	 */
 	findStagePlayRanking(keys: string[], offset: number, limit: number): Promise<PlayRankingEntry[]> {
 		return this.http.get<PlayRankingEntry[]>('/api/rankings/play/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -63,8 +61,7 @@ export class RankingService {
 	 */
 	findStagePlayRankingKeys(): Promise<string[][]> {
 		return this.http.get<string[][]>('/api/rankings/play/keys')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -77,8 +74,7 @@ export class RankingService {
 	 */
 	findStageScoreRanking(id: number, keys: string[], offset: number, limit: number): Promise<ScoreRankingEntry[]> {
 		return this.http.get<ScoreRankingEntry[]>('/api/stages/' + id + '/rankings/score/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -88,8 +84,7 @@ export class RankingService {
 	 */
 	findStageScoreRankingKeys(id: number): Promise<string[][]> {
 		return this.http.get<string[][]>('/api/stages/' + id + '/rankings/score/keys')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -100,8 +95,7 @@ export class RankingService {
 	 */
 	findStageRatingRanking(offset: number, limit: number): Promise<RatingRankingEntry[]> {
 		return this.http.get<RatingRankingEntry[]>('/api/rankings/rating/', { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -112,8 +106,7 @@ export class RankingService {
 	 */
 	findStageFavoriteRanking(offset: number, limit: number): Promise<FavoriteRankingEntry[]> {
 		return this.http.get<FavoriteRankingEntry[]>('/api/rankings/favorite/', { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -125,8 +118,7 @@ export class RankingService {
 	 */
 	findUserPlayRanking(keys: string[], offset: number, limit: number): Promise<PlayerRankingEntry[]> {
 		return this.http.get<PlayerRankingEntry[]>('/api/rankings/player/' + this.makeKeysToPath(keys), { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -135,8 +127,7 @@ export class RankingService {
 	 */
 	findUserPlayRankingKeys(): Promise<string[][]> {
 		return this.http.get<string[][]>('/api/rankings/player/keys')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -147,7 +138,6 @@ export class RankingService {
 	 */
 	findUserRatingRanking(offset: number, limit: number): Promise<CreatorRankingEntry[]> {
 		return this.http.get<CreatorRankingEntry[]>('/api/rankings/creator/', { params: this.makePagingQuery(offset, limit) })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 }

@@ -4,13 +4,12 @@
 import { NgModule, ErrorHandler, Injectable, LOCALE_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BsDropdownModule, CollapseModule, ModalModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
 import browserHelper from './core/browser-helper';
-import { HttpError } from './core/http-error';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './auth-guard.service';
@@ -115,7 +114,7 @@ class DefaultErrorHandler implements ErrorHandler {
 		}
 		// 404等のエラーの場合、専用のエラーメッセージを表示。それ以外はデフォルトのエラー
 		let msgId;
-		if (error instanceof HttpError) {
+		if (error instanceof HttpErrorResponse) {
 			msgId = this.msgIdByStatus[error.status];
 		}
 		console.error(error);

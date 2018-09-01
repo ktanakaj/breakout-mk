@@ -80,21 +80,17 @@ export class RankingDateNaviComponent {
 	 * @returns ラベル文字列。
 	 */
 	async makeLabel(yearAndMonth: string[]): Promise<string> {
-		return new Promise<string>((resolve) => {
-			let key: string = "TIME_SPAN.TOTAL";
-			let params: Object = {};
-			if (yearAndMonth) {
-				if (yearAndMonth.length === 1) {
-					key = "TIME_SPAN.YEAR";
-					params = { year: yearAndMonth[0] };
-				} else if (yearAndMonth.length > 1) {
-					key = "TIME_SPAN.YEAR_AND_MONTH";
-					params = { year: yearAndMonth[0], month: yearAndMonth[1] };
-				}
+		let key: string = "TIME_SPAN.TOTAL";
+		let params: Object = {};
+		if (yearAndMonth) {
+			if (yearAndMonth.length === 1) {
+				key = "TIME_SPAN.YEAR";
+				params = { year: yearAndMonth[0] };
+			} else if (yearAndMonth.length > 1) {
+				key = "TIME_SPAN.YEAR_AND_MONTH";
+				params = { year: yearAndMonth[0], month: yearAndMonth[1] };
 			}
-			this.translate.get(key, params).subscribe((res: string) => {
-				resolve(res);
-			});
-		});
+		}
+		return this.translate.get(key, params).toPromise();
 	}
 }

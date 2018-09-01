@@ -4,6 +4,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Block } from './block.model';
 import { BlockService } from './block.service';
 
@@ -71,10 +72,10 @@ export class BlockEditComponent implements OnInit {
 			await this.blockService.save(this.block);
 			this.router.navigate(['/blocks/']);
 		} catch (e) {
-			if (e.name === 'BadRequestError') {
-				return this.error = e.message;
+			if (!(e instanceof HttpErrorResponse) || e.status !== 400) {
+				throw e;
 			}
-			throw e;
+			this.error = `ERROR.${e.error}`;
 		}
 	}
 }

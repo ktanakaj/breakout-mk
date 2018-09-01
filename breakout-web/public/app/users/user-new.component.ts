@@ -4,6 +4,7 @@
  */
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { User } from './user.model';
 import { UserService } from './user.service';
 
@@ -38,10 +39,10 @@ export class UserNewComponent {
 			await this.userService.signup(this.user);
 			this.router.navigate(['/']);
 		} catch (e) {
-			if (e.name === 'BadRequestError') {
-				return this.error = e.message;
+			if (!(e instanceof HttpErrorResponse) || e.status !== 400) {
+				throw e;
 			}
-			throw e;
+			this.error = `ERROR.${e.error}`;
 		}
 	}
 }

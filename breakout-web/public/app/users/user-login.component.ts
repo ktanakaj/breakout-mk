@@ -4,6 +4,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from './user.service';
 
 /**
@@ -46,11 +47,10 @@ export class UserLoginComponent implements OnInit {
 			await this.userService.login(this.user.name, this.user.password);
 			this.router.navigate([this.userService.backupUrl || '/']);
 		} catch (e) {
-			if (e.name === 'UnauthorizedError') {
-				// TODO: 専用のメッセージに変える
-				return this.error = e.message;
+			if (!(e instanceof HttpErrorResponse) || e.status !== 401) {
+				throw e;
 			}
-			throw e;
+			this.error = 'ERROR.user name or password is incorrect';
 		}
 	}
 }

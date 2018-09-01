@@ -4,7 +4,6 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { throwErrorByResponse } from '../core/http-error';
 import { Block } from '../blocks/block.model';
 import { Stage, StageComment, StageFavorite, StageRating, StageWithInfo } from './stage.model';
 
@@ -29,8 +28,7 @@ export class StageService {
 	findAll(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/stages')
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -41,8 +39,7 @@ export class StageService {
 	findById(id: number): Promise<Stage> {
 		return this.http.get<Stage>('/api/stages/' + id)
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -56,8 +53,7 @@ export class StageService {
 			.set('fields', 'all');
 		return this.http.get<StageWithInfo>('/api/stages/' + id, { params })
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -74,9 +70,7 @@ export class StageService {
 		} else {
 			observable = this.http.put<Stage>('/api/stages/' + stage.id, stage);
 		}
-		return observable
-			.toPromise()
-			.catch(throwErrorByResponse);
+		return observable.toPromise();
 	}
 
 	/**
@@ -87,8 +81,7 @@ export class StageService {
 	 */
 	deleteById(id: number): Promise<Stage> {
 		return this.http.delete<Stage>("/api/stages/" + id)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -99,8 +92,7 @@ export class StageService {
 	findByUser(userId: number): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/users/' + userId + '/stages')
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -110,8 +102,7 @@ export class StageService {
 	 */
 	findByMe(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/users/me/stages')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -121,8 +112,7 @@ export class StageService {
 	 */
 	findFavoriteByMe(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/users/me/favorites')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -132,8 +122,7 @@ export class StageService {
 	findLatest(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/stages/latest')
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -151,9 +140,7 @@ export class StageService {
 		} else {
 			observable = this.http.put<StageComment>("/api/stages/" + stageId + "/comments/" + comment.id, comment);
 		}
-		return observable
-			.toPromise()
-			.catch(throwErrorByResponse);
+		return observable.toPromise();
 	}
 
 	/**
@@ -165,8 +152,7 @@ export class StageService {
 	 */
 	deleteCommentById(stageId: number, commentId: number): Promise<StageComment> {
 		return this.http.delete<StageComment>("/api/stages/" + stageId + "/comments/" + commentId)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -178,8 +164,7 @@ export class StageService {
 	 */
 	rate(stageId: number, rating: number): Promise<StageRating> {
 		return this.http.post<StageRating>("/api/stages/" + stageId + "/rating", { rating })
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -190,8 +175,7 @@ export class StageService {
 	 */
 	addFavorite(stageId: number): Promise<StageFavorite> {
 		return this.http.post<StageFavorite>("/api/stages/" + stageId + "/favorite", {})
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -202,8 +186,7 @@ export class StageService {
 	 */
 	removeFavorite(stageId: number): Promise<StageFavorite> {
 		return this.http.delete<StageFavorite>("/api/stages/" + stageId + "/favorite")
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**

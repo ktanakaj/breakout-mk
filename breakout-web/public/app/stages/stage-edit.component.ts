@@ -4,6 +4,7 @@
  */
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Block } from '../blocks/block.model';
 import { Stage } from './stage.model';
@@ -81,7 +82,10 @@ export class StageEditComponent implements OnInit {
 			await this.stageService.save(this.stage);
 			this.router.navigate(['/stages']);
 		} catch (e) {
-			this.error = e;
+			if (!(e instanceof HttpErrorResponse) || e.status !== 400) {
+				throw e;
+			}
+			this.error = `ERROR.${e.error}`;
 		}
 	}
 
@@ -101,12 +105,8 @@ export class StageEditComponent implements OnInit {
 		if (this.stage.id === undefined) {
 			this.router.navigate(['/stages']);
 		}
-		try {
-			await this.stageService.deleteById(this.stage.id);
-			this.router.navigate(['/stages']);
-		} catch (e) {
-			this.error = e;
-		}
+		await this.stageService.deleteById(this.stage.id);
+		this.router.navigate(['/stages']);
 	}
 
 	/**

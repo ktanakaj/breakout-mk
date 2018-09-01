@@ -4,8 +4,7 @@
  */
 import { EventEmitter } from 'events';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { throwErrorByResponse, UnauthorizedError } from '../core/http-error';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { User, UserWithInfo } from './user.model';
 import { Playlog } from './playlog.model';
 
@@ -39,8 +38,7 @@ export class UserService extends EventEmitter {
 	findAll(): Promise<User[]> {
 		return this.http.get<User[]>('/api/users')
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -51,8 +49,7 @@ export class UserService extends EventEmitter {
 	findById(id: number): Promise<User> {
 		return this.http.get<User>('/api/users/' + id)
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -66,8 +63,7 @@ export class UserService extends EventEmitter {
 			.set('fields', 'all');
 		return this.http.get<UserWithInfo>('/api/users/' + id, { params })
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -77,8 +73,7 @@ export class UserService extends EventEmitter {
 	 */
 	findMe(): Promise<User> {
 		return this.http.get<User>('/api/users/me')
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -89,8 +84,7 @@ export class UserService extends EventEmitter {
 	 */
 	update(user: User): Promise<User> {
 		return this.http.put<User>("/api/users/" + user.id, user)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	/**
@@ -108,8 +102,7 @@ export class UserService extends EventEmitter {
 				this.me = me;
 				this.emit('login', this.me);
 				return this.me;
-			})
-			.catch(throwErrorByResponse);
+			});
 	}
 
 	/**
@@ -128,8 +121,7 @@ export class UserService extends EventEmitter {
 				this.me = me;
 				this.emit('login', this.me);
 				return this.me;
-			})
-			.catch(throwErrorByResponse);
+			});
 	}
 
 	/**
@@ -145,8 +137,7 @@ export class UserService extends EventEmitter {
 				let user = this.me;
 				this.me = null;
 				this.emit('logout', user);
-			})
-			.catch(throwErrorByResponse);
+			});
 	}
 
 	/**
@@ -161,7 +152,7 @@ export class UserService extends EventEmitter {
 			this.emit('login', user);
 			return true;
 		} catch (e) {
-			if (e.name === 'UnauthorizedError') {
+			if (e instanceof HttpErrorResponse && e.status === 401) {
 				return false;
 			}
 			throw e;
@@ -176,8 +167,7 @@ export class UserService extends EventEmitter {
 	findPlaylogs(): Promise<Playlog[]> {
 		return this.http.get<Playlog[]>('/api/users/me/playlogs')
 			.retry(MAX_RETRY)
-			.toPromise()
-			.catch(throwErrorByResponse);
+			.toPromise();
 	}
 
 	// イベント定義
