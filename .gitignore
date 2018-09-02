@@ -19,11 +19,10 @@ StyleCop.Cache
 breakout-svr/dist
 breakout-svr/doc
 breakout-svr/config/local.yaml
-breakout-web/public/bundle.js
-breakout-web/public/bundle.js.map
-breakout-web/public/webgl/*
+breakout-web/dist
+breakout-web/src/webgl/*
+breakout-web/tmp
+breakout-web/out-tsc
 breakout-web/doc
-breakout-web/obj
-breakout-web/bin
 breakout-game/Library
 !.gitkeep

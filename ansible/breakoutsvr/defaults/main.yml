@@ -2,6 +2,7 @@ app_nginx_conf_src: "nginx.conf.j2"
 app_nginx_conf_dest: "/etc/nginx/default.d/vagrant.conf"
 app_svr_dir: "/vagrant/breakout-svr"
 app_web_dir: "/vagrant/breakout-web"
+app_web_dist_dir: "{{ app_web_dir }}/dist/breakout-web"
 app_log_dir: "/var/log/local/breakout-svr"
 app_port: 3000
 app_db:

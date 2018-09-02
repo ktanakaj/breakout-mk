@@ -11,7 +11,7 @@ location ^~ /swagger/ {
     deny all;
 }
 
-location ~ ^/(api[\-/]|index.html$) {
+location ~ ^/(api[\-/]) {
     proxy_pass http://127.0.0.1:3000;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -26,8 +26,8 @@ location = / {
     rewrite .* /index.html last;
 }
 
-location ~ /(i18n|styles|views|webgl|.+?\..+?)($|/) {
-    root {{ app_web_dir }}/public;
+location ~ /(.+)($|/) {
+    root {{ app_web_dist_dir }};
     proxy_no_cache 1;
     proxy_cache_bypass 1;
     sendfile off;
