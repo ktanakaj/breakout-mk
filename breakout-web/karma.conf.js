@@ -4,13 +4,13 @@
 module.exports = function(config) {
 	config.set({
 		basePath: './public/app/',
-		frameworks: ['jasmine'],
+		frameworks: ['mocha', 'power-assert'],
 		files: [
 			'../../test/karma.entry.ts'
 		],
 		exclude: [],
 		preprocessors: {
-			'../../test/karma.entry.ts': ['webpack', 'sourcemap']
+			'../../test/karma.entry.ts': ['webpack', 'sourcemap', 'espower']
 		},
 		reporters: ['progress'],
 		port: 9876,
@@ -20,7 +20,7 @@ module.exports = function(config) {
 			captureConsole: true
 		},
 		autoWatch: false,
-		browsers: ['PhantomJS'],
+		browsers: ['Chrome'],
 		singleRun: true,
 		concurrency: Infinity,
 		webpack: Object.assign({

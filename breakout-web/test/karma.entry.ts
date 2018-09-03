@@ -6,7 +6,6 @@ import 'zone.js/dist/async-test';
 import 'zone.js/dist/fake-async-test';
 import 'zone.js/dist/sync-test';
 import 'zone.js/dist/proxy';
-import 'zone.js/dist/jasmine-patch';
 
 const context = (require as any).context('./app', true, /\.ts$/);
 context.keys().map(context);

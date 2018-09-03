@@ -1,45 +1,43 @@
 /**
- * @file authGuard.service.tsのテスト。
+ * @file auth-guard.service.tsのテスト。
  */
-import { AuthGuard } from '../../public/app/authGuard.service';
+import * as assert from 'power-assert';
+import { AuthGuard } from '../../public/app/auth-guard.service';
 
 describe('AuthGuard', () => {
 	describe('#canActivate', () => {
-		it('should check authorization success by the `me` API', (done) => {
+		it('should check authorization success by the `me` API', async () => {
 			let guard = new AuthGuard(<any>{
-				me: () => Promise.resolve(),
-			}, <any>{});
+				checkSession: () => true,
+			}, <any>{
+				navigate: () => { },
+			});
 
-			guard.canActivate(<any>{}, <any>{})
-				.toPromise()
-				.then((result) => expect(result).toEqual(true))
-				.then(done)
-				.catch(done);
+			const result = await guard.canActivate(<any>{}, <any>{});
+			assert.strictEqual(result, true);
 		});
 
-		it('should check authorization failed by the `me` API', (done) => {
+		it('should check authorization failed by the `me` API', async () => {
 			let guard = new AuthGuard(<any>{
-				me: () => Promise.reject(new Error()),
-			}, <any>{});
+				checkSession: () => false,
+			}, <any>{
+				navigate: () => { },
+			});
 
-			guard.canActivate(<any>{}, <any>{})
-				.toPromise()
-				.then((result) => expect(result).toEqual(false))
-				.then(done)
-				.catch(done);
+			const result = await guard.canActivate(<any>{}, <any>{});
+			assert.strictEqual(result, false);
 		});
 
-		it('should check authorization success by cache', (done) => {
+		it('should check authorization success by cache', async () => {
 			let guard = new AuthGuard(<any>{
-				admin: {},
-				me: () => Promise.reject(new Error()),
-			}, <any>{});
+				me: {},
+				checkSession: () => false,
+			}, <any>{
+				navigate: () => { },
+			});
 
-			guard.canActivate(<any>{}, <any>{})
-				.toPromise()
-				.then((result) => expect(result).toEqual(true))
-				.then(done)
-				.catch(done);
+			const result = await guard.canActivate(<any>{}, <any>{});
+			assert.strictEqual(result, true);
 		});
 	});
 });
