@@ -1,5 +1,6 @@
 ﻿/**
- * @file ヘッダーナビコンポーネント。
+ * ヘッダーナビコンポーネント。
+ * @module ./app/core/header-navi.component
  */
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -31,7 +32,7 @@ export class HeaderNaviComponent {
 	/**
 	 * コンポーネント起動時の処理。
 	 */
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		// ナビを初期化&認証時に更新するよう設定
 		this.updateNavi();
 		this.userService.on('login', () => this.updateNavi());

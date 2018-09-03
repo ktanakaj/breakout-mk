@@ -3,7 +3,7 @@
  * @module ./app/users/user-detail.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { User } from './user.model';
 import { UserService } from './user.service';
 

@@ -3,7 +3,7 @@
  * @module ./app/users/user-stage.component
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Stage } from '../stages/stage.model';
 import { User } from './user.model';
 import { StageService } from '../stages/stage.service';

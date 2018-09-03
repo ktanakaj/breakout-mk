@@ -1,7 +1,7 @@
 ﻿/**
  * @file ブロックくずしメーカールートコンポーネント。
  */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import browserHelper from './core/browser-helper';
 
@@ -12,7 +12,7 @@ import browserHelper from './core/browser-helper';
 	selector: 'app-root',
 	templateUrl: 'app/app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
 	 * @param translate 国際化サービス。
@@ -23,7 +23,7 @@ export class AppComponent {
 	/**
 	 * コンポーネント起動時の処理。
 	 */
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		// アプリで使用する言語を設定
 		this.translate.setDefaultLang('en');
 		this.translate.use(browserHelper.getLanguage());

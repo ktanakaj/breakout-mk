@@ -1,5 +1,5 @@
 /**
- * @file WebSocketサンプルChatアプリブートローダー。
+ * @file ブロックくずしメーカーブートローダー。
  */
 import "zone.js";
 import 'reflect-metadata';

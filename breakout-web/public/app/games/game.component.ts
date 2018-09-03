@@ -29,7 +29,7 @@ export class GameComponent implements OnInit {
 	/**
 	 * コンポーネント起動時の処理。
 	 */
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		// ステージIDが指定された場合インゲームに引き継ぐ
 		let url = "../webgl/index.html?lang=" + browserHelper.getLanguage();
 		const stageId = this.route.snapshot.params['id'];

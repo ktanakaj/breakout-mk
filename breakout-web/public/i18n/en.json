@@ -1,6 +1,6 @@
 {
 	"APP_NAME": "Breakout Maker",
-	"VERSION": "0.4.1",
+	"VERSION": "0.4.3",
 	"COPYRIGHT": "Copyright (C) 2018 Koichi Tanaka All Rights Reserved.",
 	"EDIT": "Edit",
 	"UPDATE": "Update",
@@ -29,8 +29,8 @@
 		"user name or password is incorrect": "The user name or password is incorrect."
 	},
 	"VALIDATE": {
-		"REQUIRED": "項目を入力してください。",
-		"MAXLENGTH": "{{max}}文字までで入力してください。"
+		"REQUIRED": "The value is required.",
+		"MAXLENGTH": "The value can be max {{max}} characters long."
 	},
 	"DELETE_CONFIRMING": {
 		"TITLE": "Delete",

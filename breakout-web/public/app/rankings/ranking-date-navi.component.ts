@@ -79,7 +79,7 @@ export class RankingDateNaviComponent {
 	 * @param yearAndMonth [年,月] 形式のキー。
 	 * @returns ラベル文字列。
 	 */
-	async makeLabel(yearAndMonth: string[]): Promise<string> {
+	makeLabel(yearAndMonth: string[]): Promise<string> {
 		let key: string = "TIME_SPAN.TOTAL";
 		let params: Object = {};
 		if (yearAndMonth) {

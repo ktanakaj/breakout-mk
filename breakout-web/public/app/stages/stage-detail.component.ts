@@ -49,7 +49,6 @@ export class StageDetailComponent implements OnInit {
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
-	 * @param router ルートサービス。
 	 * @param route ルート情報。
 	 * @param userService ユーザー関連サービス。
 	 * @param stageService ステージ関連サービス。
@@ -57,7 +56,6 @@ export class StageDetailComponent implements OnInit {
 	 * @param rankingService ランキング関連サービス。
 	 */
 	constructor(
-		private router: Router,
 		private route: ActivatedRoute,
 		private userService: UserService,
 		private stageService: StageService,
