@@ -1,0 +1,3 @@
+---
+- name: Install the latest version of Chromium
+  yum: name=chromium state=latest

@@ -17,8 +17,12 @@
       - [ 'localhost', '%' ]
       - "{{ app_db_users }}"
 
-- name: Install "node-pre-gyp" node.js package globally for sqlite3
-  npm: name=node-pre-gyp global=yes
+  - name: Install "node-pre-gyp" node.js package globally for sqlite3
+    npm: name=node-pre-gyp global=yes
+
+  - name: Open port for angular-cli only internal zone
+    firewalld: port=9876/tcp permanent=true state=enabled zone=internal
+    notify: Restart firewalld
 
 - block:
   - name: Install node.js package for the server application

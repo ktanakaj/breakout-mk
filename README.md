@@ -57,7 +57,8 @@
 ## インストール方法
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
 2. 初回の `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
-3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/public/webgl` フォルダを出力先でビルドを行う。
+3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/src/webgl` フォルダを出力先でビルドを行う。
+   * コピー後は、ファイルを手動で `dist` にも反映するか、`breakout-web` を再ビルドしてください。
 
 ※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `yarn install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
 ※ 2018年8月現在、npmコマンドにはvagrant共有フォルダでのインストールが失敗する[不具合](https://github.com/npm/npm/issues/20605)があります。`npm install` の代わりに `yarn install` を使用してください。
@@ -78,11 +79,10 @@ Webアプリの操作用に、以下のようなサーバーコマンドを用�
     * `npm start` - Webアプリの起動
         * `npm run production` Webアプリの起動（運用モード）
     * `npm restart` - Webアプリの再起動
+    * `npm run watch` - Webアプリのビルド（ファイル更新監視）
     * `npm stop` - Webアプリの停止
-    * `npm run update-rankings` - ランキングデータの再作成
 * `breakout-svr/breakout-web`共通
-    * `npm run build` - Webアプリクライアントのビルド
-    * `npm run watch` - Webアプリクライアントのビルド（ファイル更新監視）
+    * `npm run build` - Webアプリのビルド
     * `npm run doc` - WebアプリのAPIドキュメント生成
     * `npm test` - Webアプリのユニットテスト実行
     * `npm run lint` - Webアプリの静的解析ツールの実行

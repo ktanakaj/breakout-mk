@@ -26,7 +26,7 @@ location = / {
     rewrite .* /index.html last;
 }
 
-location ~ /(.+)($|/) {
+location ~ /(assets|webgl|.+?\..+?)($|/) {
     root {{ app_web_dist_dir }};
     proxy_no_cache 1;
     proxy_cache_bypass 1;

@@ -6,3 +6,4 @@ dependencies:
   - { role: mariadb }
   - { role: redis }
   - { role: yarn }
+  - { role: chromium }
