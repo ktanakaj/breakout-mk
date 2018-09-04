@@ -137,5 +137,11 @@ export interface StageRating {
  */
 export interface StageWithInfo extends Stage {
 	// ステージ詳細情報
-	info: { tried: number, score: number, cleared: number, rating: number, user: { tried: number, score: number, cleared: number, rating: number, favorited: boolean } };
+	info: {
+		tried: number,
+		score: number,
+		cleared: number,
+		rating: number,
+		user: { tried: number, score: number, cleared: number, rating: number, favorited: boolean }
+	};
 }

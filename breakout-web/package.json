@@ -10,6 +10,8 @@
     "lint": "./node_modules/@angular/cli/bin/ng lint",
     "e2e": "./node_modules/@angular/cli/bin/ng e2e",
     "doc": "npm run clean-doc && ./node_modules/typedoc/bin/typedoc ./src --exclude /**/*.spec.ts --ignoreCompilerErrors --out ./doc --mode file",
+    "clean": "npm run clean-app & npm run clean-doc",
+    "clean-app": "rm -rf ./dist",
     "clean-doc": "rm -rf ./doc"
   },
   "license": "MIT",

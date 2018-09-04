@@ -1,3 +1,6 @@
+/**
+ * @file ブロックくずしメーカーユニットテストブートローダー。
+ */
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
 import 'zone.js/dist/zone-testing';
@@ -6,6 +9,11 @@ import {
 	BrowserDynamicTestingModule,
 	platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+
+import 'rxjs/add/operator/retry';
+import { registerLocaleData } from '@angular/common';
+import localeJa from '@angular/common/locales/ja';
+registerLocaleData(localeJa, 'ja');
 
 declare const require: any;
 

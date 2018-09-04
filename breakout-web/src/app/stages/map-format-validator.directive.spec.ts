@@ -1,14 +1,14 @@
 ﻿/**
  * @file validate-map-format.tsのテスト。
  */
-import * as assert from 'power-assert';
-import { StageService } from '../../../public/app/stages/stage.service';
-import { MapFormatValidator } from '../../../public/app/stages/map-format-validator.directive';
+import { StageService } from './stage.service';
+import { MapFormatValidator } from './map-format-validator.directive';
 const directive = new MapFormatValidator(new StageService(null));
 
 describe('map-format-validator', () => {
 	describe('#validate()', () => {
-		it.skip('should check map data', () => {
+		it('should check map data', () => {
+			pending();
 			// TODO: Angular 2+以降のソースに対応する
 			// let scope = {};
 			// scope.$watch = (func) => { scope._watch = func; };
