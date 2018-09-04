@@ -1,9 +1,4 @@
 ---
-  appKey: "breakout-svr"
-  appName:
-    en: "Breakout Maker"
-    ja: "ブロックくずしメーカー"
-  webappbase: "/"
   session:
     secret: "hiaihia348ghysrl8greiulahi"
     resave: false

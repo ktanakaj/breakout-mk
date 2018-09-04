@@ -1,6 +1,6 @@
 /**
  * 認証コントローラのNode.jsモジュール。
- * @module ./routes/api/authenticate
+ * @module ./routes/authenticate
  */
 /**
  * @swagger
@@ -10,7 +10,7 @@
  */
 import * as express from 'express';
 import * as passport from 'passport';
-import passportManager from '../../core/passport-manager';
+import passportManager from '../core/passport-manager';
 const router = express.Router();
 
 /**

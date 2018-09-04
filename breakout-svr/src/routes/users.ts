@@ -2,7 +2,7 @@
  * ユーザーコントローラのNode.jsモジュール。
  *
  * ブロックくずしのプレイヤーor作者のRESTアクセスに対応する。
- * @module ./routes/api/users
+ * @module ./routes/users
  */
 /**
  * @swagger
@@ -51,12 +51,12 @@ const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
-import { NotFoundError } from '../../core/utils/http-error';
-import passportManager from '../../core/passport-manager';
-import User from '../../models/user';
-import Stage from '../../models/stage';
-import StageFavorite from '../../models/stage-favorite';
-import Playlog from '../../models/playlog';
+import { NotFoundError } from '../core/utils/http-error';
+import passportManager from '../core/passport-manager';
+import User from '../models/user';
+import Stage from '../models/stage';
+import StageFavorite from '../models/stage-favorite';
+import Playlog from '../models/playlog';
 const router = expressPromiseRouter();
 
 /**

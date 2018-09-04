@@ -2,7 +2,7 @@
  * ステージコントローラのNode.jsモジュール。
  *
  * ブロックくずしの一つの面のRESTアクセスに対応する。
- * @module ./routes/api/stages
+ * @module ./routes/stages
  */
 /**
  * @swagger
@@ -114,11 +114,11 @@ const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
-import { NotFoundError } from '../../core/utils/http-error';
-import passportManager from '../../core/passport-manager';
-import Stage from '../../models/stage';
-import StageComment from '../../models/stage-comment';
-import StageScoreRanking from '../../models/rankings/stage-score-ranking';
+import { NotFoundError } from '../core/utils/http-error';
+import passportManager from '../core/passport-manager';
+import Stage from '../models/stage';
+import StageComment from '../models/stage-comment';
+import StageScoreRanking from '../models/rankings/stage-score-ranking';
 const router = expressPromiseRouter();
 
 /**

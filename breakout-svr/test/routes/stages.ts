@@ -3,12 +3,12 @@
  */
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
-import testHelper from '../../test-helper';
-import { NotFoundError } from '../../../src/core/utils/http-error';
-import User from '../../../src/models/user';
-import StageHeader from '../../../src/models/stage-header';
-import Stage from '../../../src/models/stage';
-import router from '../../../src/routes/api/stages';
+import testHelper from '../test-helper';
+import { NotFoundError } from '../../src/core/utils/http-error';
+import User from '../../src/models/user';
+import StageHeader from '../../src/models/stage-header';
+import Stage from '../../src/models/stage';
+import router from '../../src/routes/stages';
 
 describe('/api/stages', () => {
 	before(async () => {

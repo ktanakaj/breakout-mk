@@ -6,11 +6,11 @@
  */
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
-import StagePlayRanking from '../../models/rankings/stage-play-ranking';
-import StageRatingRanking from '../../models/rankings/stage-rating-ranking';
-import StageFavoriteRanking from '../../models/rankings/stage-favorite-ranking';
-import UserPlayRanking from '../../models/rankings/user-play-ranking';
-import UserRatingRanking from '../../models/rankings/user-rating-ranking';
+import StagePlayRanking from '../models/rankings/stage-play-ranking';
+import StageRatingRanking from '../models/rankings/stage-rating-ranking';
+import StageFavoriteRanking from '../models/rankings/stage-favorite-ranking';
+import UserPlayRanking from '../models/rankings/user-play-ranking';
+import UserRatingRanking from '../models/rankings/user-rating-ranking';
 const router = expressPromiseRouter();
 
 /**

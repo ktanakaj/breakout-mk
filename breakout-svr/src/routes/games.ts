@@ -2,7 +2,7 @@
  * ゲームコントローラのNode.jsモジュール。
  *
  * ブロックくずしのゲームに関するAPIに対応する。
- * @module ./routes/api/game
+ * @module ./routes/game
  */
 /**
  * @swagger
@@ -13,9 +13,9 @@
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
 import * as log4js from 'log4js';
-import { BadRequestError } from '../../core/utils/http-error';
-import Stage from '../../models/stage';
-import Playlog from '../../models/playlog';
+import { BadRequestError } from '../core/utils/http-error';
+import Stage from '../models/stage';
+import Playlog from '../models/playlog';
 const logger = log4js.getLogger('debug');
 const router = expressPromiseRouter();
 

@@ -2,7 +2,7 @@
  * ブロックコントローラのNode.jsモジュール。
  *
  * ブロックくずしのブロックマスタ定義のRESTアクセスに対応する。
- * @module ./routes/api/blocks
+ * @module ./routes/blocks
  */
 /**
  * @swagger
@@ -79,8 +79,8 @@ const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
-import passportManager from '../../core/passport-manager';
-import Block from '../../models/block';
+import passportManager from '../core/passport-manager';
+import Block from '../models/block';
 const router = expressPromiseRouter();
 
 /**

@@ -3,9 +3,9 @@
  */
 import * as assert from 'power-assert';
 import * as httpMocks from "node-mocks-http";
-import testHelper from '../../test-helper';
-import User from '../../../src/models/user';
-import router from '../../../src/routes/api/users';
+import testHelper from '../test-helper';
+import User from '../../src/models/user';
+import router from '../../src/routes/users';
 
 describe('/api/users', () => {
 	describe('GET /', () => {

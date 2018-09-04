@@ -54,8 +54,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session(Object.assign({ store: new RedisStore(config['redis']['session']) }, config['session'])));
-app.set('views', __dirname + '/../ejs');
-app.set('view engine', 'ejs');
 
 // リバースプロキシのX-Forwarded-Protoを信じる
 app.set('trust proxy', 'loopback');
@@ -100,10 +98,10 @@ app.use(swaggerExpressValidator({
 	},
 }));
 
-// APIを登録
+// APIを/api/下のルートに登録
 for (let route of routes) {
 	const router = require(route);
-	app.use(path.join("/", route.replace(baseDir, "").replace(/\.[jt]s$/, "")), router['default'] || router);
+	app.use(path.join("/api/", route.replace(baseDir, "").replace(/\.[jt]s$/, "")), router['default'] || router);
 }
 
 // 本番環境等以外では、Swagger-UI用のJSONも出力
