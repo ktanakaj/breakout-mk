@@ -25,7 +25,8 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
+    usePolling: true,
     browsers: ['ChromiumHeadless'],
-    singleRun: false
+    singleRun: true // FIXME: VMだとautoWatchが動作しない（？）ため、一旦singleRunで運用
   });
 };
