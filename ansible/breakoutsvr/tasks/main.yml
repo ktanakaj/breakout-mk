@@ -20,7 +20,10 @@
   - name: Install "node-pre-gyp" node.js package globally for sqlite3
     npm: name=node-pre-gyp global=yes
 
-  - name: Open port for angular-cli only internal zone
+  - name: Open port 4200 for angular-cli only internal zone
+    firewalld: port=4200/tcp permanent=true state=enabled zone=internal
+    notify: Restart firewalld
+  - name: Open port 9876 for angular-cli only internal zone
     firewalld: port=9876/tcp permanent=true state=enabled zone=internal
     notify: Restart firewalld
 

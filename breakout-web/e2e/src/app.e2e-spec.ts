@@ -1,3 +1,7 @@
+/**
+ * ブロックくずしメーカーe2eテスト。
+ * @module ./app.e2e-spec
+ */
 import { AppPage } from './app.po';
 
 describe('breakout-web', () => {
@@ -9,6 +13,7 @@ describe('breakout-web', () => {
 
 	it('should display top page', () => {
 		page.navigateTo();
-		expect(page.getParagraphText()).toEqual('Breakout Maker');
+		expect(page.getHeaderTitle()).toMatch(/Breakout Maker Ver[0-9\.]+/);
+		expect(page.getUnityFrame()).toBeTruthy();
 	});
 });

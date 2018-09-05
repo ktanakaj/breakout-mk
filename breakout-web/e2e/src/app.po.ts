@@ -1,11 +1,22 @@
+/**
+ * ブロックくずしメーカーアプリページオブジェクト。
+ * @module ./app.po
+ */
 import { browser, by, element } from 'protractor';
 
+/**
+ * ブロックくずしメーカーアプリページクラス。
+ */
 export class AppPage {
 	navigateTo() {
 		return browser.get('/');
 	}
 
-	getParagraphText() {
-		return element(by.css('app-root h1')).getText();
+	getHeaderTitle() {
+		return element(by.css('header .navbar-brand')).getText();
+	}
+
+	getUnityFrame() {
+		return element(by.id('unity-frame'));
 	}
 }

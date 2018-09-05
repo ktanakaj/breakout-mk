@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
-    "start": "./node_modules/@angular/cli/bin/ng serve",
+    "start": "./node_modules/@angular/cli/bin/ng serve --watch --poll 1000",
     "build": "./node_modules/@angular/cli/bin/ng build",
+    "watch": "./node_modules/@angular/cli/bin/ng build --watch --poll 1000",
     "test": "./node_modules/@angular/cli/bin/ng test",
     "lint": "./node_modules/@angular/cli/bin/ng lint",
     "e2e": "./node_modules/@angular/cli/bin/ng e2e",
