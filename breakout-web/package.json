@@ -1,6 +1,6 @@
 {
   "name": "breakout-web",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "private": true,
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
