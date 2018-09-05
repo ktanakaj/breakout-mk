@@ -2,8 +2,9 @@
  * @file ブロックくずしメーカールートコンポーネント。
  */
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import browserHelper from './core/browser-helper';
+import localeHelper from './core/locale-helper';
 
 /**
  * ブロックくずしメーカーコンポーネントクラス。
@@ -16,9 +17,11 @@ import browserHelper from './core/browser-helper';
 export class AppComponent implements OnInit {
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
+	 * @param titleService タイトルサービス。
 	 * @param translate 国際化サービス。
 	 */
 	constructor(
+		private titleService: Title,
 		private translate: TranslateService) { }
 
 	/**
@@ -27,6 +30,14 @@ export class AppComponent implements OnInit {
 	ngOnInit(): void {
 		// アプリで使用する言語を設定
 		this.translate.setDefaultLang('en');
-		this.translate.use(browserHelper.getLanguage());
+		this.translate.use(localeHelper.getLanguage());
+
+		// タイトルを言語に応じて切り替え
+		// ※ titleはテンプレート側では変更不可 https://angular.io/guide/set-document-title
+		this.translate.onLangChange.subscribe(() => {
+			this.translate.get('APP_NAME').subscribe((res: string) => {
+				this.titleService.setTitle(res);
+			});
+		});
 	}
 }

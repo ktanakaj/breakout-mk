@@ -1,6 +1,6 @@
 /**
  * ブロックくずしメーカールートコンポーネントのテスト。
- * @module ./app/core/app.component.spec
+ * @module ./app/app.component.spec
  */
 import { TestBed, async } from '@angular/core/testing';
 import testHelper from '../test-helper';

@@ -5,7 +5,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import browserHelper from '../core/browser-helper';
+import localeHelper from '../core/locale-helper';
 
 /**
  * WebGLインゲームページコンポーネントクラス。
@@ -31,7 +31,7 @@ export class GameComponent implements OnInit {
 	 */
 	ngOnInit(): void {
 		// ステージIDが指定された場合インゲームに引き継ぐ
-		let url = '../webgl/index.html?lang=' + browserHelper.getLanguage();
+		let url = '../webgl/index.html?lang=' + localeHelper.getLanguage();
 		const stageId = this.route.snapshot.params['id'];
 		if (stageId) {
 			url += '&stage_id=' + stageId;

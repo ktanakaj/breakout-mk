@@ -4,14 +4,6 @@
  */
 
 /**
- * ブラウザの言語設定を取得する。
- * @returns 2文字の言語コード。
- */
-function getLanguage(): string {
-	return getLocale().substr(0, 2);
-}
-
-/**
  * ブラウザのロケールを取得する。
  * @returns ロケールコード。
  */
@@ -29,7 +21,7 @@ function getLocale(): string {
  * @param url URL。
  */
 function redirect(url: string): void {
-	// ※ ブラウザの素のリダイレクト。Angular2のルートは呼ばれない
+	// ※ ブラウザの素のリダイレクト。Angularのルートは呼ばれない
 	window.location.href = url;
 }
 
@@ -37,12 +29,11 @@ function redirect(url: string): void {
  * ページを再読み込みする。
  */
 function reload(): void {
-	// ※ ブラウザの素の再読み込み。Angular2のルートは呼ばれない
+	// ※ ブラウザの素の再読み込み。Angularのルートは呼ばれない
 	window.location.reload(true);
 }
 
 export default {
-	getLanguage,
 	getLocale,
 	redirect,
 	reload,
