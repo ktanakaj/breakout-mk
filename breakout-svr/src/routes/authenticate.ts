@@ -38,7 +38,6 @@ const router = express.Router();
  *               minLength: 1
  *             password:
  *               type: string
- *               format: password
  *               description: パスワード
  *               minLength: 1
  *     responses:

@@ -129,7 +129,6 @@ router.get('/', passportManager.isAuthenticated('admin'), async function (req: e
  *               minLength: 1
  *             password:
  *               type: string
- *               format: password
  *               description: パスワード
  *               minLength: 1
  *     responses:
@@ -355,7 +354,6 @@ router.get('/:id(\\d+)', async function (req: express.Request, res: express.Resp
  *               minLength: 1
  *             password:
  *               type: string
- *               format: password
  *               description: パスワード
  *               minLength: 1
  *             status:

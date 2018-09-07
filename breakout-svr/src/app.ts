@@ -41,8 +41,8 @@ if (config['debug']['bodyLog']) {
 	// bodyログが有効な場合、リクエスト/レスポンスボディも出力
 	// ※ bodyParserが挟まる都合上、JSONが壊れているリクエストボディは出力されません
 	accessLogOption['format'] = (req: express.Request, res: express.Response, format: (str: string) => string) => {
-		let reqBody = JSON.stringify(req.body);
-		let resBody = (<any>res)._getData();
+		let reqBody = hidePasswordLog(JSON.stringify(req.body));
+		let resBody = hidePasswordLog((<any>res)._getData());
 		return format(':remote-addr - - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent" req=') + reqBody + ' res=' + resBody;
 	};
 	app.use(responseBodyCollector);
@@ -159,6 +159,15 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 	}
 	res.send(message);
 });
+
+/**
+ * JSONログ上のパスワードを隠す。
+ * @param log JSONログ文字列。
+ * @returns パスワードを置換したログ文字列。
+ */
+function hidePasswordLog(log: string): string {
+	return log.replace(/("password"\s*:\s*)".*?"/gi, '$1"****"');
+}
 
 /**
  * Sequelizeで複数返るエラーメッセージを結合する。
