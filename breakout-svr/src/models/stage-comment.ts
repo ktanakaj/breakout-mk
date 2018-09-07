@@ -6,7 +6,7 @@
  */
 import { Table, Column, Model, DataType, AllowNull, Comment, Default, BelongsTo, ForeignKey, Sequelize, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import objectUtils from '../core/utils/object-utils';
+import * as _ from 'lodash';
 import User from './user';
 import StageHeader from './stage-header';
 
@@ -83,9 +83,9 @@ export default class StageComment extends Model<StageComment> {
 	 * 渡されたパラメータを更新用に設定する。
 	 * @param params 更新用のパラメータ。
 	 */
-	merge(params: Object): void {
+	merge(params: object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
-		objectUtils.copy(this, params, ["status", "comment"]);
+		this.set(_.pick(params, ['status', 'comment']));
 	}
 
 	/**

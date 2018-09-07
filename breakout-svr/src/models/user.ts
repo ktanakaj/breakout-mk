@@ -9,7 +9,7 @@ import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
 import * as Random from 'random-js';
-import objectUtils from '../core/utils/object-utils';
+import * as _ from 'lodash';
 import UserRatingRanking from './rankings/user-rating-ranking';
 import Playlog from './playlog';
 import StageHeader from './stage-header';
@@ -147,13 +147,13 @@ export default class User extends Model<User> {
 	 * @param params 更新用のパラメータ。
 	 * @param all パラメータを制限しない場合true。
 	 */
-	merge(params: Object, all: boolean = false): void {
+	merge(params: object, all: boolean = false): void {
 		// statusとか自由に上書きされると困るので、渡された値のうち許可された値だけコピー
 		const includes = ["name", 'password', "comment"];
 		if (all) {
 			includes.push("status");
 		}
-		objectUtils.copy(this, params, includes);
+		this.set(_.pick(params, includes));
 	}
 
 	/**
@@ -178,7 +178,7 @@ export default class User extends Model<User> {
 	 */
 	static passwordToHash(password: string, salt: string = undefined): string {
 		if (salt === undefined) {
-			salt = random.string(<any>4, <any>'0123456789ABCDEF');
+			salt = random.string(4, '0123456789ABCDEF');
 		}
 		const hashGenerator = crypto.createHash(config['password']['algorithm']);
 		hashGenerator.update(salt);

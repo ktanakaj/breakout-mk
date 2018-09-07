@@ -6,6 +6,7 @@
  */
 import { Table, Column, Model, DataType, AllowNull, Default, Comment, BelongsTo, HasMany, ForeignKey, IFindOptions } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import * as _ from 'lodash';
 import objectUtils from '../core/utils/object-utils';
 import StageRatingRanking from './rankings/stage-rating-ranking';
 import User from './user';
@@ -141,12 +142,11 @@ export default class Stage extends Model<Stage> {
 
 	/**
 	 * 渡されたパラメータを更新用に設定する。
-	 * @function merge
-	 * @param {Object} params 更新用のパラメータ。
+	 * @param params 更新用のパラメータ。
 	 */
-	merge(params: Object): void {
+	merge(params: object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
-		objectUtils.copy(this, params, ["name", "status", "map", "comment"]);
+		this.set(_.pick(params, ['name', 'status', 'map', 'comment']));
 	}
 
 	/**
@@ -182,9 +182,7 @@ export default class Stage extends Model<Stage> {
 				return await this.save(options);
 			}
 			// マップが変わった場合は、旧レコードを updated にして新レコードを登録
-			const newRecord = Stage.build();
-			objectUtils.copy(newRecord, this, ["headerId", "name", "map", "comment"]);
-
+			const newRecord = Stage.build(_.pick(this, ['headerId', 'name', 'map', 'comment']));
 			const oldRecord = await Stage.findById<Stage>(this.id);
 			oldRecord.status = "updated";
 			await oldRecord.save(options);

@@ -5,7 +5,7 @@
  * @module ./models/block
  */
 import { Table, Column, Model, DataType, PrimaryKey, AllowNull, Default, Comment, Min, DefaultScope, IFindOptions } from 'sequelize-typescript';
-import objectUtils from '../core/utils/object-utils';
+import * as _ from 'lodash';
 
 /**
  * ブロックモデルクラス。
@@ -85,9 +85,9 @@ export default class Block extends Model<Block> {
 	 * 渡されたパラメータを更新用に設定する。
 	 * @param params 更新用のパラメータ。
 	 */
-	merge(params: Object): void {
+	merge(params: object): void {
 		// keyとか上書きされると困るので必要な値だけコピー
-		objectUtils.copy(this, params, ["name", "status", "hp", "score", "xsize", "ysize", "color"]);
+		this.set(_.pick(params, ['name', 'status', 'hp', 'score', 'xsize', 'ysize', 'color']));
 	}
 
 	/**

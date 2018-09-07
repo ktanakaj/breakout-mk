@@ -8,7 +8,7 @@ import { Table, Column, Model, DataType, AllowNull, ForeignKey, Default, Comment
 import { Op } from 'sequelize';
 import * as crypto from 'crypto';
 import * as config from 'config';
-import objectUtils from '../core/utils/object-utils';
+import * as _ from 'lodash';
 import StagePlayRanking from './rankings/stage-play-ranking';
 import StageScoreRanking from './rankings/stage-score-ranking';
 import UserPlayRanking from './rankings/user-play-ranking';
@@ -138,9 +138,9 @@ export default class Playlog extends Model<Playlog> {
 	 * 渡されたパラメータを更新用に設定する。
 	 * @param params 更新用のパラメータ。
 	 */
-	merge(params: Object): void {
+	merge(params: object): void {
 		// createdAtとか上書きされると困るので必要な値だけコピー
-		objectUtils.copy(this, params, ["score", "cleared"]);
+		this.set(_.pick(params, ['score', 'cleared']));
 	}
 
 	/**
