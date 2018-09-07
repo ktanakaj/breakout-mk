@@ -12,7 +12,7 @@ import { BsDropdownModule, CollapseModule, ModalModule, PopoverModule, RatingMod
 import localeHelper from './core/locale-helper';
 import { UserService } from './users/user.service';
 import { AppComponent } from './app.component';
-import { AuthGuard } from './auth-guard.service';
+import { AuthGuard } from './auth.guard';
 import { SafeStylePipe } from './shared/safe-style.pipe';
 import { StageLabelComponent } from './shared/stage-label.component';
 import { StageLinkComponent } from './shared/stage-link.component';
