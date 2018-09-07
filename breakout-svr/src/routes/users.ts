@@ -51,7 +51,7 @@ const DUMMY = 0;
 
 import * as express from 'express';
 import expressPromiseRouter from 'express-promise-router';
-import { NotFoundError } from '../core/utils/http-error';
+import { BadRequestError, NotFoundError } from '../core/utils/http-error';
 import passportManager from '../core/passport-manager';
 import User from '../models/user';
 import Stage from '../models/stage';
@@ -69,21 +69,39 @@ const router = expressPromiseRouter();
  *     description: ユーザーの一覧を取得する（管理者限定）。
  *     security:
  *       - SessionId: []
+ *     parameters:
+ *       - $ref: '#/parameters/pageQueryParam'
+ *       - $ref: '#/parameters/maxQueryParam'
  *     responses:
  *       200:
- *         description: 取得成功
+ *         description: ユーザー一覧
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/User'
+ *           type: object
+ *           required:
+ *             - count
+ *             - rows
+ *           properties:
+ *             count:
+ *               type: integer
+ *               format: int32
+ *               description: 総件数
+ *             rows:
+ *               type: array
+ *               items:
+ *                 $ref: '#/definitions/User'
  *       401:
  *         $ref: '#/responses/Unauthorized'
  *       403:
  *         $ref: '#/responses/Forbidden'
  */
 router.get('/', passportManager.isAuthenticated('admin'), async function (req: express.Request, res: express.Response): Promise<void> {
-	const users = await User.findAll();
-	res.json(users);
+	let page = req.query.page ? Number(req.query.page) : 1;
+	let max = req.query.max ? Number(req.query.max) : 100;
+	if (isNaN(page) || isNaN(max) || page < 1 || max < 1) {
+		throw new BadRequestError(`page or max is not valid (page=${page}, max=${max})`);
+	}
+	const result = await User.findAndCountAll({ limit: max, offset: (page - 1) * max });
+	res.json(result);
 });
 
 /**

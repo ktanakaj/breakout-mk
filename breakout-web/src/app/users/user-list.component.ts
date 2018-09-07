@@ -13,8 +13,16 @@ import { UserService } from './user.service';
 	templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
+	/** ユーザー総数 */
+	count: number;
 	/** ユーザー一覧 */
-	users: User[] = [];
+	rows: User[];
+	/** 選択中のページ */
+	currentPage = 1;
+	/** 1ページの表示件数 */
+	pageMax = 60;
+	/** ページングのページ数の表示最大値 */
+	maxSize = 10;
 
 	/**
 	 * サービスをDIしてコンポーネントを生成する。
@@ -28,6 +36,17 @@ export class UserListComponent implements OnInit {
 	 * @returns 処理状態。
 	 */
 	async ngOnInit(): Promise<void> {
-		this.users = await this.userService.findAll();
+		await this.load(this.currentPage);
+	}
+
+	/**
+	 * ユーザー一覧を検索する。
+	 * @param page ページ番号。
+	 * @returns 処理状態。
+	 */
+	async load(page: number): Promise<void> {
+		const info = await this.userService.findAllAndCount(page, this.pageMax);
+		this.count = info.count;
+		this.rows = info.rows;
 	}
 }

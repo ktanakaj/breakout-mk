@@ -7,7 +7,7 @@ import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BsDropdownModule, CollapseModule, ModalModule, PopoverModule, RatingModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule, ModalModule, PopoverModule, RatingModule, PaginationModule } from 'ngx-bootstrap';
 import { UserService } from './app/users/user.service';
 
 /** JSONファイルを使用するローカライズファイルローダー */
@@ -33,6 +33,7 @@ const modules = [
 	ModalModule.forRoot(),
 	PopoverModule.forRoot(),
 	RatingModule.forRoot(),
+	PaginationModule.forRoot(),
 ];
 
 /** アプリ共通のプロバイダー群 */

@@ -33,10 +33,15 @@ export class UserService extends EventEmitter {
 
 	/**
 	 * 全ユーザーの参照。
+	 * @param page ページ番号（先頭ページが1）。
+	 * @param max 1ページ辺りの最大件数。
 	 * @returns 検索結果。
 	 */
-	findAll(): Promise<User[]> {
-		return this.http.get<User[]>('/api/users')
+	findAllAndCount(page: number, max: number): Promise<{ count: number, rows: User[] }> {
+		const params = new HttpParams()
+			.set('page', String(page))
+			.set('max', String(max));
+		return this.http.get<{ count: number, rows: User[] }>('/api/users', { params })
 			.retry(MAX_RETRY)
 			.toPromise();
 	}

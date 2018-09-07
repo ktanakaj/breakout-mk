@@ -2,7 +2,6 @@
  * @file users.tsのテスト。
  */
 import * as assert from 'power-assert';
-import * as httpMocks from "node-mocks-http";
 import testHelper from '../test-helper';
 import User from '../../src/models/user';
 import router from '../../src/routes/users';
@@ -16,10 +15,10 @@ describe('/api/users', () => {
 			});
 			const res = await testHelper.callRequestHandler(router, req);
 
-			const users = res._getJson();
-			assert(Array.isArray(users));
+			const result = res._getJson();
+			assert(result.count > 0);
 
-			const user = users.find((u) => u.id === 1);
+			const user = result.rows.find((u) => u.id === 1);
 			assert.strictEqual(user.name, 'admin');
 			assert.strictEqual(user.password, undefined);
 			assert.strictEqual(user.comment, 'サンプル管理者');

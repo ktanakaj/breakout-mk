@@ -252,6 +252,18 @@
             format: date-time
             description: 更新日時
     parameters:
+      pageQueryParam:
+        in: query
+        name: page
+        description: ページ番号（先頭ページが1）
+        type: integer
+        format: int32
+      maxQueryParam:
+        in: query
+        name: max
+        description: 1ページ辺りの最大件数
+        type: integer
+        format: int32
       yearPathParam:
         in: path
         name: year

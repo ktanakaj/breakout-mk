@@ -1,4 +1,7 @@
 <h1>{{ "USER_LIST.TITLE" | translate }}</h1>
+
+<pagination [boundaryLinks]="true" [totalItems]="count" [(ngModel)]="currentPage" [maxSize]="maxSize" [itemsPerPage]="pageMax" (pageChanged)="load($event.page)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead>
@@ -12,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of rows">
                 <td><a routerLink="/users/{{ user.id }}">{{ user.id }}</a></td>
                 <td>{{ user.name }}</td>
                 <td>
@@ -25,3 +28,5 @@
         </tbody>
     </table>
 </div>
+
+<pagination [boundaryLinks]="true" [totalItems]="count" [(ngModel)]="currentPage" [maxSize]="maxSize" [itemsPerPage]="pageMax" (pageChanged)="load($event.page)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"></pagination>
