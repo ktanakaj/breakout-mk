@@ -249,10 +249,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/string@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@types/string/-/string-0.0.29.tgz#9b6de0ec6884bdbe9520a0e4022886b57759f5fa"
-
 "@types/swagger-express-validator@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@types/swagger-express-validator/-/swagger-express-validator-0.0.0.tgz#9c6ff93da8f8a1b27f3b00dc9cfa4eaad9d03a5c"
@@ -3099,10 +3095,6 @@ string-width@^1.0.1, "string-width@^1.0.2 || 2":
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
-
-string@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/string/-/string-3.3.3.tgz#5ea211cd92d228e184294990a6cc97b366a77cb0"
 
 string_decoder@~1.1.1:
   version "1.1.1"

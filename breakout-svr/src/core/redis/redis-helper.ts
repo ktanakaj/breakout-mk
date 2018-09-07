@@ -3,7 +3,7 @@
  * @module ./core/redis/redis-helper
  */
 import * as path from 'path';
-import * as S from 'string';
+import * as _ from 'lodash';
 import { Op } from 'sequelize';
 import { Model } from 'sequelize-typescript';
 import objectUtils from '../utils/object-utils';
@@ -16,7 +16,7 @@ import objectUtils from '../utils/object-utils';
  */
 function makeKey(base: string, ...options: string[]): string {
 	// baseはファイル名の場合は余計なものを除去してスタイルを合わせる
-	let key = S(path.basename(base, '.js')).camelize().s;
+	let key = _.camelCase(path.basename(base, '.js'));
 	for (let o of options) {
 		key += ":" + o;
 	}
@@ -59,7 +59,7 @@ function yearAndMonthKeyToNumber(yearAndMonth: string, asc: boolean = false): nu
 	// 年月の場合は、月を2桁にする
 	let year, month;
 	[year, month] = yearAndMonth.split(":");
-	return Number(year + S(month).pad(2, "0").s);
+	return Number(year + _.padStart(month, 2, '0'));
 }
 
 /**
@@ -76,8 +76,8 @@ function keysToYearAndMonths(keys: string[], base: string): string[][] {
 }
 
 export default {
-	makeKey: makeKey,
-	bulkLoadDbModels: bulkLoadDbModels,
-	yearAndMonthKeyToNumber: yearAndMonthKeyToNumber,
-	keysToYearAndMonths: keysToYearAndMonths,
+	makeKey,
+	bulkLoadDbModels,
+	yearAndMonthKeyToNumber,
+	keysToYearAndMonths,
 };

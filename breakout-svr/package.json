@@ -35,7 +35,6 @@
     "@types/redis": "^2.6.0",
     "@types/sequelize": "^4.27.24",
     "@types/source-map-support": "^0.4.1",
-    "@types/string": "^0.0.29",
     "@types/swagger-express-validator": "0.0.0",
     "@types/swagger-jsdoc": "0.0.2",
     "body-parser": "^1.18.3",
@@ -60,7 +59,6 @@
     "sequelize": "^4.38.0",
     "sequelize-typescript": "^0.6.6",
     "source-map-support": "^0.5.9",
-    "string": "^3.3.3",
     "swagger-express-validator": "^0.1.0",
     "swagger-jsdoc": "^3.0.2"
   },
