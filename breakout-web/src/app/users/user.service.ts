@@ -5,11 +5,9 @@
 import { EventEmitter } from 'events';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { User, UserWithInfo } from './user.model';
 import { Playlog } from './playlog.model';
-
-/** 通信失敗時のリトライ回数。 */
-const MAX_RETRY = 3;
 
 /**
  * ユーザー関連サービスクラス。
@@ -42,7 +40,7 @@ export class UserService extends EventEmitter {
 			.set('page', String(page))
 			.set('max', String(max));
 		return this.http.get<{ count: number, rows: User[] }>('/api/users', { params })
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -53,7 +51,7 @@ export class UserService extends EventEmitter {
 	 */
 	findById(id: number): Promise<User> {
 		return this.http.get<User>('/api/users/' + id)
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -67,7 +65,7 @@ export class UserService extends EventEmitter {
 		const params = new HttpParams()
 			.set('fields', 'all');
 		return this.http.get<UserWithInfo>('/api/users/' + id, { params })
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -171,7 +169,7 @@ export class UserService extends EventEmitter {
 	 */
 	findPlaylogs(): Promise<Playlog[]> {
 		return this.http.get<Playlog[]>('/api/users/me/playlogs')
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 

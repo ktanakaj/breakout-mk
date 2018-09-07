@@ -4,10 +4,8 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Block } from './block.model';
-
-/** 通信失敗時のリトライ回数。 */
-const MAX_RETRY = 3;
 
 /**
  * ゲームのブロック関連サービスクラス。
@@ -24,16 +22,12 @@ export class BlockService {
 	 * 全ブロックの参照。
 	 * @returns 検索結果。
 	 */
-	findAll(): Promise<Block[]> {
-		return this.http.get<Block[]>('/api/blocks')
-			.retry(MAX_RETRY)
-			.toPromise()
-			.then((blocks) => {
-				blocks.forEach((b) => {
-					b.color = BlockService.hexColor(<any>b.color);
-				});
-				return blocks;
-			});
+	async findAll(): Promise<Block[]> {
+		const blocks = await this.http.get<Block[]>('/api/blocks').retry(environment.maxRetry).toPromise();
+		for (const b of blocks) {
+			b.color = BlockService.hexColor(<any>b.color);
+		}
+		return blocks;
 	}
 
 	/**
@@ -41,14 +35,10 @@ export class BlockService {
 	 * @param key 検索するキー。
 	 * @returns 検索結果。
 	 */
-	findById(key: string): Promise<Block> {
-		return this.http.get<Block>('/api/blocks/' + key)
-			.retry(MAX_RETRY)
-			.toPromise()
-			.then((block) => {
-				block.color = BlockService.hexColor(<any>block.color);
-				return block;
-			});
+	async findById(key: string): Promise<Block> {
+		const block = await this.http.get<Block>('/api/blocks/' + key).retry(environment.maxRetry).toPromise();
+		block.color = BlockService.hexColor(<any>block.color);
+		return block;
 	}
 
 	/**

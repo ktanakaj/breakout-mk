@@ -4,11 +4,9 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Block } from '../blocks/block.model';
 import { Stage, StageComment, StageFavorite, StageRating, StageWithInfo } from './stage.model';
-
-/** 通信失敗時のリトライ回数。 */
-const MAX_RETRY = 3;
 
 /**
  * ゲームのステージ関連サービスクラス。
@@ -27,7 +25,7 @@ export class StageService {
 	 */
 	findAll(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/stages')
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -38,7 +36,7 @@ export class StageService {
 	 */
 	findById(id: number): Promise<Stage> {
 		return this.http.get<Stage>('/api/stages/' + id)
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -52,7 +50,7 @@ export class StageService {
 		const params = new HttpParams()
 			.set('fields', 'all');
 		return this.http.get<StageWithInfo>('/api/stages/' + id, { params })
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -91,7 +89,7 @@ export class StageService {
 	 */
 	findByUser(userId: number): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/users/' + userId + '/stages')
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
@@ -121,7 +119,7 @@ export class StageService {
 	 */
 	findLatest(): Promise<Stage[]> {
 		return this.http.get<Stage[]>('/api/stages/latest')
-			.retry(MAX_RETRY)
+			.retry(environment.maxRetry)
 			.toPromise();
 	}
 
