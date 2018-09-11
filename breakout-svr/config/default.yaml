@@ -11,6 +11,7 @@
     username: "breakout_usr"
     password: "breakout001"
     name: "breakout_db"
+    benchmark: true
   redis:
     ranking:
       host: "127.0.0.1"

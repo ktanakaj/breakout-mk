@@ -22,7 +22,12 @@ import responseBodyCollector from './core/response-body-collector';
 // Sequelizeの初期化
 const sequelize = new Sequelize(Object.assign({
 	modelPaths: [__dirname + '/models'],
-	logging: (log) => log4js.getLogger('debug').debug(log),
+	logging: (log, time) => {
+		if (typeof time === 'number') {
+			log = `${log} Elapsed time: ${time}ms`;
+		}
+		log4js.getLogger('debug').debug(log);
+	},
 	operatorsAliases: false,
 }, config['database']));
 sequelize.sync().catch((e) => log4js.getLogger('error').error(e));
