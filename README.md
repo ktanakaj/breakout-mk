@@ -22,7 +22,7 @@
 * Node.js v10.x
 * MariaDB 5.x
 * Redis 3.x
-* nginx 1.10.x
+* nginx 1.12.x
 * Express 4.x
     * Sequelize 4.x
     * Sequelize-typescript 0.6.x
@@ -31,7 +31,7 @@
     * Log4js 3.x
 * Angular 6.x
 
-### 対応ブラウザ
+### 動作確認ブラウザ
 * &gt;= Google Chrome Ver66.0.3359.181
 * &gt;= Microsoft Edge Ver41.16299.402.0
 * &gt;= Firefox Ver60.1
@@ -54,7 +54,7 @@
     * breakout-web - Angular Webアプリクライアントソース
     * ansible - Ansible関連ファイル
 
-## インストール方法
+## VM環境構築手順
 1. Vagrantをインストールした後、ファイル一式をVMのフォルダとする場所に展開。
 2. 初回の `vagrant up` でVM環境を構築（DB構築やWebアプリの初回ビルド等も自動実行）。
 3. クライアント側PCで `breakout-game` のUnityプロジェクトを開き、`Assets/Scenes/Game` を表示。WebGLをターゲットにして、`breakout-web/src/webgl` フォルダを出力先でビルドを行う。
@@ -63,7 +63,7 @@
 ※ 初回の `vagrant up` はVMイメージダウンロード等で1時間以上かかる場合があります。また `yarn install` 等で一時的にエラーが発生する場合は、もう一度 `vagrant provision` 等で展開してください。  
 ※ 2018年8月現在、npmコマンドにはvagrant共有フォルダでのインストールが失敗する[不具合](https://github.com/npm/npm/issues/20605)があります。`npm install` の代わりに `yarn install` を使用してください。
 
-## 起動方法
+### 起動方法
 Web側アプリはVM起動時に自動的に立ち上がります。
 
 デフォルトのVMでは http://[DHCPで振られたIP]/ または http://localhost/ でアクセス可能です。
@@ -71,7 +71,7 @@ Web側アプリはVM起動時に自動的に立ち上がります。
 ※ Microsoft EdgeだとプライベートIP（前者）はアクセスできない場合あり。  
 ※ 自動的に立ち上がらない場合は、後述のサーバーコマンドで起動してください。
 
-### サーバーコマンド
+## サーバーコマンド
 Webアプリの操作用に、以下のようなサーバーコマンドを用意しています。
 アプリのビルドや再起動などを行う場合は、VMにログインして `breakout-svr`, `breakout-web` ディレクトリでコマンドを実行してください。
 
@@ -88,7 +88,7 @@ Webアプリの操作用に、以下のようなサーバーコマンドを用�
     * `npm run lint` - Webアプリの静的解析ツールの実行
     * `npm run clean` - 全ビルド生成物の削除
 
-なお、Webアプリのクライアント側ソース、並びにUnityゲーム部分はビルドが必要です。またサーバーアプリのソース変更を反映するためには、Webアプリの再起動が必要です。
+なお、Webアプリ、並びにUnityゲーム部分はビルドが必要です。またサーバーアプリのソース変更を反映するためには、Webアプリの再起動が必要です。
 
 ## 操作方法
 トップページのゲーム画面から登録済みのステージを起動し、ゲームをプレイする。
