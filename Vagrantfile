@@ -22,6 +22,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "ansible/playbook.yml"
     ansible.provisioning_path = "/vagrant/"
+    ansible.raw_arguments = ['--force-handlers']
   end
 
   # 各種サービスが共有フォルダマウント前に起動してエラーになるので、再読み込みさせる
