@@ -1,6 +1,6 @@
 {
   "name": "breakout-svr",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "private": true,
   "scripts": {
     "start": "pm2 start process.json",
