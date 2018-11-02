@@ -118,3 +118,5 @@ VMのDBを参照する場合は、MySQL Workbench等でMySQLの標準ポート�
 
 ## ライセンス
 [MIT](https://github.com/ktanakaj/breakout-mk/blob/master/LICENSE)
+
+※ ただし同梱の[IPAフォント](https://github.com/ktanakaj/breakout-mk/tree/master/breakout-game/Assets/Fonts)については[IPA Font License Agreement v1.0](https://github.com/ktanakaj/breakout-mk/blob/master/breakout-game/Assets/Fonts/IPA_Font_License_Agreement_v1.0.txt)が適用されます。
