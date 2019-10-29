@@ -56,7 +56,7 @@
     "redis": "^2.7.1",
     "redis-promisify": "^0.1.1",
     "reflect-metadata": "^0.1.12",
-    "sequelize": "^4.38.0",
+    "sequelize": "^5.15.1",
     "sequelize-typescript": "^0.6.6",
     "source-map-support": "^0.5.9",
     "swagger-express-validator": "^0.1.0",
