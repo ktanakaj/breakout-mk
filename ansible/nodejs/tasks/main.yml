@@ -1,6 +1,6 @@
 ---
 - name: Check Node.js repository version
-  shell: yum info nodejs | grep -e "Version\s*:\s*1[0-9].*$"
+  shell: yum --disablerepo=epel info nodejs | grep -e "Version\s*:\s*1[0-9].*$"
   register: nodejs_repository_version
   check_mode: no
   changed_when: false

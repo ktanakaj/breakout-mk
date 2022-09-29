@@ -14,8 +14,13 @@ Vagrant.configure(2) do |config|
 
   # CPU数/メモリサイズ
   config.vm.provider "virtualbox" do |vb|
-      vb.cpus = 2
-      vb.memory = "2048"
+    vb.cpus = 2
+    vb.memory = "2048"
+  end
+  config.vm.provider "hyperv" do |vb, override|
+    vb.cpus = 2
+    vb.memory = "2048"
+    override.vm.synced_folder ".", "/vagrant", type: "smb", mount_options: ["dir_mode=0777,file_mode=0777"]
   end
 
   # ゲストPCにansibleをインストールし共有フォルダのプレイブックを実行

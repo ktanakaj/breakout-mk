@@ -20,7 +20,7 @@
     when: app_db_created.changed
 
   - name: Install "node-pre-gyp" node.js package globally for sqlite3
-    npm: name=node-pre-gyp global=yes
+    npm: name=@mapbox/node-pre-gyp global=yes version=^1.0.10
 
   - name: Open port 4200 for angular-cli only internal zone
     firewalld: port=4200/tcp permanent=true state=enabled zone=internal

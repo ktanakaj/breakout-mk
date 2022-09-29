@@ -37,13 +37,15 @@
 * &gt;= Firefox Ver60.1
 
 ### 開発環境
-* Vagrant 2.1.x - 仮想環境管理
+* Vagrant 2.2.x - 仮想環境管理
     * VirtualBox 5.2.x - 仮想環境
     * vagrant-vbguest - Vagrantプラグイン
 * Visual Studio Code - アプリ開発用エディター
 * Unity 2017.1.0f3 - WebGLゲーム開発用IDE
     * Visual Studio Community 2017 - C# 開発用IDE
 * MySQL Workbench 6.x - DB管理・EL図作成用ツール
+
+※ Hyper-Vでも動作可
 
 ## フォルダ構成
 * VMルートフォルダ

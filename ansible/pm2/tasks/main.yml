@@ -1,6 +1,6 @@
 ---
 - name: Install "pm2" node.js package globally
-  npm: name=pm2 global=yes
+  npm: name=pm2 global=yes version=^5.2.0
 
 - name: Check "pm2" service registration
   shell: systemctl status {{ service }}.service | grep -e "enabled"
